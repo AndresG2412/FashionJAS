@@ -18,8 +18,7 @@ const Footer = () => {
           <div className="space-y-4">
             <Logo />
             <SubText>
-              Discover curated furniture collections at Shopcartyt, blending
-              style and comfort to elevate your living spaces.
+              Encuentra lo que necesites en nuestra tienda, combinando calidad y precio, todo aqui en GaboShop!
             </SubText>
             <SocialMedia
               className="text-darkColor/60"
@@ -28,7 +27,7 @@ const Footer = () => {
             />
           </div>
           <div>
-            <SubTitle>Quick Links</SubTitle>
+            <SubTitle>Accesos Rapidos</SubTitle>
             <ul className="space-y-3 mt-4">
               {quickLinksData?.map((item) => (
                 <li key={item?.title}>
@@ -43,7 +42,7 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <SubTitle>Categories</SubTitle>
+            <SubTitle>Categorias</SubTitle>
             <ul className="space-y-3 mt-4">
               {categoriesData?.map((item) => (
                 <li key={item?.title}>
@@ -58,14 +57,13 @@ const Footer = () => {
             </ul>
           </div>
           <div className="space-y-4">
-            <SubTitle>Newsletter</SubTitle>
+            <SubTitle>Suscripciones</SubTitle>
             <SubText>
-              Subscribe to our newsletter to receive updates and exclusive
-              offers
+              Ingresa tu correo electronico para ser el primero en recibir las ofertas y novedades de GaboShop!
             </SubText>
             <form className="space-y-3">
-              <Input placeholder="Enter your email" type="email" required />
-              <Button className="w-full">Subscribe</Button>
+              <Input placeholder="Ingresa tu Correo Electronico" type="email" required />
+              <Button className="w-full">Subscribete</Button>
             </form>
           </div>
         </div>
