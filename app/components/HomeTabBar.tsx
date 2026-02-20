@@ -9,27 +9,30 @@ interface Props {
 
 const HomeTabBar = ({ selectedTab, onTabSelect }: Props) => {
   return (
-    <div className="flex items-center flex-wrap gap-5 justify-between">
-      <div className="flex items-center gap-1.5 text-sm font-semibold">
-        <div className="flex items-center gap-1.5 md:gap-3">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5 sm:justify-between">
+      {/* Tabs con scroll horizontal en móvil */}
+      <div className="w-full sm:w-auto overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-2 md:gap-3 min-w-max pb-2 sm:pb-0">
           {productType?.map((item) => (
             <button
-              onClick={() => onTabSelect(item?.value)} // ← Cambio aquí: usa value
-              key={item?.value} // ← Cambio aquí: usa value como key
-              className={`border border-shop_light_green/30 px-4 py-1.5 md:px-6 md:py-2 rounded-full hover:bg-shop_light_green hover:border-shop_light_green hover:text-white hoverEffect ${
-                selectedTab === item?.value // ← Cambio aquí: compara con value
+              onClick={() => onTabSelect(item?.value)}
+              key={item?.value}
+              className={`border border-shop_light_green/30 px-4 py-1.5 md:px-6 md:py-2 rounded-full hover:bg-shop_light_green hover:border-shop_light_green hover:text-white hoverEffect whitespace-nowrap text-sm font-semibold transition-all ${
+                selectedTab === item?.value
                   ? "bg-shop_light_green text-white border-shop_light_green"
                   : "bg-shop_light_green/10"
               }`}
             >
-              {item?.title} {/* ← Esto sigue igual, muestra el título en español */}
+              {item?.title}
             </button>
           ))}
         </div>
       </div>
+
+      {/* Botón "Mostrar Todos" */}
       <Link
         href={"/shop"}
-        className="border border-darkColor px-4 py-1 rounded-full hover:bg-shop_light_green hover:text-white hover:border-shop_light_green hoverEffect"
+        className="border border-darkColor px-4 py-1.5 md:px-6 md:py-2 rounded-full hover:bg-shop_light_green hover:text-white hover:border-shop_light_green hoverEffect text-sm font-semibold whitespace-nowrap transition-all flex-shrink-0"
       >
         Mostrar Todos
       </Link>

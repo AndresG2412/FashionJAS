@@ -44,7 +44,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="grow"></div>
         
         {/* Precio y Stock */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="md:flex items-center block md:justify-between mb-3">
           <div className='flex gap-1 items-baseline'>
             <p className="text-lg font-bold text-blue-600">
               ${product.price}

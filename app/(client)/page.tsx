@@ -5,7 +5,7 @@ import ProductGrid from '../components/ProductGrid'
 
 function page() {
     return (
-        <Container className="text-black p-10">
+        <Container className="text-black md:p-10">
             <HomeBanner/>
             <ProductGrid/>
         </Container>
