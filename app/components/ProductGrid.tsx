@@ -14,13 +14,13 @@ import { productType } from "../constants/data";
 const ProductGrid = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
+  const [selectedTab, setSelectedTab] = useState(productType[0]?.value || ""); // ← Cambio: usa value
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Usar la función de Firebase en lugar de Sanity
+        // selectedTab ya viene con el value ("gadget", "appliances", etc.)
         const data = await getProductsByVariant(selectedTab.toLowerCase());
         setProducts(data);
       } catch (error) {
@@ -39,7 +39,7 @@ const ProductGrid = () => {
         <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-gray-100 rounded-lg w-full mt-10">
           <motion.div className="flex items-center space-x-2 text-blue-600">
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Product is loading...</span>
+            <span>Cargando Productos...</span>
           </motion.div>
         </div>
       ) : products?.length ? (

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
   title: "GaboShop - E-commerce",
@@ -17,6 +18,7 @@ export default function RootLayout({
       <html lang="es">
         <body>
           {children}
+          <Toaster position="top-right" />
         </body>
       </html>
     </ClerkProvider>
