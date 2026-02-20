@@ -35,7 +35,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <div className="p-4 flex flex-col grow">
         {/* Nombre con altura fija de 2 líneas */}
         <Link href={`/product/${product.slug}`}>
-          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-[2.5rem] hover:text-shop_light_green transition-colors">
+          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-10 hover:text-shop_light_green transition-colors">
             {product.name}
           </h3>
         </Link>
