@@ -32,7 +32,7 @@ const HomeTabBar = ({ selectedTab, onTabSelect }: Props) => {
       {/* Botón "Mostrar Todos" */}
       <Link
         href={"/shop"}
-        className="border border-darkColor px-4 py-1.5 md:px-6 md:py-2 rounded-full hover:bg-shop_light_green hover:text-white hover:border-shop_light_green hoverEffect text-sm font-semibold whitespace-nowrap transition-all flex-shrink-0"
+        className="border border-darkColor px-4 py-1.5 md:px-6 md:py-2 rounded-full hover:bg-shop_light_green hover:text-white hover:border-shop_light_green hoverEffect text-sm font-semibold whitespace-nowrap transition-all shrink-0"
       >
         Mostrar Todos
       </Link>

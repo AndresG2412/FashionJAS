@@ -47,7 +47,7 @@ const FooterTop = () => {
             <h3 className="font-semibold text-gray-900 group-hover:text-black hoverEffect">
               {item?.title}
             </h3>
-            <p className="text-gray-600 text-xs md:text-sm mt-1 group-hover:text-gray-900 hoverEffect break-words leading-relaxed">
+            <p className="text-gray-600 text-xs md:text-sm mt-1 group-hover:text-gray-900 hoverEffect wrap-break-word leading-relaxed">
               {item?.subtitle}
             </p>
           </div>
