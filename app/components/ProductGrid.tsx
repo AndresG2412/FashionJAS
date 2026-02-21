@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import { motion, AnimatePresence } from "motion/react";
-import { getProductsByVariant } from "@/lib/firebase/products";
-import type { Product } from "@/lib/firebase/products";
+import { getProductsByCategory } from "@/lib/firebase/products";
+import type { Productos } from "@/lib/firebase/products";
 import NoProductAvailable from "./NoProductAvailable";
 import { Loader2 } from "lucide-react";
 import Container from "./Container";
@@ -12,16 +12,17 @@ import HomeTabbar from "./HomeTabBar";
 import { productType } from "../constants/data";
 
 const ProductGrid = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Productos[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(productType[0]?.value || ""); // ← Cambio: usa value
+  const [selectedTab, setSelectedTab] = useState(productType[0]?.value || "");
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // selectedTab ya viene con el value ("gadget", "appliances", etc.)
-        const data = await getProductsByVariant(selectedTab.toLowerCase());
+        // CAMBIO: Llamamos a la función de categoría
+        // Pasamos selectedTab tal cual (ej: "Celulares")
+        const data = await getProductsByCategory(selectedTab);
         setProducts(data);
       } catch (error) {
         console.log("Product fetching Error", error);

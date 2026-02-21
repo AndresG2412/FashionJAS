@@ -10,7 +10,7 @@ export interface Category {
 
 export async function getAllCategories(): Promise<Category[]> {
   try {
-    const categoriesRef = collection(db, 'categories');
+    const categoriesRef = collection(db, 'categorias');
     const q = query(categoriesRef, orderBy('title', 'asc'));
     
     const snapshot = await getDocs(q);

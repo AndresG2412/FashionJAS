@@ -1,115 +1,121 @@
 import { collection, query, where, orderBy, getDocs, and, QueryConstraint } from 'firebase/firestore';
 import { db } from './config';
 
-export interface Product {
+// 1. Tu interfaz actualizada
+export interface Productos {
   id: string;
-  name: string;
+  nombre: string;
   slug: string;
-  price: number;
-  images: string[];
-  description: string;
-  variant: string;
-  categories: string[];
+  precio: number;
+  imagenes: string[];
+  descripcion: string;
+  variante: string;
+  categorias: string[];
   stock: number;
-  createdAt: Date;
+  subido: Date; // Antes era createdAt
 }
 
-// Obtener productos por variant (ya la tienes)
-export async function getProductsByVariant(variant: string): Promise<Product[]> {
-  try {
-    const productsRef = collection(db, 'products');
-    const q = query(
-      productsRef,
-      where('variant', '==', variant.toLowerCase()),
-      orderBy('name', 'asc')
-    );
+// Helper para mapear los datos de Firestore al tipo Productos
+const mapDocToProduct = (doc: any): Productos => {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    ...data,
+    // Aseguramos que la fecha se convierta correctamente
+    subido: data.subido?.toDate() || new Date(),
+  } as Productos;
+};
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate() || new Date(),
-    })) as Product[];
-  } catch (error) {
-    console.error("Error fetching products by variant:", error);
-    return [];
-  }
-}
-
-// Obtener todos los productos (ya la tienes)
-export async function getAllProducts(): Promise<Product[]> {
-  try {
-    const productsRef = collection(db, 'products');
-    const q = query(productsRef, orderBy('name', 'asc'));
-    
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate() || new Date(),
-    })) as Product[];
-  } catch (error) {
-    console.error("Error fetching all products:", error);
-    return [];
-  }
-}
-
-// NUEVA: Obtener productos con filtros
 export async function getFilteredProducts(filters: {
   category?: string | null;
   minPrice?: number;
   maxPrice?: number;
-}): Promise<Product[]> {
+}): Promise<Productos[]> { // Cambio de tipo
   try {
-    const productsRef = collection(db, 'products');
-    const constraints: QueryConstraint[] = [];
+    const productsRef = collection(db, 'productos'); // Cambio de 'products' a 'productos'
+    
+    // Cambiamos 'name' por 'nombre' en el orderBy
+    const allProductsQuery = query(productsRef, orderBy('nombre', 'asc'));
+    const snapshot = await getDocs(allProductsQuery);
 
-    // Filtro por categoría
+    const productsData = snapshot.docs.map(mapDocToProduct);
+
+    let filteredProducts = productsData;
+
     if (filters.category) {
-      constraints.push(where('categories', 'array-contains', filters.category));
+      filteredProducts = filteredProducts.filter(product => 
+        product.categorias && 
+        product.categorias.some(cat => 
+          cat.toLowerCase() === filters.category!.toLowerCase()
+        )
+      );
     }
 
-    // Filtro por precio
     if (filters.minPrice !== undefined) {
-      constraints.push(where('price', '>=', filters.minPrice));
+      filteredProducts = filteredProducts.filter(product => 
+        product.precio >= filters.minPrice! // Cambio de price a precio
+      );
     }
     if (filters.maxPrice !== undefined) {
-      constraints.push(where('price', '<=', filters.maxPrice));
+      filteredProducts = filteredProducts.filter(product => 
+        product.precio <= filters.maxPrice! // Cambio de price a precio
+      );
     }
 
-    // Ordenar por nombre
-    constraints.push(orderBy('price', 'asc'));
-    constraints.push(orderBy('name', 'asc'));
-
-    const q = query(productsRef, ...constraints);
-    const snapshot = await getDocs(q);
-
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate() || new Date(),
-    })) as Product[];
+    return filteredProducts;
   } catch (error) {
     console.error("Error fetching filtered products:", error);
     return [];
   }
 }
 
-// NUEVA: Obtener un producto por slug
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+// En product.ts
+
+export async function getProductsByCategory(category: string): Promise<Productos[]> {
   try {
-    const productsRef = collection(db, 'products');
+    // 1. IMPORTANTE: Cambiar a 'productos' (minúscula) como en tu captura de pantalla
+    const productsRef = collection(db, 'productos'); 
+    
+    const q = query(
+      productsRef,
+      // 2. Usamos 'array-contains' porque "categorias" es un array en tu DB
+      // 3. No usamos .toLowerCase() porque en tu DB los valores empiezan con Mayúscula (e.g., "Celulares")
+      where('categorias', 'array-contains', category), 
+      orderBy('nombre', 'asc')
+    );
+
+    const snapshot = await getDocs(q);
+    
+    // Usamos el helper mapDocToProduct que ya definiste
+    return snapshot.docs.map(mapDocToProduct);
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    return [];
+  }
+}
+
+export async function getAllProducts(): Promise<Productos[]> {
+  try {
+    const productsRef = collection(db, 'productos'); // Cambio a 'Productos'
+    const q = query(productsRef, orderBy('nombre', 'asc')); // Cambio a 'nombre'
+    
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(mapDocToProduct);
+  } catch (error) {
+    console.error("Error fetching all products:", error);
+    return [];
+  }
+}
+
+export async function getProductBySlug(slug: string): Promise<Productos | null> {
+  try {
+    const productsRef = collection(db, 'productos'); // Cambio a 'productos'
     const q = query(productsRef, where('slug', '==', slug));
     
     const snapshot = await getDocs(q);
     if (snapshot.empty) return null;
     
-    const doc = snapshot.docs[0];
-    return {
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate() || new Date(),
-    } as Product;
+    return mapDocToProduct(snapshot.docs[0]);
   } catch (error) {
     console.error("Error fetching product by slug:", error);
     return null;

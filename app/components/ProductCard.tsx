@@ -1,12 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Product } from '@/lib/firebase/products';
+import type { Productos } from '@/lib/firebase/products';
 import AddToFav from './AddToFav';
 import AddToCar from './AddToCar';
 
 interface ProductCardProps {
-  product: Product;
+  product: Productos;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
@@ -19,10 +19,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <Link href={`/product/${product.slug}`}>
         {/* Imagen del producto */}
         <div className="aspect-square overflow-hidden bg-gray-100 relative">
-          {product?.images && product.images[0] && (
+          {product?.imagenes && product.imagenes[0] && (
             <Image 
-              src={product.images[0]}
-              alt={product?.name || "Product"}
+              src={product.imagenes[0]}
+              alt={product?.nombre || "Productos"}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -36,7 +36,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Nombre con altura fija de 2 líneas */}
         <Link href={`/product/${product.slug}`}>
           <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-10 hover:text-shop_light_green transition-colors">
-            {product.name}
+            {product.nombre}
           </h3>
         </Link>
         
@@ -47,7 +47,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="md:flex items-center block md:justify-between mb-3">
           <div className='flex gap-1 items-baseline'>
             <p className="text-lg font-bold text-blue-600">
-              ${product.price}
+              ${product.precio.toLocaleString('es-CO')}
             </p>
             <p className='text-sm font-semibold text-gray-500'>COL</p>
           </div>

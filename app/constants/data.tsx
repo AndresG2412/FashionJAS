@@ -24,8 +24,8 @@ export const categoriesData = [
   { title: "Accesorios", href: "gadget-accessories" },
 ];
 export const productType = [
-  { title: "Accesorios", value: "gadget" },
-  { title: "Electrodomésticos", value: "appliances" },
-  { title: "Refrigeradores", value: "refrigerators" },
-  { title: "Otros", value: "others" },
+  { title: "Celulares", value: "Celulares" },
+  { title: "Perfumes", value: "Perfumes" },
+  { title: "Neveras", value: "Neveras" },
+  { title: "Portatiles", value: "Portatiles" },
 ];
