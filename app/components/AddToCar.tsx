@@ -1,13 +1,13 @@
 "use client";
 
-import { Product } from '@/lib/firebase/products';
+import { Productos } from '@/lib/firebase/products';
 import { ShoppingBag, Plus, X } from 'lucide-react';
 import useStore from '@/store';
 import toast from 'react-hot-toast';
 import { motion } from 'motion/react';
 
 interface Props {
-  product: Product;
+  product: Productos;
   className?: string;
 }
 

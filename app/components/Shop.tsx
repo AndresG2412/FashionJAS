@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
 import { getFilteredProducts, getAllProducts } from "@/lib/firebase/products";
-import type { Product } from "@/lib/firebase/products";
+import type { Productos } from "@/lib/firebase/products";
 import type { Category } from "@/lib/firebase/categories";
 import { motion } from "motion/react";
 
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const Shop = ({ categories }: Props) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Productos[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
@@ -35,7 +35,7 @@ const Shop = ({ categories }: Props) => {
         maxPrice = max;
       }
 
-      let data: Product[];
+      let data: Productos[];
       
       if (selectedCategory || selectedPrice) {
         data = await getFilteredProducts({
