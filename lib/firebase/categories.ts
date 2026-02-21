@@ -3,15 +3,15 @@ import { db } from './config';
 
 export interface Category {
   id: string;
-  title: string;
+  titulo: string;
   slug: string;
-  description?: string;
+  descripcion?: string;
 }
 
 export async function getAllCategories(): Promise<Category[]> {
   try {
     const categoriesRef = collection(db, 'categorias');
-    const q = query(categoriesRef, orderBy('title', 'asc'));
+    const q = query(categoriesRef, orderBy('titulo', 'asc'));
     
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({

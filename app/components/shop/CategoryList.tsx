@@ -38,7 +38,7 @@ const CategoryList = ({
                   : "font-normal"
               }`}
             >
-              {category?.title}
+              {category?.titulo}
             </Label>
           </div>
         ))}
