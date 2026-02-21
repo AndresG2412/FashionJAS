@@ -64,7 +64,7 @@ const Shop = ({ categories }: Props) => {
   return (
     <div className="border-t">
       <Container className="mt-5">
-        <div className="sticky top-0 z-10 mb-5 bg-white py-4">
+        <div className=" hidden md:block top-0 z-10 mb-5 bg-white py-4">
           <div className="flex items-center justify-between">
             <Title className="text-lg uppercase tracking-wide">
               Encuentra los productos que necesitas
@@ -98,7 +98,7 @@ const Shop = ({ categories }: Props) => {
           </div>
 
           {/* Grid de productos */}
-          <div className="flex-1 pt-5">
+          <div className="flex-1 md:pt-5">
             <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide">
               {loading ? (
                 <div className="p-20 flex flex-col gap-2 items-center justify-center bg-white rounded-lg">

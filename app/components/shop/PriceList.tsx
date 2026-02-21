@@ -1,14 +1,17 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Title from "../Title";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
+import { ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 const priceArray = [
   { title: "Menos de $500.000", value: "0-500000" },
   { title: "$500.000 - $1.000.000", value: "500000-1000000" },
-  { title: "$1.000.000 - $2.000.000", value: "1000000-2000000" },
-  { title: "$2.000.000 - $3.000.000", value: "2000000-3000000" },
-  { title: "Más de $3.000.000", value: "3000000-100000000" }, // 100 millones de tope
+  { title: "$1.000.000 - $2.500.000", value: "1000000-2500000" },
+  { title: "$2.500.000 - $5.000.000", value: "2500000-5000000" },
+  { title: "Más de $5.000.000", value: "5000000-100000000" },
 ];
 
 interface Props {
@@ -17,42 +20,75 @@ interface Props {
 }
 
 const PriceList = ({ selectedPrice, setSelectedPrice }: Props) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSelect = (val: string) => {
+    setSelectedPrice(val);
+    setIsOpen(false); // Cierre automático
+  };
+
   return (
-    <div className="w-full bg-white p-5 rounded-lg shadow-sm">
-      <Title className="text-base font-black">Precio</Title>
-      <RadioGroup className="mt-2 space-y-1" value={selectedPrice || ""}>
-        {priceArray?.map((price, index) => (
-          <div
-            key={index}
-            onClick={() => setSelectedPrice(price?.value)}
-            className="flex items-center space-x-2 hover:cursor-pointer"
+    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
+      >
+        <Title className="text-base font-black mb-0">Precio</Title>
+        <ChevronDown 
+          className={`w-5 h-5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} 
+        />
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <RadioGroupItem
-              value={price?.value}
-              id={price?.value}
-              className="rounded-sm"
-            />
-            <Label
-              htmlFor={price.value}
-              className={`cursor-pointer ${
-                selectedPrice === price?.value
-                  ? "font-semibold text-shop_dark_green"
-                  : "font-normal"
-              }`}
-            >
-              {price?.title}
-            </Label>
-          </div>
-        ))}
-      </RadioGroup>
-      {selectedPrice && (
-        <button
-          onClick={() => setSelectedPrice(null)}
-          className="text-sm font-medium mt-2 underline underline-offset-2 decoration-1 hover:text-shop_dark_green hoverEffect"
-        >
-          Limpiar selección
-        </button>
-      )}
+            <div className="px-5 pb-5 pt-0">
+              <RadioGroup className="mt-2 space-y-1" value={selectedPrice || ""}>
+                {priceArray?.map((price, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleSelect(price?.value)}
+                    className="flex items-center space-x-2 py-1.5 hover:cursor-pointer group"
+                  >
+                    <RadioGroupItem
+                      value={price?.value}
+                      id={`price-${index}`}
+                      className="rounded-sm"
+                    />
+                    <Label
+                      htmlFor={`price-${index}`}
+                      className={`cursor-pointer flex-1 ${
+                        selectedPrice === price?.value
+                          ? "font-semibold text-shop_dark_green"
+                          : "font-normal group-hover:text-shop_dark_green"
+                      }`}
+                    >
+                      {price?.title}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+              
+              {selectedPrice && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedPrice(null);
+                  }}
+                  className="text-sm font-medium mt-4 underline underline-offset-2 decoration-1 hover:text-red-600 text-left block"
+                >
+                  Limpiar selección
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
