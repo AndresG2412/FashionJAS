@@ -64,28 +64,10 @@ const Shop = ({ categories }: Props) => {
   return (
     <div className="border-t">
       <Container className="mt-5">
-        <div className=" hidden md:block top-0 z-10 mb-5 bg-white py-4">
-          <div className="flex items-center justify-between">
-            <Title className="text-lg uppercase tracking-wide">
-              Encuentra los productos que necesitas
-            </Title>
-            {(selectedCategory !== null || selectedPrice !== null) && (
-              <button
-                onClick={() => {
-                  setSelectedCategory(null);
-                  setSelectedPrice(null);
-                }}
-                className="text-shop_dark_green underline text-sm font-medium hover:text-red-600 hoverEffect"
-              >
-                Limpiar Filtros
-              </button>
-            )}
-          </div>
-        </div>
 
-        <div className="flex flex-col md:flex-row gap-5 border-t border-t-shop_dark_green/50">
+        <div className="flex flex-col md:flex-row gap-5 border-t-0 md:border-t border-t-shop_dark_green/50">
           {/* Sidebar de filtros */}
-          <div className="md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 md:border-r border-r-shop_btn_dark_green/50 scrollbar-hide space-y-4">
+          <div className="border-b md:border-b-0 border-b-shop_btn_dark_green/50 md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 md:border-r border-r-shop_btn_dark_green/50 scrollbar-hide space-y-4">
             <CategoryList
               categories={categories}
               selectedCategory={selectedCategory}
@@ -98,7 +80,7 @@ const Shop = ({ categories }: Props) => {
           </div>
 
           {/* Grid de productos */}
-          <div className="flex-1 md:pt-5">
+          <div className="flex-1 pt-5">
             <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide">
               {loading ? (
                 <div className="p-20 flex flex-col gap-2 items-center justify-center bg-white rounded-lg">

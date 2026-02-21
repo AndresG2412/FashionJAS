@@ -6,7 +6,7 @@ import { banner_1 } from "../images";
 
 const HomeBanner = () => {
   return (
-    <div className="py-16 md:py-0 bg-shop_light_pink rounded-lg px-10 lg:px-24 flex items-center justify-between">
+    <div className="mt-6 md:mt-0 py-8 md:py-0 bg-shop_light_pink rounded-lg px-4 lg:px-24 flex items-center justify-between">
       <div className="space-y-5">
         <Title>
           Conoce nuestros productos <br />
