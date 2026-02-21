@@ -21,9 +21,17 @@ const AddToFav = ({ product, iconOnly = false }: Props) => {
     
     addToFavorite(product).then(() => {
       if (isInFavorites) {
-        toast.success('Eliminado de favoritos');
+        // Caso: El producto ya estaba y se quitó
+        toast.success('Eliminado', {
+          position: "top-center",
+          duration: 1200,
+        });
       } else {
-        toast.success('Agregado a favoritos');
+        // Caso: El producto no estaba y se añadió
+        toast.success('¡Añadido!', {
+          position: "top-center",
+          duration: 1200,
+        });
       }
     });
   };
