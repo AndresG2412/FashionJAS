@@ -27,7 +27,8 @@ const Shop = ({ categories }: Props) => {
     setLoading(true);
     try {
       let minPrice = 0;
-      let maxPrice = 10000;
+      // IMPORTANTE: Un número muy alto para cubrir precios en COP (ej. 100 millones)
+      let maxPrice = 100000000; 
 
       if (selectedPrice) {
         const [min, max] = selectedPrice.split("-").map(Number);
@@ -37,9 +38,10 @@ const Shop = ({ categories }: Props) => {
 
       let data: Productos[];
       
+      // Si hay algún filtro activo, llamamos a la función filtrada
       if (selectedCategory || selectedPrice) {
         data = await getFilteredProducts({
-          category: selectedCategory,
+          category: selectedCategory, // Aquí pasas el slug (ej: "celulares")
           minPrice,
           maxPrice,
         });

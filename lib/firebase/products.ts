@@ -30,46 +30,31 @@ export async function getFilteredProducts(filters: {
   category?: string | null;
   minPrice?: number;
   maxPrice?: number;
-}): Promise<Productos[]> { // Cambio de tipo
+}): Promise<Productos[]> {
   try {
-    const productsRef = collection(db, 'productos'); // Cambio de 'products' a 'productos'
-    
-    // Cambiamos 'name' por 'nombre' en el orderBy
-    const allProductsQuery = query(productsRef, orderBy('nombre', 'asc'));
-    const snapshot = await getDocs(allProductsQuery);
+    const productsRef = collection(db, 'productos'); // Nombre en minúscula
+    const q = query(productsRef, orderBy('nombre', 'asc'));
+    const snapshot = await getDocs(q);
 
     const productsData = snapshot.docs.map(mapDocToProduct);
 
-    let filteredProducts = productsData;
+    return productsData.filter(product => {
+      // 1. Filtro de Categoría (compara slug con el array de la DB)
+      const matchCategory = filters.category 
+        ? product.categorias?.some(cat => cat.toLowerCase() === filters.category?.toLowerCase())
+        : true;
 
-    if (filters.category) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.categorias && 
-        product.categorias.some(cat => 
-          cat.toLowerCase() === filters.category!.toLowerCase()
-        )
-      );
-    }
+      // 2. Filtro de Precio (usando el campo 'precio' de tu DB)
+      const matchPrice = product.precio >= (filters.minPrice || 0) && 
+                         product.precio <= (filters.maxPrice || 100000000);
 
-    if (filters.minPrice !== undefined) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.precio >= filters.minPrice! // Cambio de price a precio
-      );
-    }
-    if (filters.maxPrice !== undefined) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.precio <= filters.maxPrice! // Cambio de price a precio
-      );
-    }
-
-    return filteredProducts;
+      return matchCategory && matchPrice;
+    });
   } catch (error) {
     console.error("Error fetching filtered products:", error);
     return [];
   }
 }
-
-// En product.ts
 
 export async function getProductsByCategory(category: string): Promise<Productos[]> {
   try {

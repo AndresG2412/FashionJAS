@@ -4,11 +4,11 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 
 const priceArray = [
-  { title: "Menos de $100", value: "0-100" },
-  { title: "$100 - $300", value: "100-300" },
-  { title: "$300 - $500", value: "300-500" },
-  { title: "$500 - $1000", value: "500-1000" },
-  { title: "Más de $1000", value: "1000-10000" },
+  { title: "Menos de $500.000", value: "0-500000" },
+  { title: "$500.000 - $1.000.000", value: "500000-1000000" },
+  { title: "$1.000.000 - $2.000.000", value: "1000000-2000000" },
+  { title: "$2.000.000 - $3.000.000", value: "2000000-3000000" },
+  { title: "Más de $3.000.000", value: "3000000-100000000" }, // 100 millones de tope
 ];
 
 interface Props {
