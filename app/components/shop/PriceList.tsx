@@ -31,7 +31,7 @@ const PriceList = ({ selectedPrice, setSelectedPrice }: Props) => {
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between p-2.5 hover:bg-gray-50 transition-colors"
       >
         <Title className="text-base font-black mb-0">Precio</Title>
         <ChevronDown 

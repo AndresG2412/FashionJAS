@@ -31,7 +31,7 @@ const CategoryList = ({
       {/* Encabezado del Acordeón */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between p-2.5 hover:bg-gray-50 transition-colors"
       >
         <Title className="text-base font-black mb-0">Categorías</Title>
         <ChevronDown 
