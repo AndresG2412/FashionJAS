@@ -10,10 +10,12 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import type { Productos } from "@/lib/firebase/products";
 import AddToCar from "./AddToCar";
+import { useUser } from '@clerk/nextjs';
 
 const WishListProducts = () => {
   const [visibleProducts, setVisibleProducts] = useState(10);
   const { favoriteItems, removeFromFavorite } = useStore();
+  const { isSignedIn, user } = useUser();
 
   const loadMore = () => {
     setVisibleProducts((prev) => Math.min(prev + 5, favoriteItems.length));
@@ -35,8 +37,10 @@ const WishListProducts = () => {
           </button>
           {/* Botón para Confirmar */}
           <button
-            onClick={() => {
-              favoriteItems.forEach(product => removeFromFavorite(product.id));
+            onClick={async () => {
+              for (const product of favoriteItems) {
+                await removeFromFavorite(product.id, user?.id);
+              }
               toast.dismiss(t.id);
               toast.success("Lista de favoritos vaciada");
             }}
@@ -57,8 +61,8 @@ const WishListProducts = () => {
     });
 };
 
-  const handleRemove = (id: string) => {
-    removeFromFavorite(id);
+  const handleRemove = async (id: string) => {
+    await removeFromFavorite(id, user?.id);
     toast.success("Producto eliminado de favoritos");
   };
 

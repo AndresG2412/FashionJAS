@@ -106,3 +106,29 @@ export async function getProductBySlug(slug: string): Promise<Productos | null> 
     return null;
   }
 }
+
+// -----------------------------------------------------------------------------
+// Helpers for user favorites and similar features that need to fetch by IDs
+// -----------------------------------------------------------------------------
+
+export async function getProductsByIds(ids: string[]): Promise<Productos[]> {
+  if (ids.length === 0) return [];
+
+  // Firestore "in" queries are limited to 10 values per clause. Split if necessary.
+  const chunks: string[][] = [];
+  for (let i = 0; i < ids.length; i += 10) {
+    chunks.push(ids.slice(i, i + 10));
+  }
+
+  const results: Productos[] = [];
+  for (const chunk of chunks) {
+    const q = query(
+      collection(db, 'productos'),
+      where('__name__', 'in', chunk)
+    );
+    const snapshot = await getDocs(q);
+    results.push(...snapshot.docs.map(mapDocToProduct));
+  }
+
+  return results;
+}

@@ -5,6 +5,7 @@ import { Heart } from 'lucide-react';
 import useStore from '@/store';
 import toast from 'react-hot-toast';
 import { motion } from 'motion/react';
+import { useUser } from '@clerk/nextjs';
 
 interface Props {
   product: Productos;
@@ -13,27 +14,39 @@ interface Props {
 
 const AddToFav = ({ product, iconOnly = false }: Props) => {
   const { addToFavorite, isFavorite } = useStore();
+  const { isSignedIn, user } = useUser();
   const isInFavorites = isFavorite(product.id);
 
-  const handleToggleFavorite = (e: React.MouseEvent) => {
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    addToFavorite(product).then(() => {
+
+    if (!isSignedIn) {
+      toast.error('Debes iniciar sesión para guardar favoritos', {
+        position: 'top-center',
+        duration: 1500,
+      });
+      return;
+    }
+
+    try {
+      // supply user id to ensure the remote update happens even if store.userId
+      // hasn't been populated yet by AuthSync
+      await addToFavorite(product, user?.id);
       if (isInFavorites) {
-        // Caso: El producto ya estaba y se quitó
         toast.success('Eliminado', {
           position: "top-center",
           duration: 1200,
         });
       } else {
-        // Caso: El producto no estaba y se añadió
         toast.success('¡Añadido!', {
           position: "top-center",
           duration: 1200,
         });
       }
-    });
+    } catch (err) {
+      console.error('Error toggling favorite', err);
+    }
   };
 
   if (iconOnly) {

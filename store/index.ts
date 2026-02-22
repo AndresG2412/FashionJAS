@@ -1,15 +1,22 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Product } from '@/lib/firebase/products';
+import type { Productos } from '@/lib/firebase/products';
 
-interface CartItem extends Product {
+// functions for syncing favorites with Firestore
+import {
+  getFavoritesForUser,
+  addFavoriteForUser,
+  removeFavoriteForUser,
+} from '@/lib/firebase/userFavorites';
+
+interface CartItem extends Productos {
   quantity: number;
 }
 
 interface StoreState {
   // Cart
   cartItems: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Productos) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -17,10 +24,19 @@ interface StoreState {
   getItemCount: (productId: string) => number;
   
   // Favorites
-  favoriteItems: Product[];
-  addToFavorite: (product: Product) => Promise<void>;
-  removeFromFavorite: (productId: string) => void;
+  favoriteItems: Productos[];
+  // Current authenticated user id (null for guest)
+  userId: string | null;
+
+  // Actions
+  addToFavorite: (product: Productos, userId?: string) => Promise<void>;
+  removeFromFavorite: (productId: string, userId?: string) => Promise<void>;
   isFavorite: (productId: string) => boolean;
+
+  // helper actions to handle user change
+  setUserId: (id: string | null) => void;
+  loadFavorites: (userId: string) => Promise<void>;
+  clearFavorites: () => void;
 }
 
 const useStore = create<StoreState>()(
@@ -75,7 +91,7 @@ const useStore = create<StoreState>()(
       
       getCartTotal: () => {
         return get().cartItems.reduce(
-          (total, item) => total + item.price * item.quantity,
+          (total, item) => total + item.precio * item.quantity,
           0
         );
       },
@@ -87,28 +103,46 @@ const useStore = create<StoreState>()(
       
       // Favorites State
       favoriteItems: [],
+      userId: null,
       
-      addToFavorite: async (product) => {
+      // helpers
+      setUserId: (id) => set({ userId: id }),
+      loadFavorites: async (userId) => {
+        const favs = await getFavoritesForUser(userId);
+        set({ favoriteItems: favs });
+      },
+      clearFavorites: () => set({ favoriteItems: [] }),
+      
+      addToFavorite: async (product, userId) => {
         const items = get().favoriteItems;
         const exists = items.find((item) => item.id === product.id);
-        
+        const targetUserId = userId || get().userId;
+
         if (exists) {
-          // Si ya existe, quitarlo
           set({
             favoriteItems: items.filter((item) => item.id !== product.id),
           });
+          if (targetUserId) {
+            await removeFavoriteForUser(targetUserId, product.id);
+          }
         } else {
-          // Si no existe, agregarlo
           set({
             favoriteItems: [...items, product],
           });
+          if (targetUserId) {
+            await addFavoriteForUser(targetUserId, product.id);
+          }
         }
       },
       
-      removeFromFavorite: (productId) => {
+      removeFromFavorite: async (productId, userId) => {
         set({
           favoriteItems: get().favoriteItems.filter((item) => item.id !== productId),
         });
+        const targetUserId = userId || get().userId;
+        if (targetUserId) {
+          await removeFavoriteForUser(targetUserId, productId);
+        }
       },
       
       isFavorite: (productId) => {
@@ -117,6 +151,8 @@ const useStore = create<StoreState>()(
     }),
     {
       name: 'gaboshop-storage', // nombre en localStorage
+      // Only persist the cart so that favorites are always fetched per user
+      partialize: (state) => ({ cartItems: state.cartItems }),
     }
   )
 );
