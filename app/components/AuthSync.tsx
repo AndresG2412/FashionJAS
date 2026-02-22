@@ -6,19 +6,17 @@ import useStore from '@/store';
 
 export default function AuthSync() {
   const { isSignedIn, user } = useUser();
-  const setUserId = useStore((state) => state.setUserId);
   const loadFavorites = useStore((state) => state.loadFavorites);
   const clearFavorites = useStore((state) => state.clearFavorites);
+  const favoritesLoaded = useStore((state) => state.favoritesLoaded);
 
   React.useEffect(() => {
-    if (isSignedIn && user) {
-      setUserId(user.id);
+    if (isSignedIn && user && !favoritesLoaded) {
       loadFavorites(user.id);
-    } else {
-      setUserId(null);
+    } else if (!isSignedIn) {
       clearFavorites();
     }
-  }, [isSignedIn, user?.id]);
+  }, [isSignedIn, user?.id, favoritesLoaded, loadFavorites, clearFavorites]);
 
   return null;
 }
