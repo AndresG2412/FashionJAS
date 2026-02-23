@@ -2,6 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase/config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
+// Definir interfaces para los datos
+interface ShippingInfo {
+  address?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  cost?: number;
+}
+
+interface OrderItem {
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -12,8 +29,8 @@ export async function POST(request: NextRequest) {
     console.log("Reference:", reference);
 
     // Extraer items y shipping de metadata si existen
-    let items = [];
-    let shippingInfo = {};
+    let items: OrderItem[] = [];
+    let shippingInfo: ShippingInfo = {}; // ← Tipado correcto
     let subtotal = 0;
     let shippingCost = 0;
 
@@ -51,7 +68,7 @@ export async function POST(request: NextRequest) {
       userId: userId || "guest",
       
       // ===== ESTADO DEL PEDIDO =====
-      status: "pendiente", // pendiente | alistando | enviado | entregado | cancelado
+      status: "pendiente",
       
       // ===== INFORMACIÓN DEL CLIENTE =====
       customer: {
@@ -65,10 +82,10 @@ export async function POST(request: NextRequest) {
       // ===== INFORMACIÓN DE PAGO =====
       payment: {
         transactionId: transactionId,
-        method: paymentData.payment_method_type, // CARD, NEQUI, PSE, BANCOLOMBIA_TRANSFER, etc.
+        method: paymentData.payment_method_type,
         methodDetails: paymentData.payment_method?.type || "",
         installments: paymentData.payment_method?.installments || 1,
-        status: paymentData.status, // APPROVED, DECLINED, PENDING
+        status: paymentData.status,
         statusMessage: paymentData.status_message || "",
         amount: totalAmount,
         currency: paymentData.currency,
@@ -91,12 +108,12 @@ export async function POST(request: NextRequest) {
       subtotal: subtotal,
       shippingCost: shippingCost,
       
-      // ===== DIRECCIÓN DE ENVÍO =====
+      // ===== DIRECCIÓN DE ENVÍO (CON TIPADO CORRECTO) =====
       shipping: {
-        address: shippingInfo.address || paymentData.shipping_address?.address_line_1 || "",
-        city: shippingInfo.city || paymentData.shipping_address?.city || "",
-        state: shippingInfo.state || paymentData.shipping_address?.region || "",
-        postalCode: shippingInfo.postalCode || paymentData.shipping_address?.postal_code || "",
+        address: shippingInfo?.address || paymentData.shipping_address?.address_line_1 || "",
+        city: shippingInfo?.city || paymentData.shipping_address?.city || "",
+        state: shippingInfo?.state || paymentData.shipping_address?.region || "",
+        postalCode: shippingInfo?.postalCode || paymentData.shipping_address?.postal_code || "",
         country: "CO",
       },
       
@@ -108,7 +125,7 @@ export async function POST(request: NextRequest) {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       
-      // ===== DATOS COMPLETOS DE WOMPI (para respaldo) =====
+      // ===== DATOS COMPLETOS DE WOMPI =====
       wompiData: {
         id: paymentData.id,
         paymentLinkId: paymentData.payment_link_id,
@@ -124,9 +141,6 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Order saved successfully to Firebase:", docRef.id);
     console.log("Order Reference:", orderData.reference);
-
-    // TODO: Aquí puedes agregar el envío de email de notificación
-    // await sendOrderNotification(orderData);
 
     return NextResponse.json({
       success: true,
