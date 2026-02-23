@@ -5,6 +5,7 @@ import { ShoppingBag, Plus, X } from 'lucide-react';
 import useStore from '@/store';
 import toast from 'react-hot-toast';
 import { motion } from 'motion/react';
+import { useUser } from '@clerk/nextjs';
 
 interface Props {
   product: Productos;
@@ -13,27 +14,28 @@ interface Props {
 
 const AddToCar = ({ product, className }: Props) => {
   const { addToCart, removeFromCart, getItemCount } = useStore();
+  const { user } = useUser();
   const itemCount = getItemCount(product.id);
   const isOutOfStock = product.stock === 0;
   const isInCart = itemCount > 0;
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (isOutOfStock) return;
     
-    addToCart(product);
+    await addToCart(product, user?.id);
     toast.success('¡Agregado al carrito!', {
       duration: 2000,
     });
   };
 
-  const handleRemoveFromCart = (e: React.MouseEvent) => {
+  const handleRemoveFromCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    removeFromCart(product.id);
+    await removeFromCart(product.id, user?.id);
     toast.success('Eliminado del carrito', {
       duration: 2000,
     });
@@ -78,7 +80,7 @@ const AddToCar = ({ product, className }: Props) => {
       >
         <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         <span className="hidden sm:inline">Agregar</span>
-        {/* <span className="sm:hidden">+1</span> */}
+        <span className="sm:hidden">+1</span>
         {itemCount > 0 && (
           <span className="ml-1 bg-green-700 text-white text-xs px-1.5 py-0.5 rounded-full">
             {itemCount}
@@ -95,7 +97,7 @@ const AddToCar = ({ product, className }: Props) => {
       >
         <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         <span className="hidden sm:inline">Quitar</span>
-        {/* <span className="sm:hidden">✕</span> */}
+        <span className="sm:hidden">✕</span>
       </motion.button>
     </div>
   );

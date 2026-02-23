@@ -2,18 +2,31 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Productos } from '@/lib/firebase/products';
 import { addFavoriteForUser, removeFavoriteForUser, getFavoritesForUser } from '@/lib/firebase/userFavorites';
+import { 
+  addToCartForUser, 
+  removeFromCartForUser, 
+  updateCartItemQuantity, 
+  clearCartForUser, 
+  getCartForUser 
+} from '@/lib/firebase/userCart';
 
 interface CartItem extends Productos {
   quantity: number;
 }
 
 interface StoreState {
+  // User
+  currentUserId: string | null;
+  setUserId: (userId: string | null) => void;
+  
   // Cart
   cartItems: CartItem[];
-  addToCart: (product: Productos) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  clearCart: () => void;
+  cartLoaded: boolean;
+  loadCart: (userId: string) => Promise<void>;
+  addToCart: (product: Productos, userId?: string) => Promise<void>;
+  removeFromCart: (productId: string, userId?: string) => Promise<void>;
+  updateQuantity: (productId: string, quantity: number, userId?: string) => Promise<void>;
+  clearCart: (userId?: string) => Promise<void>;
   getCartTotal: () => number;
   getItemCount: (productId: string) => number;
   
@@ -30,48 +43,108 @@ interface StoreState {
 const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
-      // Cart State (igual que antes)
-      cartItems: [],
+      // User State
+      currentUserId: null,
+      setUserId: (userId) => {
+        set({ currentUserId: userId });
+      },
       
-      addToCart: (product) => {
+      // Cart State (NUEVO - Sincronizado con Firebase)
+      cartItems: [],
+      cartLoaded: false,
+      
+      // Cargar carrito desde Firebase
+      loadCart: async (userId: string) => {
+        try {
+          const cartData = await getCartForUser(userId);
+          const cartItems = cartData.map(item => ({
+            ...item.product,
+            quantity: item.quantity,
+          }));
+          set({ 
+            cartItems,
+            cartLoaded: true 
+          });
+        } catch (error) {
+          console.error('Error loading cart:', error);
+        }
+      },
+      
+      // Agregar al carrito (sincronizado con Firebase)
+      addToCart: async (product: Productos, userId?: string) => {
         const items = get().cartItems;
         const existingItem = items.find((item) => item.id === product.id);
         
         if (existingItem) {
+          // Si existe, incrementar cantidad
+          const newQuantity = existingItem.quantity + 1;
           set({
             cartItems: items.map((item) =>
               item.id === product.id
-                ? { ...item, quantity: item.quantity + 1 }
+                ? { ...item, quantity: newQuantity }
                 : item
             ),
           });
+          
+          // Sincronizar con Firebase si hay userId
+          if (userId) {
+            await updateCartItemQuantity(userId, product.id, newQuantity);
+          }
         } else {
+          // Si no existe, agregar nuevo
           set({
             cartItems: [...items, { ...product, quantity: 1 }],
           });
+          
+          // Sincronizar con Firebase si hay userId
+          if (userId) {
+            await addToCartForUser(userId, product.id, 1);
+          }
         }
       },
       
-      removeFromCart: (productId) => {
+      // Eliminar del carrito (sincronizado con Firebase)
+      removeFromCart: async (productId: string, userId?: string) => {
         set({
           cartItems: get().cartItems.filter((item) => item.id !== productId),
         });
+        
+        // Sincronizar con Firebase si hay userId
+        if (userId) {
+          await removeFromCartForUser(userId, productId);
+        }
       },
       
-      updateQuantity: (productId, quantity) => {
+      // Actualizar cantidad (sincronizado con Firebase)
+      updateQuantity: async (productId: string, quantity: number, userId?: string) => {
         if (quantity <= 0) {
-          get().removeFromCart(productId);
+          await get().removeFromCart(productId, userId);
           return;
         }
+        
         set({
           cartItems: get().cartItems.map((item) =>
             item.id === productId ? { ...item, quantity } : item
           ),
         });
+        
+        // Sincronizar con Firebase si hay userId
+        if (userId) {
+          await updateCartItemQuantity(userId, productId, quantity);
+        }
       },
       
-      clearCart: () => {
-        set({ cartItems: [] });
+      // Limpiar carrito (sincronizado con Firebase)
+      clearCart: async (userId?: string) => {
+        set({ 
+          cartItems: [],
+          cartLoaded: false 
+        });
+        
+        // Sincronizar con Firebase si hay userId
+        if (userId) {
+          await clearCartForUser(userId);
+        }
       },
       
       getCartTotal: () => {
@@ -86,11 +159,10 @@ const useStore = create<StoreState>()(
         return item?.quantity || 0;
       },
       
-      // Favorites State (MEJORADO)
+      // Favorites State (sin cambios)
       favoriteItems: [],
       favoritesLoaded: false,
       
-      // Cargar favoritos desde Firebase
       loadFavorites: async (userId: string) => {
         try {
           const favorites = await getFavoritesForUser(userId);
@@ -103,41 +175,34 @@ const useStore = create<StoreState>()(
         }
       },
       
-      // Agregar a favoritos (sincronizado con Firebase)
       addToFavorite: async (product: Productos, userId?: string) => {
         const items = get().favoriteItems;
         const exists = items.find((item) => item.id === product.id);
         
         if (exists) {
-          // Quitar de favoritos
           set({
             favoriteItems: items.filter((item) => item.id !== product.id),
           });
           
-          // Sincronizar con Firebase
           if (userId) {
             await removeFavoriteForUser(userId, product.id);
           }
         } else {
-          // Agregar a favoritos
           set({
             favoriteItems: [...items, product],
           });
           
-          // Sincronizar con Firebase
           if (userId) {
             await addFavoriteForUser(userId, product.id);
           }
         }
       },
       
-      // Remover de favoritos (sincronizado con Firebase)
       removeFromFavorite: async (productId: string, userId?: string) => {
         set({
           favoriteItems: get().favoriteItems.filter((item) => item.id !== productId),
         });
         
-        // Sincronizar con Firebase
         if (userId) {
           await removeFavoriteForUser(userId, productId);
         }
@@ -148,14 +213,18 @@ const useStore = create<StoreState>()(
       },
       
       clearFavorites: () => {
-        set({ favoriteItems: [] });
+        set({ 
+          favoriteItems: [],
+          favoritesLoaded: false 
+        });
       },
     }),
     {
       name: 'gaboshop-storage',
       partialize: (state) => ({
-        cartItems: state.cartItems,
-        // NO persistimos favoriteItems porque vienen de Firebase
+        // Solo persistir en localStorage para invitados
+        cartItems: state.currentUserId ? [] : state.cartItems,
+        currentUserId: state.currentUserId,
       }),
     }
   )
