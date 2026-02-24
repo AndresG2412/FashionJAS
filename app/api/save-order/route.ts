@@ -139,8 +139,8 @@ export async function POST(request: NextRequest) {
     const ordersRef = collection(db, "orders");
     const docRef = await addDoc(ordersRef, orderData);
 
-    console.log("✅ Order saved successfully to Firebase:", docRef.id);
-    console.log("Order Reference:", orderData.reference);
+    console.log("✅ Orden guardada con exito en Firebase:", docRef.id);
+    console.log("Referencia de orden:", orderData.reference);
 
     return NextResponse.json({
       success: true,
@@ -150,8 +150,8 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error("❌ Error saving order to Firebase:", error);
-    console.error("Error details:", error.message);
+    console.error("❌ Error de guardado en Firebase:", error);
+    console.error("Detalles de Error:", error.message);
     
     return NextResponse.json({
       success: false,
