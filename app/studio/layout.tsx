@@ -2,6 +2,7 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { SignOutButton } from '@clerk/nextjs';
+import HeaderAdmin from '../components/admin/HeaderAdmin';
 
 // Lista de emails admin
 const ADMIN_EMAILS = ['cgaviria930@gmail.com'];
@@ -28,58 +29,12 @@ export default async function StudioLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex bg-gray-50 p-24">
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 h-full w-64 bg-gray-900 text-white z-50">
-        <div className="p-6">
-          <h1 className="text-2xl font-bold">GaboShop Admin</h1>
-          <p className="text-sm text-gray-400 mt-1">{user?.firstName}</p>
-        </div>
-        
-        <nav className="mt-8">
-          <Link 
-            href="/studio" 
-            className="block px-6 py-3 hover:bg-gray-800 transition"
-          >
-            📊 Panel Principal
-          </Link>
-          <Link 
-            href="/studio/products" 
-            className="block px-6 py-3 hover:bg-gray-800 transition"
-          >
-            📦 Productos
-          </Link>
-          <Link 
-            href="/studio/categories" 
-            className="block px-6 py-3 hover:bg-gray-800 transition"
-          >
-            🏷️ Categorias
-          </Link>
-          <Link 
-            href="/studio/orders" 
-            className="block px-6 py-3 hover:bg-gray-800 transition"
-          >
-            🛒 Ordenes
-          </Link>
-        </nav>
-
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-800">
-          <Link 
-            href="/" 
-            className="block px-4 py-2 text-center bg-gray-800 rounded hover:bg-gray-700 mb-2"
-          >
-            ← Back to Store
-          </Link>
-          <SignOutButton>
-            <button className="w-full px-4 py-2 text-center bg-red-600 rounded hover:bg-red-700">
-              Sign Out
-            </button>
-          </SignOutButton>
-        </div>
-      </aside>
+      <HeaderAdmin />
 
       {/* Main Content */}
-      <main className="ml-64 p-8">
+      <main className="flex-1 min-h-screen p-2">
         {children}
       </main>
     </div>

@@ -29,3 +29,13 @@ export const productType = [
   { title: "Neveras", value: "Neveras" },
   { title: "Portatiles", value: "Portatiles" },
 ];
+export const adminData = [
+  { title: "Panel Principal", href: "/" },
+  { title: "Productos", href: "/tienda" },
+  { title: "Categorias", href: "/ofertas" },
+  { title: "Envios", href: "/nosotros" },
+];
+export const adminData2 = [
+  { title: "Volver a Inicio", href: "/ofertas" },
+  { title: "Cerrar Seccion", href: "/nosotros" },
+];

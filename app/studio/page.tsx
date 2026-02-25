@@ -2,49 +2,64 @@ import { currentUser } from '@clerk/nextjs/server';
 import { getAdminStats } from '@/lib/firebase/admin';
 import Link from 'next/link';
 import { Package, ShoppingCart, DollarSign, Tag, Clock } from 'lucide-react';
+import Container from '../components/Container';
 
 export default async function StudioDashboard() {
   const user = await currentUser();
   const stats = await getAdminStats();
   
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8">
-        Bienvenido, {user?.firstName}! 👋
+    <Container>
+      <h1 className="text-3xl font-bold mb-8 text-center md:text-start">
+        Bienvenido, {user?.firstName}!
       </h1>
 
       {/* Estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 md:gap-6 mb-8">
+
+        {/* productos */}
         <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-gray-500 text-sm font-medium">Productos</h3>
+              <div className='flex gap-2 items-center'> 
+                <Package className="w-6 h-6 text-red-500 opacity-20" />
+                <h3 className="text-gray-500 text-sm font-medium">Productos</h3>
+              </div>
               <p className="text-3xl font-bold mt-2">{stats.totalProducts}</p>
             </div>
-            <Package className="w-12 h-12 text-blue-500 opacity-20" />
           </div>
         </div>
 
+        {/* Ordenes */}
         <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-gray-500 text-sm font-medium">Órdenes</h3>
-              <p className="text-3xl font-bold mt-2">{stats.totalOrders}</p>
-              {stats.pendingOrders > 0 && (
-                <p className="text-xs text-orange-600 mt-1 flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {stats.pendingOrders} pendientes
-                </p>
-              )}
+              <div className='flex gap-2 items-center'> 
+                <ShoppingCart className="w-6 h-6 text-blue-500 opacity-20" />
+                <h3 className="text-gray-500 text-sm font-medium">Órdenes</h3>
+              </div>
+              <div className='flex gap-3 items-center'>
+                <p className="text-3xl font-bold mt-2">{stats.totalOrders}</p>
+                {stats.pendingOrders > 0 && (
+                  <p className="text-xs text-orange-600 mt-1 flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {stats.pendingOrders} pendientes
+                  </p>
+                )}
+              </div>
             </div>
-            <ShoppingCart className="w-12 h-12 text-green-500 opacity-20" />
           </div>
         </div>
 
+        {/* Ventas Dinero */}
         <div className="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-gray-500 text-sm font-medium">Ventas Totales</h3>
+              <div className='flex gap-2 items-center'> 
+                <DollarSign className="w-6 h-6 text-green-500 opacity-20" />
+                <h3 className="text-gray-500 text-sm font-medium">Ventas Totales</h3>
+              </div>
               <p className="text-3xl font-bold mt-2">
                 {stats.totalSales.toLocaleString('es-CO', {
                   style: 'currency',
@@ -53,17 +68,19 @@ export default async function StudioDashboard() {
                 })}
               </p>
             </div>
-            <DollarSign className="w-12 h-12 text-purple-500 opacity-20" />
           </div>
         </div>
 
+        {/* Categorias */}
         <div className="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-500">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-gray-500 text-sm font-medium">Categorías</h3>
+              <div className='flex gap-2 items-center'> 
+                <Tag className="w-6 h-6 text-yellow-500 opacity-20" />
+                <h3 className="text-gray-500 text-sm font-medium">Categorías</h3>
+              </div>
               <p className="text-3xl font-bold mt-2">{stats.totalCategories}</p>
             </div>
-            <Tag className="w-12 h-12 text-yellow-500 opacity-20" />
           </div>
         </div>
       </div>
@@ -97,6 +114,6 @@ export default async function StudioDashboard() {
           </Link>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }
