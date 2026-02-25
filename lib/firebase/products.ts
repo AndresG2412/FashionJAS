@@ -107,10 +107,6 @@ export async function getProductBySlug(slug: string): Promise<Productos | null> 
   }
 }
 
-// -----------------------------------------------------------------------------
-// Helpers for user favorites and similar features that need to fetch by IDs
-// -----------------------------------------------------------------------------
-
 export async function getProductsByIds(ids: string[]): Promise<Productos[]> {
   if (ids.length === 0) return [];
 

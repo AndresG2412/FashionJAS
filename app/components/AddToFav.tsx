@@ -77,7 +77,7 @@ const AddToFav = ({ product, iconOnly = false }: Props) => {
       <Heart
         className={`w-5 h-5 ${isInFavorites ? 'fill-red-500' : ''}`}
       />
-      {isInFavorites ? 'En Favoritos' : 'Agregar a Favoritos'}
+      {isInFavorites ? 'En Favoritos' : 'Favoritos'}
     </button>
   );
 };

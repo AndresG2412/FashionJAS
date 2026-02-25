@@ -16,7 +16,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <AddToFav product={product} iconOnly />
       
       {/* Link a la página del producto (solo en imagen y nombre) */}
-      <Link href={`/product/${product.slug}`}>
+      <Link href={`/${product.slug}`}>
         {/* Imagen del producto */}
         <div className="aspect-square overflow-hidden bg-gray-100 relative">
           {product?.imagenes && product.imagenes[0] && (
