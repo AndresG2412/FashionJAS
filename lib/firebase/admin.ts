@@ -10,12 +10,79 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  where,
+  limit,
 } from 'firebase/firestore';
 import { db } from './config';
 import type { Productos } from './products';
 import type { Category } from './categories'; // ← Importar desde categories.ts
 
 // ==================== PRODUCTOS ====================
+
+// 🔎 Buscar productos (nombre o categoría)
+export async function searchProductsAdmin(
+  mode: "nombre" | "categoria",
+  text: string
+): Promise<Productos[]> {
+  try {
+    const productsRef = collection(db, "productos");
+    let q;
+
+    if (mode === "nombre") {
+      const search = text.toLowerCase();
+
+      q = query(
+        productsRef,
+        where("nombreLower", ">=", search),
+        where("nombreLower", "<=", search + "\uf8ff"),
+        orderBy("nombreLower"),
+        limit(20)
+      );
+    } else {
+      q = query(
+        productsRef,
+        where("categorias", "array-contains", text),
+        limit(20)
+      );
+    }
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      subido: doc.data().subido?.toDate() || new Date(),
+    })) as Productos[];
+  } catch (error) {
+    console.error("Error searching products:", error);
+    return [];
+  }
+}
+
+// ⚠️ Poco stock
+export async function lowStockProductsAdmin(): Promise<Productos[]> {
+  try {
+    const productsRef = collection(db, "productos");
+
+    const q = query(
+      productsRef,
+      where("stock", "<=", 5),
+      orderBy("stock", "asc"),
+      limit(20)
+    );
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      subido: doc.data().subido?.toDate() || new Date(),
+    })) as Productos[];
+  } catch (error) {
+    console.error("Error fetching low stock:", error);
+    return [];
+  }
+}
 
 export async function getAllProductsAdmin(): Promise<Productos[]> {
   try {
@@ -34,14 +101,17 @@ export async function getAllProductsAdmin(): Promise<Productos[]> {
   }
 }
 
-export async function createProduct(productData: Omit<Productos, 'id' | 'subido'>): Promise<string> {
+// ➕ Crear producto
+export async function createProduct(
+  productData: Omit<Productos, "id" | "subido">
+): Promise<string> {
   try {
-    // Usamos el 'slug' como ID del documento en lugar de dejar que Firebase genere uno aleatorio
-    const docId = productData.nombre; 
-    const productRef = doc(db, 'productos', docId);
+    const docId = productData.nombre;
+    const productRef = doc(db, "productos", docId);
 
     await setDoc(productRef, {
       ...productData,
+      nombreLower: productData.nombre.toLowerCase(),
       subido: serverTimestamp(),
     });
 
@@ -52,19 +122,33 @@ export async function createProduct(productData: Omit<Productos, 'id' | 'subido'
   }
 }
 
-export async function updateProduct(productId: string, productData: Partial<Productos>): Promise<void> {
+
+// ✏️ Actualizar producto
+export async function updateProduct(
+  productId: string,
+  productData: Partial<Productos>
+): Promise<void> {
   try {
-    const productRef = doc(db, 'productos', productId);
-    await updateDoc(productRef, productData as any);
+    const productRef = doc(db, "productos", productId);
+
+    const updatedData: any = { ...productData };
+
+    if (productData.nombre) {
+      updatedData.nombreLower = productData.nombre.toLowerCase();
+    }
+
+    await updateDoc(productRef, updatedData);
   } catch (error) {
     console.error("Error updating product:", error);
     throw error;
   }
 }
 
+
+// 🗑 Eliminar producto
 export async function deleteProduct(productId: string): Promise<void> {
   try {
-    const productRef = doc(db, 'productos', productId);
+    const productRef = doc(db, "productos", productId);
     await deleteDoc(productRef);
   } catch (error) {
     console.error("Error deleting product:", error);

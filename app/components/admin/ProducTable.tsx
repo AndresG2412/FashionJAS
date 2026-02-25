@@ -1,147 +1,217 @@
 "use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Pencil, Trash2, Loader2 } from 'lucide-react';
-import { deleteProduct } from '@/lib/firebase/admin';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import type { Productos } from '@/lib/firebase/products';
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Loader2, Search } from "lucide-react";
+import { deleteProduct, searchProductsAdmin, lowStockProductsAdmin } from "@/lib/firebase/admin";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import type { Productos } from "@/lib/firebase/products";
 
-interface Props {
-  products: Productos[];
-}
+const safeImage = (url?: string) => {
+  if (!url || typeof url !== "string") return "/placeholder.png";
+  try {
+    return encodeURI(url.replace("http://", "https://"));
+  } catch {
+    return "/placeholder.png";
+  }
+};
 
-export default function ProductsTable({ products }: Props) {
+export default function ProductsTable() {
   const router = useRouter();
-  const [deleting, setDeleting] = useState<string | null>(null);
 
-  const handleDelete = async (productId: string, productName: string) => {
-    if (!confirm(`¿Estás seguro de eliminar "${productName}"?`)) return;
+  const [mode,setMode]=useState<"nombre"|"categoria">("nombre");
+  const [text,setText]=useState("");
+  const [results,setResults]=useState<Productos[]>([]);
+  const [loading,setLoading]=useState(false);
+  const [deleting,setDeleting]=useState<string|null>(null);
 
-    setDeleting(productId);
-    try {
-      await deleteProduct(productId);
-      toast.success('Producto eliminado');
+  const handleSearch=async()=>{
+    if(!text) return;
+
+    setLoading(true);
+
+    try{
+      const data=await searchProductsAdmin(mode,text);
+      setResults(data);
+    }catch{
+      toast.error("Error buscando productos");
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  const handleLowStock=async()=>{
+    setLoading(true);
+
+    try{
+      const data=await lowStockProductsAdmin();
+      setResults(data);
+    }catch{
+      toast.error("Error cargando poco stock");
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  const handleDelete=async(id:string,name:string)=>{
+    if(!confirm(`Eliminar ${name}?`)) return;
+
+    setDeleting(id);
+
+    try{
+      await deleteProduct(id);
+      setResults(prev=>prev.filter(p=>p.id!==id));
+      toast.success("Eliminado");
       router.refresh();
-    } catch (error) {
-      console.error(error);
-      toast.error('Error al eliminar producto');
-    } finally {
+    }catch{
+      toast.error("Error eliminando");
+    }finally{
       setDeleting(null);
     }
   };
 
-  if (products.length === 0) {
-    return (
-      <div className="bg-white rounded-lg shadow p-12 text-center border border-dashed">
-        <p className="text-gray-500 mb-4">No hay productos registrados</p>
-        <Link href="/studio/products/new" className="text-blue-600 font-medium hover:underline">
-          Crear primer producto
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-white rounded-lg shadow border overflow-x-auto">
-      <table className="w-full text-sm text-left">
-        <thead className="bg-gray-50 border-b text-gray-600 font-semibold uppercase">
-          <tr>
-            <th className="px-6 py-4">Producto</th>
-            <th className="px-6 py-4 text-center">Precio</th>
-            <th className="px-6 py-4 text-center">Stock</th>
-            <th className="px-6 py-4 text-center">Categorías</th>
-            <th className="px-6 py-4 text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-          {products.map((product) => (
-            <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+    <div className="space-y-6">
 
-              {/* Info del Producto */}
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-4">
-                  <div className="relative w-12 h-12 rounded border bg-gray-50 overflow-hidden shrink-0">
-                    <Image
-                      src={product.imagenes?.[0] || '/placeholder.png'}
-                      alt={product.nombre}
-                      fill
-                      className="object-cover"
-                      unoptimized // 🔥 Crucial para que Cloudinary no de error 400
-                    />
+      {/* BUSCADOR */}
+      <div className="bg-white border rounded-lg p-4 flex flex-col md:flex-row gap-3">
+
+        <select
+          value={mode}
+          onChange={e=>setMode(e.target.value as any)}
+          className="border rounded px-3 py-2"
+        >
+          <option value="nombre">Nombre</option>
+          <option value="categoria">Categoría</option>
+        </select>
+
+        <input
+          value={text}
+          onChange={e=>setText(e.target.value)}
+          placeholder="Buscar..."
+          className="flex-1 border rounded px-3 py-2"
+        />
+
+        <button
+          onClick={handleSearch}
+          className="px-4 py-2 bg-blue-600 text-white rounded flex items-center gap-2"
+        >
+          <Search className="w-4 h-4"/>
+          Buscar
+        </button>
+
+        <button
+          onClick={handleLowStock}
+          className="px-4 py-2 border rounded"
+        >
+          Poco stock
+        </button>
+
+      </div>
+
+      {/* LOADING */}
+      {loading && (
+        <div className="flex justify-center py-10">
+          <Loader2 className="animate-spin"/>
+        </div>
+      )}
+
+      {/* RESULTADOS */}
+      {!loading && results.length>0 && (
+        <div className="bg-white rounded-lg border">
+
+          {/* DESKTOP */}
+          <div className="hidden md:block divide-y">
+            {results.map(p=>{
+              const img=safeImage(p.imagenes?.[0]);
+
+              return(
+                <div key={p.id} className="p-4 flex items-center justify-between">
+
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-14 h-14 border rounded overflow-hidden">
+                      <Image src={img} alt={p.nombre} fill className="object-cover" unoptimized/>
+                    </div>
+
+                    <div>
+                      <p className="font-bold">{p.nombre}</p>
+                      <p className="text-sm text-gray-500">
+                        {p.precio.toLocaleString('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0})}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-bold text-gray-900">{product.nombre}</p>
-                    <p className="text-xs text-gray-500">{product.categorias?.[0]}</p>
+
+                  <div className="flex gap-2">
+                    <Link href={`/studio/products/${p.id}`} className="border px-3 py-1 rounded">
+                      Editar
+                    </Link>
+
+                    <button
+                      onClick={()=>handleDelete(p.id,p.nombre)}
+                      className="border px-3 py-1 rounded text-red-500"
+                    >
+                      Eliminar
+                    </button>
                   </div>
-                </div>
-              </td>
 
-              {/* Precio*/}
-              <td className="px-6 py-4 text-center">
-                <div className="flex flex-col">
-                  <span className="font-semibold text-gray-900">
-                    {product.precio.toLocaleString('es-CO', {
-                      style: 'currency',
-                      currency: 'COP',
-                      minimumFractionDigits: 0,
-                    })}
-                  </span>
                 </div>
-              </td>
+              );
+            })}
+          </div>
 
-              {/*Stock*/}
-              <td className="px-6 py-4 text-center">
-                <div className="flex flex-col">
-                  <span className={`text-[10px] font-bold uppercase mt-1 ${
-                    product.stock > 5 ? 'text-green-600' : 'text-red-500'
-                  }`}>
-                    {product.stock} en stock
-                  </span>
-                </div>
-              </td>
+          {/* MOBILE — tu card reciclada */}
+          <div className="md:hidden divide-y">
+            {results.map(p=>{
+              const img=safeImage(p.imagenes?.[0]);
 
-              {/* Categorías */}
-              <td className="px-6 py-4 flex align-middle items-center justify-center">
-                <div className="flex flex-wrap gap-1">
-                  {product.categorias.map((cat, i) => (
-                    <span key={i} className="bg-blue-50 text-blue-700 text-[10px] px-2 py-0.5 rounded border border-blue-100">
-                      {cat}
-                    </span>
-                  ))}
-                </div>
-              </td>
+              return(
+                <div key={p.id} className="p-4">
 
-              {/* Acciones */}
-              <td className="px-6 py-4 text-right">
-                <div className="flex items-center justify-end gap-3">
-                  <Link
-                    href={`/studio/products/${product.id}`} // 🔥 Asegúrate que la carpeta sea [id]
-                    className="border-2 px-4 rounded-lg py-2 flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                  >
-                    <Pencil className="w-4 h-4" />
-                    <span>Editar</span>
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(product.id, product.nombre)}
-                    disabled={deleting === product.id}
-                    className="border-2 px-4 rounded-lg py-2 flex items-center gap-1 text-red-500 hover:text-red-700 font-medium disabled:opacity-30 transition-colors"
-                  >
-                    {deleting === product.id ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="w-4 h-4" />
-                    )}
-                    <span>Eliminar</span>
-                  </button>
+                  <div className="flex gap-3">
+                    <div className="relative w-20 h-20 border rounded overflow-hidden">
+                      <Image src={img} alt={p.nombre} fill className="object-cover" unoptimized/>
+                    </div>
+
+                    <div className="flex-1">
+                      <p className="font-semibold">{p.nombre}</p>
+                      <p className="text-sm text-gray-500">
+                        {p.precio.toLocaleString('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0})}
+                      </p>
+                      <p className={`text-xs font-bold ${p.stock>5?'text-green-600':'text-red-500'}`}>
+                        {p.stock} en stock
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 mt-3">
+                    <Link href={`/studio/products/${p.id}`} className="flex-1 border rounded py-2 text-center text-blue-600">
+                      Editar
+                    </Link>
+
+                    <button
+                      onClick={()=>handleDelete(p.id,p.nombre)}
+                      className="flex-1 border rounded py-2 text-center text-red-500"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+
                 </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              );
+            })}
+          </div>
+
+        </div>
+      )}
+
+      {!loading && results.length===0 && (
+        <p className="text-center text-gray-400 py-10">
+          No hay resultados
+        </p>
+      )}
+
     </div>
   );
 }

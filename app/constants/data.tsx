@@ -30,12 +30,8 @@ export const productType = [
   { title: "Portatiles", value: "Portatiles" },
 ];
 export const adminData = [
-  { title: "Panel Principal", href: "/" },
-  { title: "Productos", href: "/tienda" },
-  { title: "Categorias", href: "/ofertas" },
-  { title: "Envios", href: "/nosotros" },
-];
-export const adminData2 = [
-  { title: "Volver a Inicio", href: "/ofertas" },
-  { title: "Cerrar Seccion", href: "/nosotros" },
+  { title: "Panel Principal", href: "/studio" },
+  { title: "Productos", href: "/studio/products" },
+  { title: "Categorias", href: "/studio/categories" },
+  { title: "Envios", href: "/studio/orders" },
 ];
