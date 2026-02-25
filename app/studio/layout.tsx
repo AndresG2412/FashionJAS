@@ -41,25 +41,25 @@ export default async function StudioLayout({
             href="/studio" 
             className="block px-6 py-3 hover:bg-gray-800 transition"
           >
-            📊 Dashboard
+            📊 Panel Principal
           </Link>
           <Link 
             href="/studio/products" 
             className="block px-6 py-3 hover:bg-gray-800 transition"
           >
-            📦 Products
+            📦 Productos
           </Link>
           <Link 
             href="/studio/categories" 
             className="block px-6 py-3 hover:bg-gray-800 transition"
           >
-            🏷️ Categories
+            🏷️ Categorias
           </Link>
           <Link 
             href="/studio/orders" 
             className="block px-6 py-3 hover:bg-gray-800 transition"
           >
-            🛒 Orders
+            🛒 Ordenes
           </Link>
         </nav>
 
