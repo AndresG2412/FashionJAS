@@ -58,20 +58,20 @@ export async function getFilteredProducts(filters: {
 
 export async function getProductsByCategory(category: string): Promise<Productos[]> {
   try {
-    // 1. IMPORTANTE: Cambiar a 'productos' (minúscula) como en tu captura de pantalla
     const productsRef = collection(db, 'productos'); 
     
+    // Creamos las dos variantes
+    const lower = category.toLowerCase();
+    const upper = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+
     const q = query(
       productsRef,
-      // 2. Usamos 'array-contains' porque "categorias" es un array en tu DB
-      // 3. No usamos .toLowerCase() porque en tu DB los valores empiezan con Mayúscula (e.g., "Celulares")
-      where('categorias', 'array-contains', category), 
+      // Busca productos donde el array 'categorias' contenga 'Celulares' O 'celulares'
+      where('categorias', 'array-contains-any', [lower, upper]), 
       orderBy('nombre', 'asc')
     );
 
     const snapshot = await getDocs(q);
-    
-    // Usamos el helper mapDocToProduct que ya definiste
     return snapshot.docs.map(mapDocToProduct);
   } catch (error) {
     console.error("Error fetching products by category:", error);
