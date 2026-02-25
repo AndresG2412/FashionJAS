@@ -29,9 +29,10 @@ export const productType = [
   { title: "Neveras", value: "Neveras" },
   { title: "Portatiles", value: "Portatiles" },
 ];
-export const adminData = [
+export const headerDataAdmin = [
   { title: "Panel Principal", href: "/studio" },
   { title: "Productos", href: "/studio/products" },
   { title: "Categorias", href: "/studio/categories" },
   { title: "Envios", href: "/studio/orders" },
+  // { title: "Tienda", href: "/" },
 ];

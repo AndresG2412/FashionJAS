@@ -1,21 +1,22 @@
-"use client";
+"use client"; // Asegúrate de tenerlo si usas hooks
 import React, { FC, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { X } from 'lucide-react'
 import { usePathname } from 'next/navigation';
-import { adminData } from '@/app/constants/data';
 import { useOutsideClick } from '@/app/hooks';
-import { SignOutButton, useUser } from '@clerk/nextjs';
+import { headerDataAdmin } from '@/app/constants/data';
 
 interface SideBarProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-const SideMenuAdmin: FC<SideBarProps> = ({ isOpen, onClose }) => {
+const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
     const pathname = usePathname();
+    
+    // Aplicamos el ref que ya tenías definido para cerrar al hacer clic afuera
     const sidebarRef = useOutsideClick<HTMLDivElement>(onClose);
-    const { user } = useUser();
+    
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
@@ -25,73 +26,42 @@ const SideMenuAdmin: FC<SideBarProps> = ({ isOpen, onClose }) => {
     if (!isMounted) return null;
 
     return (
-        <div className={`fixed inset-0 z-100 transition-opacity my-12 duration-300 ${
-            isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}>
-            
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-
-            {/* Sidebar */}
-            <div
-                ref={sidebarRef}
-                className={`absolute inset-y-0 left-0 w-64 bg-gray-900 text-white flex flex-col transition-transform duration-300 ${
-                    isOpen ? 'translate-x-0' : '-translate-x-full'
-                }`}
+        <div 
+            onClick={onClose} 
+            className={`fixed inset-y-0 h-screen left-0 z-50 w-full bg-black/50 text-white/70 shadow-2xl transition-transform duration-300 ${
+                isOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}
+        >
+            <div 
+                ref={sidebarRef} // Añadimos el ref aquí para el hook useOutsideClick
+                onClick={(e) => e.stopPropagation()} 
+                className='min-w-72 max-w-96 bg-black h-screen p-10 border-r border-shop_light_green flex flex-col gap-6'
             >
-                {/* Header igual a PC */}
-                <div className="p-6 border-b border-gray-800 flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-shop_light_green">
-                            GaboShop Admin
-                        </h1>
-                        <p className="text-xs text-gray-400">
-                            {user?.primaryEmailAddress?.emailAddress}
-                        </p>
-                    </div>
-
-                    <button onClick={onClose}>
-                        <X />
+                <div className='flex items-center justify-between gap-5'>
+                    <p className='font-bold tracking-wider text-2xl flex justify-end md:justify-start'>GABOSHOP</p>
+                    <button onClick={onClose} className='hover:text-shop_light_green transition-colors'>
+                        <X size={24} />
                     </button>
                 </div>
 
-                {/* Nav igual a PC */}
-                <nav className="mt-4 flex-1">
-                    {adminData.map((item) => (
-                        <Link
-                            key={item.title}
-                            href={item.href}
-                            onClick={onClose}
-                            className={`block px-6 py-3 transition ${
-                                pathname === item.href
-                                    ? 'bg-gray-800 text-shop_light_green'
-                                    : 'hover:bg-gray-800'
+                <div className='flex flex-col space-y-3.5 font-semibold tracking-wide'>
+                    {headerDataAdmin.map((item) => (
+                        <Link 
+                            href={item?.href} 
+                            key={item?.title} 
+                            // CLAVE: Al hacer clic en el link, ejecutamos onClose
+                            onClick={onClose} 
+                            className={`hover:text-shop_light_green hoverEffect ${
+                                pathname === item?.href ? 'text-white' : ''
                             }`}
                         >
-                            {item.title}
+                            {item?.title}
                         </Link>
                     ))}
-                </nav>
-
-                {/* Footer igual a PC */}
-                <div className="p-6 border-t border-gray-800">
-                    <Link
-                        href="/"
-                        onClick={onClose}
-                        className="block px-4 py-2 text-center bg-gray-800 rounded hover:bg-gray-700 mb-2 text-sm"
-                    >
-                        ← Volver a la Tienda
-                    </Link>
-
-                    <SignOutButton>
-                        <button className="w-full px-4 py-2 text-center bg-red-600 rounded hover:bg-red-700 text-sm font-semibold">
-                            Cerrar Sesión
-                        </button>
-                    </SignOutButton>
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
-export default SideMenuAdmin;
+export default SideMenu;

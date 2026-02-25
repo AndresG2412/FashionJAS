@@ -1,10 +1,11 @@
 import React from 'react'
+import Container from '@/app/components/Container'
 
 function page() {
     return (
-        <div>
+        <Container>
             pagina de categorias
-        </div>
+        </Container>
     )
 }
 

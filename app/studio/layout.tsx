@@ -29,14 +29,14 @@ export default async function StudioLayout({
   }
 
   return (
-    <div className="flex bg-gray-50 p-24">
+    <>
       {/* Sidebar */}
       <HeaderAdmin />
 
       {/* Main Content */}
-      <main className="flex-1 min-h-screen p-2">
+      <main className="min-h-screen pt-4 md:pt-12">
         {children}
       </main>
-    </div>
+    </>
   );
 }
