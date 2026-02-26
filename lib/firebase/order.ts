@@ -14,7 +14,7 @@ export interface Order {
   reference: string;
   transactionId: string;
   userId: string;
-  status: "pendiente" | "alistando" | "enviado" | "entregado" | "cancelado";
+  status: "pendiente" | "en-envio" | "entregado" | "cancelado";
   customer: {
     name: string;
     email: string;
