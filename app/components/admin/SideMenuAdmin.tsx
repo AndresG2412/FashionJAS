@@ -37,14 +37,14 @@ const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
                 onClick={(e) => e.stopPropagation()} 
                 className='min-w-72 max-w-96 bg-black h-screen p-10 border-r border-shop_light_green flex flex-col gap-6'
             >
-                <div className='flex items-center justify-between gap-5'>
+                <div className='flex items-center justify-between gap-5 border-b-2 pb-3 border-shop_light_green'>
                     <p className='font-bold tracking-wider text-2xl flex justify-end md:justify-start'>GABOSHOP</p>
                     <button onClick={onClose} className='hover:text-shop_light_green transition-colors'>
                         <X size={24} />
                     </button>
                 </div>
 
-                <div className='flex flex-col space-y-3.5 font-semibold tracking-wide'>
+                <div className='flex flex-col space-y-5 text-xl font-semibold tracking-wide'>
                     {headerDataAdmin.map((item) => (
                         <Link 
                             href={item?.href} 
