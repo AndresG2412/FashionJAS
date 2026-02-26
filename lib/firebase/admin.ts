@@ -17,6 +17,80 @@ import { db } from './config';
 import type { Productos } from './products';
 import type { Category } from './categories'; // ← Importar desde categories.ts
 
+// ==================== CATEGORÍAS ====================
+
+export async function getAllCategoriesAdmin(): Promise<Category[]> {
+  try {
+    const categoriesRef = collection(db, 'categorias');
+    const q = query(categoriesRef, orderBy('titulo', 'asc'));
+    const snapshot = await getDocs(q);
+    
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      titulo: doc.data().titulo,
+      slug: doc.data().slug,
+      descripcion: doc.data().descripcion || '',
+    })) as Category[];
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+}
+
+// Crear categoría con ID personalizado (igual al título capitalizado)
+export async function createCategory(categoryData: Omit<Category, 'id'>): Promise<string> {
+  try {
+    // Capitalizar primera letra del título para usar como ID
+    const capitalizedTitle = categoryData.titulo.charAt(0).toUpperCase() + categoryData.titulo.slice(1).toLowerCase();
+    
+    const categoryRef = doc(db, 'categorias', capitalizedTitle);
+    
+    // Verificar si ya existe
+    const existingDoc = await getDoc(categoryRef);
+    if (existingDoc.exists()) {
+      throw new Error(`La categoría "${capitalizedTitle}" ya existe`);
+    }
+    
+    await setDoc(categoryRef, {
+      id: capitalizedTitle,
+      titulo: capitalizedTitle,
+      slug: categoryData.slug,
+      descripcion: categoryData.descripcion || '',
+    });
+    
+    return capitalizedTitle;
+  } catch (error) {
+    console.error("Error creating category:", error);
+    throw error;
+  }
+}
+
+export async function updateCategory(categoryId: string, categoryData: Partial<Category>): Promise<void> {
+  try {
+    const categoryRef = doc(db, 'categorias', categoryId);
+    
+    const updateData: any = {};
+    if (categoryData.slug) updateData.slug = categoryData.slug;
+    if (categoryData.descripcion !== undefined) updateData.descripcion = categoryData.descripcion;
+    // No actualizamos titulo ni id para mantener consistencia
+    
+    await updateDoc(categoryRef, updateData);
+  } catch (error) {
+    console.error("Error updating category:", error);
+    throw error;
+  }
+}
+
+export async function deleteCategory(categoryId: string): Promise<void> {
+  try {
+    const categoryRef = doc(db, 'categorias', categoryId);
+    await deleteDoc(categoryRef);
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    throw error;
+  }
+}
+
 // ==================== PRODUCTOS ====================
 
 // 🔎 Buscar productos (nombre o categoría)
@@ -152,61 +226,6 @@ export async function deleteProduct(productId: string): Promise<void> {
     await deleteDoc(productRef);
   } catch (error) {
     console.error("Error deleting product:", error);
-    throw error;
-  }
-}
-
-// ==================== CATEGORÍAS ====================
-
-export async function getAllCategoriesAdmin(): Promise<Category[]> {
-  try {
-    const categoriesRef = collection(db, 'categorias');
-    const q = query(categoriesRef, orderBy('titulo', 'asc'));
-    const snapshot = await getDocs(q);
-    
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      titulo: doc.data().titulo,
-      slug: doc.data().slug,
-      descripcion: doc.data().descripcion || '',
-    })) as Category[];
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
-}
-
-export async function createCategory(categoryData: Omit<Category, 'id'>): Promise<string> {
-  try {
-    const categoriesRef = collection(db, 'categorias');
-    const docRef = await addDoc(categoriesRef, {
-      titulo: categoryData.titulo,
-      slug: categoryData.slug,
-      descripcion: categoryData.descripcion || '',
-    });
-    return docRef.id;
-  } catch (error) {
-    console.error("Error creating category:", error);
-    throw error;
-  }
-}
-
-export async function updateCategory(categoryId: string, categoryData: Partial<Category>): Promise<void> {
-  try {
-    const categoryRef = doc(db, 'categorias', categoryId);
-    await updateDoc(categoryRef, categoryData as any);
-  } catch (error) {
-    console.error("Error updating category:", error);
-    throw error;
-  }
-}
-
-export async function deleteCategory(categoryId: string): Promise<void> {
-  try {
-    const categoryRef = doc(db, 'categorias', categoryId);
-    await deleteDoc(categoryRef);
-  } catch (error) {
-    console.error("Error deleting category:", error);
     throw error;
   }
 }

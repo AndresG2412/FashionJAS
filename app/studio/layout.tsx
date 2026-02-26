@@ -34,7 +34,7 @@ export default async function StudioLayout({
       <HeaderAdmin />
 
       {/* Main Content */}
-      <main className="min-h-screen pt-4 md:pt-12">
+      <main className="min-h-screen pt-4 md:pt-10">
         {children}
       </main>
     </>
