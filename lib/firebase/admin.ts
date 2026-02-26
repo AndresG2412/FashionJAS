@@ -17,6 +17,160 @@ import { db } from './config';
 import type { Productos } from './products';
 import type { Category } from './categories'; // ← Importar desde categories.ts
 
+// ==================== PRODUCTOS ====================
+
+// 🔎 Buscar productos (nombre o categoría)
+// 🔎 Buscar productos (nombre o categoría)
+export async function searchProductsAdmin(
+  mode: "nombre" | "categoria",
+  text: string
+): Promise<Productos[]> {
+  try {
+    const productsRef = collection(db, "productos");
+    let results: Productos[] = [];
+
+    if (mode === "nombre") {
+      const searchLower = text.toLowerCase();
+
+      const q = query(
+        productsRef,
+        where("nombreLower", ">=", searchLower),
+        where("nombreLower", "<=", searchLower + "\uf8ff"),
+        orderBy("nombreLower"),
+        limit(20)
+      );
+
+      const snapshot = await getDocs(q);
+      results = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        subido: doc.data().subido?.toDate() || new Date(),
+      })) as Productos[];
+
+    } else if (mode === "categoria") {
+      // Búsqueda case-insensitive en categorías
+      // Primero traemos todos los productos y filtramos en memoria
+      const allProductsQuery = query(productsRef, limit(100));
+      const snapshot = await getDocs(allProductsQuery);
+      
+      const searchLower = text.toLowerCase();
+      
+      results = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          subido: doc.data().subido?.toDate() || new Date(),
+        }))
+        .filter((product: any) => {
+          // Buscar en el array de categorías (case-insensitive)
+          return product.categorias?.some((cat: string) => 
+            cat.toLowerCase() === searchLower
+          );
+        }) as Productos[];
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Error searching products:", error);
+    return [];
+  }
+}
+
+// ⚠️ Poco stock
+export async function lowStockProductsAdmin(): Promise<Productos[]> {
+  try {
+    const productsRef = collection(db, "productos");
+
+    const q = query(
+      productsRef,
+      where("stock", "<=", 5),
+      orderBy("stock", "asc"),
+      limit(20)
+    );
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      subido: doc.data().subido?.toDate() || new Date(),
+    })) as Productos[];
+  } catch (error) {
+    console.error("Error fetching low stock:", error);
+    return [];
+  }
+}
+
+export async function getAllProductsAdmin(): Promise<Productos[]> {
+  try {
+    const productsRef = collection(db, 'productos');
+    const q = query(productsRef, orderBy('nombre', 'asc'));
+    const snapshot = await getDocs(q);
+    
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      subido: doc.data().subido?.toDate() || new Date(),
+    })) as Productos[];
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
+
+// ✅ createProduct ya tiene nombreLower
+export async function createProduct(
+  productData: Omit<Productos, "id" | "subido">
+): Promise<string> {
+  try {
+    const docId = productData.nombre;
+    const productRef = doc(db, "productos", docId);
+
+    await setDoc(productRef, {
+      ...productData,
+      nombreLower: productData.nombre.toLowerCase(), // ← YA ESTÁ AQUÍ
+      subido: serverTimestamp(),
+    });
+
+    return docId;
+  } catch (error) {
+    console.error("Error creating product:", error);
+    throw error;
+  }
+}
+
+// ✅ updateProduct también actualiza nombreLower si cambias el nombre
+export async function updateProduct(
+  productId: string,
+  productData: Partial<Productos>
+): Promise<void> {
+  try {
+    const productRef = doc(db, "productos", productId);
+
+    const updatedData: any = { ...productData };
+
+    if (productData.nombre) {
+      updatedData.nombreLower = productData.nombre.toLowerCase(); // ← YA ESTÁ AQUÍ
+    }
+
+    await updateDoc(productRef, updatedData);
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+}
+
+// 🗑 Eliminar producto
+export async function deleteProduct(productId: string): Promise<void> {
+  try {
+    const productRef = doc(db, "productos", productId);
+    await deleteDoc(productRef);
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
+}
+
 // ==================== CATEGORÍAS ====================
 
 export async function getAllCategoriesAdmin(): Promise<Category[]> {
@@ -91,144 +245,6 @@ export async function deleteCategory(categoryId: string): Promise<void> {
   }
 }
 
-// ==================== PRODUCTOS ====================
-
-// 🔎 Buscar productos (nombre o categoría)
-export async function searchProductsAdmin(
-  mode: "nombre" | "categoria",
-  text: string
-): Promise<Productos[]> {
-  try {
-    const productsRef = collection(db, "productos");
-    let q;
-
-    if (mode === "nombre") {
-      const search = text.toLowerCase();
-
-      q = query(
-        productsRef,
-        where("nombreLower", ">=", search),
-        where("nombreLower", "<=", search + "\uf8ff"),
-        orderBy("nombreLower"),
-        limit(20)
-      );
-    } else {
-      q = query(
-        productsRef,
-        where("categorias", "array-contains", text),
-        limit(20)
-      );
-    }
-
-    const snapshot = await getDocs(q);
-
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-      subido: doc.data().subido?.toDate() || new Date(),
-    })) as Productos[];
-  } catch (error) {
-    console.error("Error searching products:", error);
-    return [];
-  }
-}
-
-// ⚠️ Poco stock
-export async function lowStockProductsAdmin(): Promise<Productos[]> {
-  try {
-    const productsRef = collection(db, "productos");
-
-    const q = query(
-      productsRef,
-      where("stock", "<=", 5),
-      orderBy("stock", "asc"),
-      limit(20)
-    );
-
-    const snapshot = await getDocs(q);
-
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-      subido: doc.data().subido?.toDate() || new Date(),
-    })) as Productos[];
-  } catch (error) {
-    console.error("Error fetching low stock:", error);
-    return [];
-  }
-}
-
-export async function getAllProductsAdmin(): Promise<Productos[]> {
-  try {
-    const productsRef = collection(db, 'productos');
-    const q = query(productsRef, orderBy('nombre', 'asc'));
-    const snapshot = await getDocs(q);
-    
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      subido: doc.data().subido?.toDate() || new Date(),
-    })) as Productos[];
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return [];
-  }
-}
-
-// ➕ Crear producto
-export async function createProduct(
-  productData: Omit<Productos, "id" | "subido">
-): Promise<string> {
-  try {
-    const docId = productData.nombre;
-    const productRef = doc(db, "productos", docId);
-
-    await setDoc(productRef, {
-      ...productData,
-      nombreLower: productData.nombre.toLowerCase(),
-      subido: serverTimestamp(),
-    });
-
-    return docId;
-  } catch (error) {
-    console.error("Error creating product:", error);
-    throw error;
-  }
-}
-
-
-// ✏️ Actualizar producto
-export async function updateProduct(
-  productId: string,
-  productData: Partial<Productos>
-): Promise<void> {
-  try {
-    const productRef = doc(db, "productos", productId);
-
-    const updatedData: any = { ...productData };
-
-    if (productData.nombre) {
-      updatedData.nombreLower = productData.nombre.toLowerCase();
-    }
-
-    await updateDoc(productRef, updatedData);
-  } catch (error) {
-    console.error("Error updating product:", error);
-    throw error;
-  }
-}
-
-
-// 🗑 Eliminar producto
-export async function deleteProduct(productId: string): Promise<void> {
-  try {
-    const productRef = doc(db, "productos", productId);
-    await deleteDoc(productRef);
-  } catch (error) {
-    console.error("Error deleting product:", error);
-    throw error;
-  }
-}
 
 // ==================== ESTADÍSTICAS ====================
 

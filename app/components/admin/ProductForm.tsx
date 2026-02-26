@@ -293,7 +293,7 @@ export default function ProductForm({ categories, product, isEditing = false }: 
               key={category.id}
               className={`flex items-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                 formData.categorias.includes(category.slug)
-                  ? 'border-blue-500 bg-blue-50'
+                  ? 'border-green-500 bg-green-50'
                   : 'border-gray-200 hover:border-gray-300'
               }`}
             >
@@ -301,7 +301,7 @@ export default function ProductForm({ categories, product, isEditing = false }: 
                 type="checkbox"
                 checked={formData.categorias.includes(category.slug)}
                 onChange={() => handleCategoryChange(category.slug)}
-                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
               />
               <span className="text-sm font-medium">{category.titulo}</span>
             </label>
@@ -310,7 +310,7 @@ export default function ProductForm({ categories, product, isEditing = false }: 
         {categories.length === 0 && (
           <p className="text-sm text-red-500 mt-2">
             ⚠️ No hay categorías disponibles.{' '}
-            <a href="/studio/categories" className="text-blue-600 hover:underline">
+            <a href="/studio/categories" className="text-green-600 hover:underline">
               Crear categoría primero
             </a>
           </p>
@@ -415,7 +415,7 @@ export default function ProductForm({ categories, product, isEditing = false }: 
                     <X className="w-4 h-4" />
                 </button>
                 {index === 0 && (
-                    <span className="absolute bottom-2 left-2 px-2 py-1 bg-blue-500 text-white text-xs rounded">
+                    <span className="absolute bottom-2 left-2 px-2 py-1 bg-green-500 text-white text-xs rounded">
                     Principal
                     </span>
                 )}
