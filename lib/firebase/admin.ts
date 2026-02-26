@@ -17,9 +17,197 @@ import { db } from './config';
 import type { Productos } from './products';
 import type { Category } from './categories'; // ← Importar desde categories.ts
 
+// ==================== ÓRDENES ====================
+
+export interface Order {
+  id?: string;
+  reference: string;
+  transactionId: string;
+  userId: string;
+  status: "pendiente" | "en-envio" | "entregado" | "cancelado";
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+    legalId?: string;
+    legalIdType?: string;
+  };
+  shipping: {
+    address: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  items: Array<{
+    productId: string;
+    name: string;
+    price: number;
+    quantity: number;
+    image?: string;
+  }>;
+  payment: {
+    transactionId: string;
+    method: string;
+    status: string;
+    amount: number;
+    currency: string;
+    paymentDate: string;
+  };
+  total: number;
+  subtotal: number;
+  shippingCost: number;
+  notes?: string;
+  adminNotes?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+// 📋 Obtener todas las órdenes (ordenadas por fecha de creación)
+export async function getAllOrdersAdmin(): Promise<Order[]> {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(ordersRef, orderBy('createdAt', 'desc')); // Más reciente primero
+    const snapshot = await getDocs(q);
+    
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate() || new Date(),
+      updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+    })) as Order[];
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return [];
+  }
+}
+
+// 🔍 Buscar órdenes por referencia o email
+export async function searchOrdersAdmin(searchText: string): Promise<Order[]> {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const snapshot = await getDocs(ordersRef);
+    
+    const searchLower = searchText.toLowerCase();
+    
+    return snapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
+        updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+      }))
+      .filter((order: any) => {
+        return (
+          order.reference?.toLowerCase().includes(searchLower) ||
+          order.customer?.email?.toLowerCase().includes(searchLower) ||
+          order.customer?.name?.toLowerCase().includes(searchLower)
+        );
+      }) as Order[];
+  } catch (error) {
+    console.error("Error searching orders:", error);
+    return [];
+  }
+}
+
+// 🔎 Filtrar órdenes por estado
+export async function getOrdersByStatus(status: Order['status']): Promise<Order[]> {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(
+      ordersRef,
+      where('status', '==', status),
+      orderBy('createdAt', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate() || new Date(),
+      updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+    })) as Order[];
+  } catch (error) {
+    console.error("Error fetching orders by status:", error);
+    return [];
+  }
+}
+
+// 📅 Filtrar órdenes por rango de fechas
+export async function getOrdersByDateRange(startDate: Date, endDate: Date): Promise<Order[]> {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(
+      ordersRef,
+      where('createdAt', '>=', startDate),
+      where('createdAt', '<=', endDate),
+      orderBy('createdAt', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate() || new Date(),
+      updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+    })) as Order[];
+  } catch (error) {
+    console.error("Error fetching orders by date:", error);
+    return [];
+  }
+}
+
+// ✏️ Actualizar estado de orden
+export async function updateOrderStatus(
+  orderId: string,
+  status: Order['status'],
+  adminNotes?: string
+): Promise<void> {
+  try {
+    const orderRef = doc(db, 'orders', orderId);
+    const updateData: any = {
+      status,
+      updatedAt: serverTimestamp(),
+    };
+    
+    if (adminNotes) {
+      updateData.adminNotes = adminNotes;
+    }
+    
+    await updateDoc(orderRef, updateData);
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    throw error;
+  }
+}
+
+// 📝 Actualizar notas del admin
+export async function updateOrderAdminNotes(orderId: string, adminNotes: string): Promise<void> {
+  try {
+    const orderRef = doc(db, 'orders', orderId);
+    await updateDoc(orderRef, {
+      adminNotes,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error("Error updating admin notes:", error);
+    throw error;
+  }
+}
+
+// 🗑️ Eliminar orden (opcional, para casos especiales)
+export async function deleteOrder(orderId: string): Promise<void> {
+  try {
+    const orderRef = doc(db, 'orders', orderId);
+    await deleteDoc(orderRef);
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    throw error;
+  }
+}
+
 // ==================== PRODUCTOS ====================
 
-// 🔎 Buscar productos (nombre o categoría)
 // 🔎 Buscar productos (nombre o categoría)
 export async function searchProductsAdmin(
   mode: "nombre" | "categoria",
