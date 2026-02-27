@@ -103,7 +103,7 @@ const WishListProducts = () => {
                   <tr key={product?.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="p-4">
                       <div className="flex items-center gap-4">
-                        <Link href={`/product/${product?.slug}`} className="relative h-16 w-16 shrink-0 border rounded-lg overflow-hidden group">
+                        <Link href={`/${product?.slug}`} className="relative h-16 w-16 shrink-0 border rounded-lg overflow-hidden group">
                           <Image
                             src={product.imagenes[0]}
                             alt={product.nombre}
@@ -111,7 +111,7 @@ const WishListProducts = () => {
                             className="object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                         </Link>
-                        <Link href={`/product/${product?.slug}`} className="font-medium text-gray-900 hover:text-shop_light_green transition-colors line-clamp-1">
+                        <Link href={`/${product?.slug}`} className="font-medium text-gray-900 hover:text-shop_light_green transition-colors line-clamp-1">
                           {product?.nombre}
                         </Link>
                       </div>

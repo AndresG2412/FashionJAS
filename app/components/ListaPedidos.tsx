@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Container from "./Container";
-import { Store } from "lucide-react";
+import { Store, X } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -10,13 +10,28 @@ import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { getOrdersByUser, type Order } from "@/lib/firebase/order";
 
-const ADMIN_EMAIL = "cgaviria930@gmail.com";
-
 const statusStyles: Record<string, string> = {
-  pendiente: "bg-yellow-100 text-yellow-700",
-  "en-envio": "bg-blue-100 text-blue-700",
-  entregado: "bg-green-100 text-green-700",
-  cancelado: "bg-red-100 text-red-700",
+  pendiente: "bg-yellow-100 text-yellow-700 border border-yellow-200",
+  "en-envio": "bg-blue-100 text-blue-700 border border-blue-200",
+  entregado: "bg-green-100 text-green-700 border border-green-200",
+  cancelado: "bg-red-100 text-red-700 border border-red-200",
+};
+
+const statusLabels: Record<string, string> = {
+  pendiente: "Pendiente",
+  "en-envio": "En Envío",
+  entregado: "Entregado",
+  cancelado: "Cancelado",
+};
+
+// Función para asegurar URL correcta
+const safeImageUrl = (url?: string) => {
+  if (!url || typeof url !== "string") return "/placeholder.png";
+  try {
+    return encodeURI(url.replace("http://", "https://"));
+  } catch {
+    return "/placeholder.png";
+  }
 };
 
 const ListaPedidos = () => {
@@ -46,7 +61,7 @@ const ListaPedidos = () => {
         <div className="flex gap-2">
           <Button
             size="sm"
-            className="bg-red-500 text-white"
+            className="bg-red-500 text-white hover:bg-red-600"
             onClick={() => {
               toast.dismiss(t.id);
               showCancelOptions(order);
@@ -75,31 +90,13 @@ const ListaPedidos = () => {
         <p className="font-semibold">¿Cómo deseas solicitar la cancelación?</p>
 
         <div className="flex flex-col gap-2">
-          <a href={`https://wa.me/573001112233?text=${message}`} target="_blank">
+          <a href={`https://wa.me/573157870130?text=${message}`} target="_blank" rel="noopener noreferrer">
             <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
               WhatsApp
             </Button>
           </a>
-
-          <Button
-            variant="outline"
-            onClick={async () => {
-              await fetch("/api/orders/request-cancel", {
-                method: "POST",
-                body: JSON.stringify({
-                  adminEmail: ADMIN_EMAIL,
-                  orderId: order.id,
-                  reference: order.reference,
-                  userName: user?.fullName,
-                  products: order.items.map((i) => i.name).join(", "),
-                }),
-              });
-
-              toast.success("Solicitud enviada por correo");
-              toast.dismiss(t.id);
-            }}
-          >
-            Enviar por correo
+          <Button variant="outline" onClick={() => toast.dismiss(t.id)}>
+            Cancelar
           </Button>
         </div>
       </div>
@@ -126,42 +123,71 @@ const ListaPedidos = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
                   <tr>
-                    <th className="p-4 text-left">Pedido</th>
-                    <th className="p-4 text-left">Productos</th>
-                    <th className="p-4 text-left">Estado</th>
-                    <th className="p-4 text-left">Total</th>
-                    <th className="p-4 text-center">Acciones</th>
+                    <th className="p-4 text-left text-sm font-semibold text-gray-700">Pedido</th>
+                    <th className="p-4 text-left text-sm font-semibold text-gray-700">Productos</th>
+                    <th className="p-4 text-left text-sm font-semibold text-gray-700">Estado</th>
+                    <th className="p-4 text-left text-sm font-semibold text-gray-700">Total</th>
+                    <th className="p-4 text-center text-sm font-semibold text-gray-700">Acciones</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {orders.slice(0, visibleOrders).map(order => (
+                  {orders.slice(0, visibleOrders).map((order) => (
                     <tr
                       key={order.id}
-                      className="border-b cursor-pointer hover:bg-gray-50"
+                      className="border-b cursor-pointer hover:bg-gray-50 transition-colors"
                       onClick={() => setSelectedOrder(order)}
                     >
-                      <td className="p-4 font-bold">{order.reference}</td>
+                      <td className="p-4">
+                        <p className="font-bold text-gray-900">{order.reference}</p>
+                        <p className="text-xs text-gray-500">
+                          {order.createdAt
+                            ? new Date(order.createdAt).toLocaleDateString("es-CO", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              })
+                            : "-"}
+                        </p>
+                      </td>
 
                       <td className="p-4">
                         <div className="flex gap-2">
                           {order.items.slice(0, 3).map((item, i) => (
-                            <div key={i} className="relative w-12 h-12 border rounded overflow-hidden">
-                              {item.image && (
-                                <Image src={item.image} alt={item.name} fill className="object-cover" />
-                              )}
+                            <div
+                              key={i}
+                              className="relative w-12 h-12 border rounded-lg overflow-hidden bg-gray-100"
+                            >
+                              <Image
+                                src={safeImageUrl(item.image)}
+                                alt={item.name}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                              />
                             </div>
                           ))}
+                          {order.items.length > 3 && (
+                            <div className="w-12 h-12 border rounded-lg bg-gray-100 flex items-center justify-center">
+                              <span className="text-xs font-semibold text-gray-600">
+                                +{order.items.length - 3}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </td>
 
                       <td className="p-4">
-                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${statusStyles[order.status]}`}>
-                          {order.status}
+                        <span
+                          className={`text-xs font-bold px-3 py-1 rounded-full ${
+                            statusStyles[order.status]
+                          }`}
+                        >
+                          {statusLabels[order.status] || order.status}
                         </span>
                       </td>
 
-                      <td className="p-4 font-bold">
+                      <td className="p-4 font-bold text-gray-900">
                         {order.total.toLocaleString("es-CO", {
                           style: "currency",
                           currency: "COP",
@@ -173,7 +199,8 @@ const ListaPedidos = () => {
                         {order.status !== "entregado" && order.status !== "cancelado" && (
                           <Button
                             variant="outline"
-                            className="text-red-500 border-red-100 hover:bg-red-50"
+                            size="sm"
+                            className="text-red-500 border-red-200 hover:bg-red-50"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleCancelRequest(order);
@@ -191,27 +218,52 @@ const ListaPedidos = () => {
 
             {/* ================= MOBILE ================= */}
             <div className="md:hidden grid gap-4">
-              {orders.slice(0, visibleOrders).map(order => (
+              {orders.slice(0, visibleOrders).map((order) => (
                 <div
                   key={order.id}
-                  className="bg-white p-4 rounded-xl border shadow-sm space-y-3 cursor-pointer"
+                  className="bg-white p-4 rounded-xl border shadow-sm space-y-3 cursor-pointer hover:shadow-md transition-shadow"
                   onClick={() => setSelectedOrder(order)}
                 >
-                  <div className="flex justify-between">
-                    <p className="font-bold">{order.reference}</p>
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${statusStyles[order.status]}`}>
-                      {order.status}
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-bold text-gray-900">{order.reference}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {order.createdAt
+                          ? new Date(order.createdAt).toLocaleDateString("es-CO")
+                          : "-"}
+                      </p>
+                    </div>
+                    <span
+                      className={`text-xs font-bold px-2 py-1 rounded-full ${
+                        statusStyles[order.status]
+                      }`}
+                    >
+                      {statusLabels[order.status] || order.status}
                     </span>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 overflow-x-auto">
                     {order.items.slice(0, 4).map((item, i) => (
-                      <div key={i} className="relative w-14 h-14 border rounded overflow-hidden">
-                        {item.image && (
-                          <Image src={item.image} alt={item.name} fill className="object-cover" />
-                        )}
+                      <div
+                        key={i}
+                        className="relative w-16 h-16 shrink-0 border rounded-lg overflow-hidden bg-gray-100"
+                      >
+                        <Image
+                          src={safeImageUrl(item.image)}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
                       </div>
                     ))}
+                    {order.items.length > 4 && (
+                      <div className="w-16 h-16 shrink-0 border rounded-lg bg-gray-100 flex items-center justify-center">
+                        <span className="text-xs font-semibold text-gray-600">
+                          +{order.items.length - 4}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <p className="font-black text-blue-600">
@@ -225,7 +277,8 @@ const ListaPedidos = () => {
                   {order.status !== "entregado" && order.status !== "cancelado" && (
                     <Button
                       variant="outline"
-                      className="w-full text-red-500 border-red-100 hover:bg-red-50"
+                      size="sm"
+                      className="w-full text-red-500 border-red-200 hover:bg-red-50"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCancelRequest(order);
@@ -239,18 +292,21 @@ const ListaPedidos = () => {
             </div>
 
             {/* LOAD MORE */}
-            <div className="flex justify-center mt-10">
-              {visibleOrders < orders.length && (
+            {visibleOrders < orders.length && (
+              <div className="flex justify-center mt-10">
                 <Button variant="outline" onClick={loadMore}>
-                  Cargar más
+                  Cargar más ({orders.length - visibleOrders} restantes)
                 </Button>
-              )}
-            </div>
+              </div>
+            )}
           </>
         ) : (
-          <div className="flex min-h-100 flex-col items-center justify-center space-y-6 px-4 text-center bg-white rounded-2xl border border-dashed border-gray-200">
+          <div className="flex min-h-100 flex-col items-center justify-center space-y-6 px-4 text-center bg-white rounded-2xl border border-dashed border-gray-200 py-12">
             <Store className="h-20 w-20 text-gray-200" strokeWidth={1} />
             <h2 className="text-2xl font-bold text-gray-900">Tu lista está vacía</h2>
+            <p className="text-gray-600 max-w-md">
+              Aún no has realizado ningún pedido. ¡Explora nuestra tienda y encuentra productos increíbles!
+            </p>
             <Button asChild size="lg" className="rounded-full px-10">
               <Link href="/tienda">Ir a la tienda</Link>
             </Button>
@@ -260,36 +316,147 @@ const ListaPedidos = () => {
 
       {/* ================= MODAL DETALLE ================= */}
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-lg w-full p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b bg-gray-50">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Detalle del pedido</h2>
+                <p className="text-sm text-gray-600 mt-1">{selectedOrder.reference}</p>
+              </div>
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
 
-            <div className="flex justify-between">
-              <h2 className="text-xl font-bold">Detalle del pedido</h2>
-              <Button size="sm" variant="outline" onClick={() => setSelectedOrder(null)}>
+            {/* Content */}
+            <div className="p-6 space-y-6 overflow-y-auto flex-1">
+              {/* Estado y fecha */}
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm text-gray-600">Estado:</p>
+                  <span
+                    className={`inline-block mt-1 text-sm font-bold px-3 py-1 rounded-full ${
+                      statusStyles[selectedOrder.status]
+                    }`}
+                  >
+                    {statusLabels[selectedOrder.status] || selectedOrder.status}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600">Fecha:</p>
+                  <p className="font-semibold text-gray-900 mt-1">
+                    {selectedOrder.createdAt
+                      ? new Date(selectedOrder.createdAt).toLocaleDateString("es-CO", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })
+                      : "-"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Productos */}
+              <div>
+                <h3 className="font-bold text-gray-900 mb-3">
+                  Productos ({selectedOrder.items.length})
+                </h3>
+                <div className="space-y-3">
+                  {selectedOrder.items.map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex gap-4 p-3 border rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="relative w-20 h-20 shrink-0 border rounded-lg overflow-hidden bg-gray-100">
+                        <Image
+                          src={safeImageUrl(item.image)}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900">{item.name}</p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Cantidad: <span className="font-semibold">{item.quantity}</span>
+                        </p>
+                        <p className="text-sm font-bold text-gray-900 mt-1">
+                          {(item.price * item.quantity).toLocaleString("es-CO", {
+                            style: "currency",
+                            currency: "COP",
+                            minimumFractionDigits: 0,
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Dirección de envío */}
+              {selectedOrder.shipping && (
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-2">Dirección de envío:</h3>
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-900">{selectedOrder.shipping.address}</p>
+                    <p className="text-gray-700 mt-1">
+                      {selectedOrder.shipping.city}, {selectedOrder.shipping.state}
+                    </p>
+                    {selectedOrder.shipping.postalCode && (
+                      <p className="text-gray-700">CP: {selectedOrder.shipping.postalCode}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Totales */}
+              <div className="border-t pt-4 space-y-2">
+                <div className="flex justify-between text-gray-700">
+                  <span>Subtotal:</span>
+                  <span className="font-semibold">
+                    {selectedOrder.subtotal.toLocaleString("es-CO", {
+                      style: "currency",
+                      currency: "COP",
+                      minimumFractionDigits: 0,
+                    })}
+                  </span>
+                </div>
+                <div className="flex justify-between text-gray-700">
+                  <span>Envío:</span>
+                  <span className="font-semibold">
+                    {selectedOrder.shippingCost === 0
+                      ? "GRATIS"
+                      : selectedOrder.shippingCost.toLocaleString("es-CO", {
+                          style: "currency",
+                          currency: "COP",
+                          minimumFractionDigits: 0,
+                        })}
+                  </span>
+                </div>
+                <div className="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t">
+                  <span>Total:</span>
+                  <span>
+                    {selectedOrder.total.toLocaleString("es-CO", {
+                      style: "currency",
+                      currency: "COP",
+                      minimumFractionDigits: 0,
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t bg-gray-50">
+              <Button onClick={() => setSelectedOrder(null)} className="w-full" size="lg">
                 Cerrar
               </Button>
             </div>
-
-            {selectedOrder.items.map((item, i) => (
-              <div key={i} className="flex gap-3 border rounded p-2">
-                <div className="relative w-14 h-14">
-                  {item.image && (
-                    <Image src={item.image} alt={item.name} fill className="object-cover rounded" />
-                  )}
-                </div>
-                <div>
-                  <p className="font-semibold">{item.name}</p>
-                  <p className="text-sm text-gray-500">Cantidad: {item.quantity}</p>
-                </div>
-              </div>
-            ))}
-
-            <div className="border-t pt-3 text-sm space-y-1">
-              <p>Total: {selectedOrder.total.toLocaleString("es-CO",{style:"currency",currency:"COP",minimumFractionDigits:0})}</p>
-              <p>Fecha: {selectedOrder.createdAt ? new Date(selectedOrder.createdAt).toLocaleString() : "-"}</p>
-              <p>Dirección: {(selectedOrder as any).direccion ?? "-"}</p>
-            </div>
-
           </div>
         </div>
       )}

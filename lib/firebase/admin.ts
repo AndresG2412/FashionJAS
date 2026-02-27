@@ -475,3 +475,47 @@ export async function getAdminStats() {
     };
   }
 }
+
+// ==================== PRODUCTOS POR CATEGORÍA ====================
+
+export async function getProductsByCategory(categorySlug: string): Promise<Productos[]> {
+  try {
+    const productsRef = collection(db, 'productos');
+    const q = query(
+      productsRef,
+      where('categorias', 'array-contains', categorySlug),
+      orderBy('nombre', 'asc')
+    );
+    const snapshot = await getDocs(q);
+    
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      subido: doc.data().subido?.toDate() || new Date(),
+    })) as Productos[];
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    return [];
+  }
+}
+
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  try {
+    const categoriesRef = collection(db, 'categorias');
+    const q = query(categoriesRef, where('slug', '==', slug));
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) return null;
+    
+    const doc = snapshot.docs[0];
+    return {
+      id: doc.id,
+      titulo: doc.data().titulo,
+      slug: doc.data().slug,
+      descripcion: doc.data().descripcion || '',
+    };
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    return null;
+  }
+}

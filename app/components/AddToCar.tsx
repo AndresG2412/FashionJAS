@@ -71,22 +71,6 @@ const AddToCar = ({ product, className }: Props) => {
   // Si está en el carrito - Mostrar dos botones
   return (
     <div className="w-full flex gap-2">
-      {/* Botón Agregar más */}
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={handleAddToCart}
-        className="flex-1 py-2 px-2 bg-green-600 text-white rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 hover:bg-green-700 transition-all duration-300 shadow-sm"
-      >
-        <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        <span className="hidden sm:inline">Agregar</span>
-        <span className="sm:hidden">+1</span>
-        {itemCount > 0 && (
-          <span className="ml-1 bg-green-700 text-white text-xs px-1.5 py-0.5 rounded-full">
-            {itemCount}
-          </span>
-        )}
-      </motion.button>
 
       {/* Botón Quitar */}
       <motion.button
