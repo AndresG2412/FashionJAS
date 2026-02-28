@@ -1,8 +1,9 @@
 import { getProductsByCategory, getCategoryBySlug } from '@/lib/firebase/admin';
 import Container from '@/app/components/Container';
 import ProductCard from '@/app/components/ProductCard';
+import CopyButton from '@/app/components/CopyButton'; // ← Importar
 import { notFound } from 'next/navigation';
-import { Tag, Package } from 'lucide-react';
+import { Tag, Package, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 interface Props {
@@ -23,6 +24,8 @@ export default async function CategoryPage({ params }: Props) {
     notFound();
   }
 
+  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://gaboshop.com'}/categoria/${slug}`;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Container className="py-8">
@@ -40,45 +43,34 @@ export default async function CategoryPage({ params }: Props) {
         </nav>
 
         {/* Header de categoría */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-4 mb-4">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
-              <Tag className="w-8 h-8 text-blue-600" />
+            <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center shrink-0">
+              <Tag className="w-8 h-8 text-green-600" />
             </div>
-            <div className="flex-1">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                {category.titulo}
-              </h1>
-              {category.descripcion && (
-                <p className="text-gray-600 text-lg">
-                  {category.descripcion}
-                </p>
-              )}
-              <div className="flex items-center gap-2 mt-4">
-                <Package className="w-5 h-5 text-gray-500" />
-                <p className="text-gray-600 font-medium">
-                  {products.length} {products.length === 1 ? 'producto' : 'productos'} disponibles
-                </p>
+            <div className="flex w-full justify-between">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                  {category.titulo}
+                </h1>
+                {category.descripcion && (
+                  <p className="text-gray-600 text-lg">
+                    {category.descripcion}
+                  </p>
+                )}
               </div>
-            </div>
-          </div>
-
-          {/* Badge de URL compartible */}
-          <div className="mt-6 pt-6 border-t border-gray-100">
-            <p className="text-sm text-gray-600 mb-2">Comparte esta categoría:</p>
-            <div className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg p-3 flex-wrap">
-              <code className="flex-1 text-sm font-mono text-blue-700 min-w-0 break-all">
-                gaboshop.com/categoria/{slug}
-              </code>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(`${window.location.origin}/categoria/${slug}`);
-                  alert('¡Enlace copiado!');
-                }}
-                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
-              >
-                Copiar
-              </button>
+              <div className="flex flex-col justify-center gap-y-4">
+                <div className='justify-end flex items-center gap-1'>
+                  <ArrowLeft className="w-5 h-5 text-red-500" />
+                  <Link href="/categoria" className='font-semibold text-red-500'>Volver Atras</Link>
+                </div>
+                <div className='flex justify-end items-center gap-2'>
+                  <Package className="w-5 h-5 text-gray-500" />
+                  <p className="text-gray-600 font-medium">
+                    {products.length} {products.length === 1 ? 'producto' : 'productos'} disponibles
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
