@@ -19,7 +19,7 @@ export default async function StudioDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 md:gap-6 mb-8">
 
         {/* productos */}
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
+        <div className="bg-white shadow-2xl border-2 p-6 rounded-lg border-l-4 border-blue-500">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
@@ -32,7 +32,7 @@ export default async function StudioDashboard() {
         </div>
 
         {/* Ordenes */}
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
+        <div className="bg-white shadow-2xl border-2 p-6 rounded-lg border-l-4 border-green-500">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
@@ -52,8 +52,9 @@ export default async function StudioDashboard() {
           </div>
         </div>
 
-        {/* Ventas Dinero */}
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
+        {/* Ventas Dinero - Coordinar*/}
+
+        {/* <div className="bg-white shadow-2xl border-2 p-6 rounded-lg shadow border-l-4 border-purple-500">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
@@ -69,10 +70,10 @@ export default async function StudioDashboard() {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Categorias */}
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-500">
+        <div className="bg-white shadow-2xl border-2 p-6 rounded-lg border-l-4 border-yellow-500">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
@@ -86,12 +87,12 @@ export default async function StudioDashboard() {
       </div>
 
       {/* Acciones Rápidas */}
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-white shadow-2xl border-2 border-black p-6 rounded-lg">
         <h2 className="text-xl font-bold mb-4">Acciones Rápidas</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link 
             href="/studio/products" 
-            className="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200"
+            className="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-700"
           >
             <Package className="w-5 h-5" />
             <span className="font-medium">Ver Productos</span>
@@ -99,7 +100,7 @@ export default async function StudioDashboard() {
           
           <Link 
             href="/studio/categories" 
-            className="flex items-center gap-3 px-4 py-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors border border-green-200"
+            className="flex items-center gap-3 px-4 py-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors border border-green-700"
           >
             <Tag className="w-5 h-5" />
             <span className="font-medium">Ver Categorías</span>
@@ -107,7 +108,7 @@ export default async function StudioDashboard() {
           
           <Link 
             href="/studio/orders" 
-            className="flex items-center gap-3 px-4 py-3 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors border border-purple-200"
+            className="flex items-center gap-3 px-4 py-3 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors border border-purple-700"
           >
             <ShoppingCart className="w-5 h-5" />
             <span className="font-medium">Ver Órdenes</span>
