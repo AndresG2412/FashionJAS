@@ -27,8 +27,8 @@ const CheckoutForm = () => {
     email: user?.emailAddresses[0]?.emailAddress || "",
     telefono: "",
     direccion: "",
-    ciudad: "Cali",
-    departamento: "Valle del Cauca",
+    ciudad: "",
+    departamento: "",
     codigoPostal: "",
     notas: "",
   });
@@ -101,6 +101,17 @@ const CheckoutForm = () => {
       const data = await response.json();
 
       if (data.success && data.paymentUrl) {
+
+        localStorage.setItem("pendingOrder", JSON.stringify({
+          shipping: {
+            address: formData.direccion,
+            city: formData.ciudad,
+            state: formData.departamento,
+            postalCode: formData.codigoPostal,
+          },
+          items: cartItems,
+          subtotal: subtotal,
+        }));
         // Redirigir a Wompi
         window.location.href = data.paymentUrl;
       } else {

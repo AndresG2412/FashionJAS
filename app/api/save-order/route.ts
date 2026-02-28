@@ -12,7 +12,6 @@ interface ShippingInfo {
   city?: string;
   state?: string;
   postalCode?: string;
-  cost?: number;
 }
 
 interface OrderItem {
@@ -26,73 +25,62 @@ interface OrderItem {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { transactionId, reference, paymentData, userId } = body;
 
-    console.log("💾 Guardando orden en Firebase...");
-    console.log("Transaction ID:", transactionId);
-    console.log("Reference:", reference);
+    const {
+      transactionId,
+      reference,
+      paymentData,
+      userId,
+      shipping,
+      items,
+      subtotal,
+    } = body;
 
-    // Extraer datos
-    let items: OrderItem[] = [];
-    let shippingInfo: ShippingInfo = {};
-    let subtotal = 0;
-    let shippingCost = 0;
-
-    if (paymentData.metadata) {
-      try {
-        if (paymentData.metadata.items) {
-          items = typeof paymentData.metadata.items === 'string' 
-            ? JSON.parse(paymentData.metadata.items)
-            : paymentData.metadata.items;
-        }
-        if (paymentData.metadata.shipping) {
-          shippingInfo = typeof paymentData.metadata.shipping === 'string'
-            ? JSON.parse(paymentData.metadata.shipping)
-            : paymentData.metadata.shipping;
-        }
-        subtotal = paymentData.metadata.subtotal || 0;
-      } catch (parseError) {
-        console.error("Error parsing metadata:", parseError);
-      }
+    if (!transactionId || !paymentData) {
+      return NextResponse.json(
+        { success: false, error: "Datos incompletos" },
+        { status: 400 }
+      );
     }
 
     const totalAmount = paymentData.amount_in_cents / 100;
-    if (subtotal === 0) subtotal = totalAmount;
-    shippingCost = totalAmount - subtotal;
+    const shippingCost = totalAmount - subtotal;
 
-    // 🆕 PASO 1: REDUCIR STOCK
-    console.log("📦 Reduciendo stock de productos...");
+    console.log("💾 Guardando orden en Firebase...");
+    console.log("Transaction ID:", transactionId);
+
+    // 🔥 REDUCIR STOCK CON LOS ITEMS REALES
     const stockResult = await reduceMultipleProductsStock(
-      items.map(item => ({
+      (items || []).map((item: OrderItem) => ({
         productId: item.productId,
         quantity: item.quantity,
       }))
     );
 
     if (!stockResult.success) {
-      console.error("❌ Errores al reducir stock:", stockResult.errors);
-      // Continuar de todos modos, pero registrar el error
-    } else {
-      console.log("✅ Stock reducido correctamente");
+      console.error("❌ Error reduciendo stock:", stockResult.errors);
     }
 
-    // Preparar datos del pedido
+    // 🔥 CONSTRUIR ORDEN LIMPIA
     const orderData = {
       reference: reference || paymentData.reference,
-      transactionId: transactionId,
+      transactionId,
       userId: userId || "guest",
       status: "pendiente",
-      
+
       customer: {
-        name: paymentData.customer_data?.full_name || paymentData.billing_data?.full_name || "Cliente",
+        name:
+          paymentData.customer_data?.full_name ||
+          paymentData.billing_data?.full_name ||
+          "Cliente",
         email: paymentData.customer_email || "",
         phone: paymentData.customer_data?.phone_number || "",
         legalId: paymentData.billing_data?.legal_id || "",
         legalIdType: paymentData.billing_data?.legal_id_type || "CC",
       },
-      
+
       payment: {
-        transactionId: transactionId,
+        transactionId,
         method: paymentData.payment_method_type,
         methodDetails: paymentData.payment_method?.type || "",
         installments: paymentData.payment_method?.installments || 1,
@@ -100,35 +88,30 @@ export async function POST(request: NextRequest) {
         statusMessage: paymentData.status_message || "",
         amount: totalAmount,
         currency: paymentData.currency,
-        paymentDate: paymentData.finalized_at || paymentData.created_at,
+        paymentDate:
+          paymentData.finalized_at || paymentData.created_at,
       },
-      
-      items: items.length > 0 ? items : [{
-        productId: "unknown",
-        name: "Producto",
-        price: totalAmount,
-        quantity: 1,
-        image: "",
-      }],
-      
+
+      items: items || [],
+
       total: totalAmount,
       subtotal: subtotal,
       shippingCost: shippingCost,
-      
+
       shipping: {
-        address: shippingInfo?.address || paymentData.shipping_address?.address_line_1 || "",
-        city: shippingInfo?.city || paymentData.shipping_address?.city || "",
-        state: shippingInfo?.state || paymentData.shipping_address?.region || "",
-        postalCode: shippingInfo?.postalCode || paymentData.shipping_address?.postal_code || "",
+        address: shipping?.address || "",
+        city: shipping?.city || "",
+        state: shipping?.state || "",
+        postalCode: shipping?.postalCode || "",
         country: "CO",
       },
-      
+
       notes: "",
       adminNotes: "",
-      
+
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      
+
       wompiData: {
         id: paymentData.id,
         paymentLinkId: paymentData.payment_link_id,
@@ -138,18 +121,16 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // Guardar en Firebase
+    // 🔥 GUARDAR EN FIREBASE
     const ordersRef = collection(db, "orders");
     const docRef = await addDoc(ordersRef, orderData);
 
-    console.log("✅ Orden guardada en Firebase:", docRef.id);
+    console.log("✅ Orden guardada:", docRef.id);
 
-    // 🆕 PASO 2: ENVIAR EMAIL AL ADMIN
+    // 🔥 ENVIAR EMAIL
     try {
-      console.log("📧 Enviando email de notificación al admin...");
-      
       await resend.emails.send({
-        from: "GaboShop <onboarding@resend.dev>", // Cambiar en producción
+        from: "GaboShop <onboarding@resend.dev>",
         to: process.env.ADMIN_EMAIL!,
         subject: `🎉 Nuevo Pedido #${orderData.reference}`,
         react: await AdminOrderEmail({
@@ -166,29 +147,27 @@ export async function POST(request: NextRequest) {
           state: orderData.shipping.state,
         }),
       });
-
-      console.log("✅ Email enviado correctamente");
-    } catch (emailError: any) {
+    } catch (emailError) {
       console.error("❌ Error enviando email:", emailError);
-      // No fallar la orden si el email falla
     }
 
     return NextResponse.json({
       success: true,
       orderId: docRef.id,
       reference: orderData.reference,
-      message: "Pedido guardado correctamente",
       stockReduced: stockResult.success,
       stockErrors: stockResult.errors,
     });
 
   } catch (error: any) {
     console.error("❌ Error guardando orden:", error);
-    
-    return NextResponse.json({
-      success: false,
-      error: error.message || "Error al guardar el pedido",
-      details: process.env.NODE_ENV === "development" ? error.stack : undefined,
-    }, { status: 500 });
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Error interno",
+      },
+      { status: 500 }
+    );
   }
 }
