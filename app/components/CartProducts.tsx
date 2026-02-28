@@ -98,7 +98,7 @@ const CartProducts = () => {
                   <div className="flex gap-6">
                     {/* Imagen */}
                     <Link
-                      href={`/product/${item.slug}`}
+                      href={`/${item.slug}`}
                       className="relative h-32 w-32 shrink-0 border rounded-lg overflow-hidden group"
                     >
                       <Image
@@ -113,7 +113,7 @@ const CartProducts = () => {
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
                         <Link
-                          href={`/product/${item.slug}`}
+                          href={`/${item.slug}`}
                           className="text-lg font-bold text-gray-900 hover:text-shop_light_green transition-colors line-clamp-2"
                         >
                           {item.nombre}
@@ -205,7 +205,7 @@ const CartProducts = () => {
                   <div className="flex gap-4">
                     {/* Imagen */}
                     <Link
-                      href={`/product/${item.slug}`}
+                      href={`/${item.slug}`}
                       className="relative h-24 w-24 shrink-0 border rounded-lg overflow-hidden"
                     >
                       <Image
@@ -219,7 +219,7 @@ const CartProducts = () => {
                     {/* Info */}
                     <div className="flex-1">
                       <Link
-                        href={`/product/${item.slug}`}
+                        href={`/${item.slug}`}
                         className="text-sm font-bold text-gray-900 line-clamp-2"
                       >
                         {item.nombre}

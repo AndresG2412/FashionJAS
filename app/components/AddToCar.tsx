@@ -80,8 +80,7 @@ const AddToCar = ({ product, className }: Props) => {
         className="flex-1 py-2 px-2 bg-red-500 text-white rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 hover:bg-red-600 transition-all duration-300 shadow-sm"
       >
         <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        <span className="hidden sm:inline">Quitar</span>
-        <span className="sm:hidden">✕</span>
+        <span className="inline">Quitar</span>
       </motion.button>
     </div>
   );
