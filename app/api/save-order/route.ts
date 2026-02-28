@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase/config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { reduceMultipleProductsStock } from "@/lib/firebase/admin";
+import { Resend } from "resend";
+import { AdminOrderEmail } from "@/lib/email/templates/admin-order-notification";
 
-// Definir interfaces para los datos
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 interface ShippingInfo {
   address?: string;
   city?: string;
@@ -24,17 +28,16 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { transactionId, reference, paymentData, userId } = body;
 
-    console.log("Saving order to Firebase...");
+    console.log("💾 Guardando orden en Firebase...");
     console.log("Transaction ID:", transactionId);
     console.log("Reference:", reference);
 
-    // Extraer items y shipping de metadata si existen
+    // Extraer datos
     let items: OrderItem[] = [];
-    let shippingInfo: ShippingInfo = {}; // ← Tipado correcto
+    let shippingInfo: ShippingInfo = {};
     let subtotal = 0;
     let shippingCost = 0;
 
-    // Si Wompi devuelve metadata (lo agregamos en create-payment)
     if (paymentData.metadata) {
       try {
         if (paymentData.metadata.items) {
@@ -53,24 +56,33 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Calcular totales
     const totalAmount = paymentData.amount_in_cents / 100;
-    if (subtotal === 0) {
-      subtotal = totalAmount;
-    }
+    if (subtotal === 0) subtotal = totalAmount;
     shippingCost = totalAmount - subtotal;
+
+    // 🆕 PASO 1: REDUCIR STOCK
+    console.log("📦 Reduciendo stock de productos...");
+    const stockResult = await reduceMultipleProductsStock(
+      items.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      }))
+    );
+
+    if (!stockResult.success) {
+      console.error("❌ Errores al reducir stock:", stockResult.errors);
+      // Continuar de todos modos, pero registrar el error
+    } else {
+      console.log("✅ Stock reducido correctamente");
+    }
 
     // Preparar datos del pedido
     const orderData = {
-      // ===== IDENTIFICACIÓN =====
       reference: reference || paymentData.reference,
       transactionId: transactionId,
       userId: userId || "guest",
-      
-      // ===== ESTADO DEL PEDIDO =====
       status: "pendiente",
       
-      // ===== INFORMACIÓN DEL CLIENTE =====
       customer: {
         name: paymentData.customer_data?.full_name || paymentData.billing_data?.full_name || "Cliente",
         email: paymentData.customer_email || "",
@@ -79,7 +91,6 @@ export async function POST(request: NextRequest) {
         legalIdType: paymentData.billing_data?.legal_id_type || "CC",
       },
       
-      // ===== INFORMACIÓN DE PAGO =====
       payment: {
         transactionId: transactionId,
         method: paymentData.payment_method_type,
@@ -92,23 +103,18 @@ export async function POST(request: NextRequest) {
         paymentDate: paymentData.finalized_at || paymentData.created_at,
       },
       
-      // ===== PRODUCTOS =====
-      items: items.length > 0 ? items : [
-        {
-          productId: "unknown",
-          name: "Producto",
-          price: totalAmount,
-          quantity: 1,
-          image: "",
-        }
-      ],
+      items: items.length > 0 ? items : [{
+        productId: "unknown",
+        name: "Producto",
+        price: totalAmount,
+        quantity: 1,
+        image: "",
+      }],
       
-      // ===== TOTALES =====
       total: totalAmount,
       subtotal: subtotal,
       shippingCost: shippingCost,
       
-      // ===== DIRECCIÓN DE ENVÍO (CON TIPADO CORRECTO) =====
       shipping: {
         address: shippingInfo?.address || paymentData.shipping_address?.address_line_1 || "",
         city: shippingInfo?.city || paymentData.shipping_address?.city || "",
@@ -117,15 +123,12 @@ export async function POST(request: NextRequest) {
         country: "CO",
       },
       
-      // ===== NOTAS =====
       notes: "",
       adminNotes: "",
       
-      // ===== TIMESTAMPS =====
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       
-      // ===== DATOS COMPLETOS DE WOMPI =====
       wompiData: {
         id: paymentData.id,
         paymentLinkId: paymentData.payment_link_id,
@@ -139,19 +142,48 @@ export async function POST(request: NextRequest) {
     const ordersRef = collection(db, "orders");
     const docRef = await addDoc(ordersRef, orderData);
 
-    console.log("✅ Orden guardada con exito en Firebase:", docRef.id);
-    console.log("Referencia de orden:", orderData.reference);
+    console.log("✅ Orden guardada en Firebase:", docRef.id);
+
+    // 🆕 PASO 2: ENVIAR EMAIL AL ADMIN
+    try {
+      console.log("📧 Enviando email de notificación al admin...");
+      
+      await resend.emails.send({
+        from: "GaboShop <onboarding@resend.dev>", // Cambiar en producción
+        to: process.env.ADMIN_EMAIL!,
+        subject: `🎉 Nuevo Pedido #${orderData.reference}`,
+        react: await AdminOrderEmail({
+          reference: orderData.reference,
+          customerName: orderData.customer.name,
+          customerEmail: orderData.customer.email,
+          customerPhone: orderData.customer.phone,
+          items: orderData.items,
+          total: orderData.total,
+          subtotal: orderData.subtotal,
+          shippingCost: orderData.shippingCost,
+          shippingAddress: orderData.shipping.address,
+          city: orderData.shipping.city,
+          state: orderData.shipping.state,
+        }),
+      });
+
+      console.log("✅ Email enviado correctamente");
+    } catch (emailError: any) {
+      console.error("❌ Error enviando email:", emailError);
+      // No fallar la orden si el email falla
+    }
 
     return NextResponse.json({
       success: true,
       orderId: docRef.id,
       reference: orderData.reference,
       message: "Pedido guardado correctamente",
+      stockReduced: stockResult.success,
+      stockErrors: stockResult.errors,
     });
 
   } catch (error: any) {
-    console.error("❌ Error de guardado en Firebase:", error);
-    console.error("Detalles de Error:", error.message);
+    console.error("❌ Error guardando orden:", error);
     
     return NextResponse.json({
       success: false,

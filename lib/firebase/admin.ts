@@ -519,3 +519,58 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
     return null;
   }
 }
+
+// ==================== GESTIÓN DE STOCK ====================
+
+export async function reduceProductStock(
+  productId: string,
+  quantity: number
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const productRef = doc(db, "productos", productId);
+    const productSnap = await getDoc(productRef);
+
+    if (!productSnap.exists()) {
+      return { success: false, error: `Producto ${productId} no encontrado` };
+    }
+
+    const currentStock = productSnap.data().stock || 0;
+
+    if (currentStock < quantity) {
+      return {
+        success: false,
+        error: `Stock insuficiente para ${productSnap.data().nombre}. Disponible: ${currentStock}, Solicitado: ${quantity}`,
+      };
+    }
+
+    // Reducir stock
+    await updateDoc(productRef, {
+      stock: currentStock - quantity,
+    });
+
+    console.log(`✅ Stock reducido: ${productSnap.data().nombre} - ${quantity} unidades`);
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error reduciendo stock:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Reducir stock de múltiples productos
+export async function reduceMultipleProductsStock(
+  items: Array<{ productId: string; quantity: number }>
+): Promise<{ success: boolean; errors: string[] }> {
+  const errors: string[] = [];
+
+  for (const item of items) {
+    const result = await reduceProductStock(item.productId, item.quantity);
+    if (!result.success) {
+      errors.push(result.error || "Error desconocido");
+    }
+  }
+
+  return {
+    success: errors.length === 0,
+    errors,
+  };
+}
