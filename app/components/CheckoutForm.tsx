@@ -9,7 +9,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import { ArrowLeft, Loader2, Package, MapPin, Phone, Mail } from "lucide-react";
+import { ArrowLeft, Loader2, Package, MapPin, Mail } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -27,8 +27,8 @@ const CheckoutForm = () => {
     email: user?.emailAddresses[0]?.emailAddress || "",
     telefono: "",
     direccion: "",
-    ciudad: "",
-    departamento: "",
+    ciudad: "Cali",
+    departamento: "Valle del Cauca",
     codigoPostal: "",
     notas: "",
   });
@@ -66,6 +66,41 @@ const CheckoutForm = () => {
     setLoading(true);
 
     try {
+      // 🔥 PREPARAR DATOS DEL PEDIDO
+      const shipping = {
+        address: formData.direccion,
+        city: formData.ciudad,
+        state: formData.departamento,
+        postalCode: formData.codigoPostal,
+        cost: envio,
+      };
+
+      const items = cartItems.map(item => ({
+        productId: item.id,
+        name: item.nombre,
+        price: item.precio,
+        quantity: item.quantity,
+        image: item.imagenes[0],
+      }));
+
+      // 🔥 GUARDAR EN LOCALSTORAGE ANTES DE IR A WOMPI
+      localStorage.setItem("pendingOrder", JSON.stringify({
+        shipping,
+        items,
+        subtotal,
+        customer: {
+          name: `${formData.nombre} ${formData.apellido}`,
+          email: formData.email,
+          phone: formData.telefono,
+        },
+      }));
+
+      console.log("💾 Datos guardados en localStorage:", {
+        shipping,
+        items,
+        subtotal,
+      });
+
       // Crear la transacción en Wompi
       const response = await fetch("/api/create-payment", {
         method: "POST",
@@ -79,39 +114,16 @@ const CheckoutForm = () => {
             email: formData.email,
             phone: formData.telefono,
           },
-          shipping: {
-            address: formData.direccion,
-            city: formData.ciudad,
-            state: formData.departamento,
-            postalCode: formData.codigoPostal,
-            cost: envio, // ← AGREGAR
-          },
-          items: cartItems.map(item => ({
-            productId: item.id,
-            name: item.nombre,
-            price: item.precio,
-            quantity: item.quantity,
-            image: item.imagenes[0], // ← AGREGAR imagen
-          })),
+          shipping,
+          items,
           userId: user?.id,
-          subtotal: subtotal, // ← AGREGAR
+          subtotal,
         }),
       });
 
       const data = await response.json();
 
       if (data.success && data.paymentUrl) {
-
-        localStorage.setItem("pendingOrder", JSON.stringify({
-          shipping: {
-            address: formData.direccion,
-            city: formData.ciudad,
-            state: formData.departamento,
-            postalCode: formData.codigoPostal,
-          },
-          items: cartItems,
-          subtotal: subtotal,
-        }));
         // Redirigir a Wompi
         window.location.href = data.paymentUrl;
       } else {
@@ -165,7 +177,7 @@ const CheckoutForm = () => {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="nombre"  className="pb-2">Nombre *</Label>
+                    <Label htmlFor="nombre" className="pb-2">Nombre *</Label>
                     <Input
                       id="nombre"
                       name="nombre"
@@ -176,7 +188,7 @@ const CheckoutForm = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="apellido"  className="pb-2">Apellido *</Label>
+                    <Label htmlFor="apellido" className="pb-2">Apellido *</Label>
                     <Input
                       id="apellido"
                       name="apellido"
@@ -187,7 +199,7 @@ const CheckoutForm = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email"  className="pb-2">Email *</Label>
+                    <Label htmlFor="email" className="pb-2">Email *</Label>
                     <Input
                       id="email"
                       name="email"
@@ -199,7 +211,7 @@ const CheckoutForm = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="telefono"  className="pb-2">Teléfono *</Label>
+                    <Label htmlFor="telefono" className="pb-2">Teléfono *</Label>
                     <Input
                       id="telefono"
                       name="telefono"
@@ -221,7 +233,7 @@ const CheckoutForm = () => {
                 </h2>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="direccion"  className="pb-2">Dirección Completa *</Label>
+                    <Label htmlFor="direccion" className="pb-2">Dirección Completa *</Label>
                     <Input
                       id="direccion"
                       name="direccion"
@@ -233,7 +245,7 @@ const CheckoutForm = () => {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor="ciudad"  className="pb-2">Ciudad *</Label>
+                      <Label htmlFor="ciudad" className="pb-2">Ciudad *</Label>
                       <Input
                         id="ciudad"
                         name="ciudad"
@@ -244,7 +256,7 @@ const CheckoutForm = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="departamento"  className="pb-2">Departamento *</Label>
+                      <Label htmlFor="departamento" className="pb-2">Departamento *</Label>
                       <Input
                         id="departamento"
                         name="departamento"
@@ -255,7 +267,7 @@ const CheckoutForm = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="codigoPostal"  className="pb-2">Código Postal</Label>
+                      <Label htmlFor="codigoPostal" className="pb-2">Código Postal</Label>
                       <Input
                         id="codigoPostal"
                         name="codigoPostal"
@@ -266,7 +278,7 @@ const CheckoutForm = () => {
                     </div>
                   </div>
                   <div>
-                    <Label htmlFor="notas"  className="pb-2">Notas del Pedido (Opcional)</Label>
+                    <Label htmlFor="notas" className="pb-2">Notas del Pedido (Opcional)</Label>
                     <Textarea
                       id="notas"
                       name="notas"

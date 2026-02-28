@@ -24,7 +24,6 @@ const statusLabels: Record<string, string> = {
   cancelado: "Cancelado",
 };
 
-// Función para asegurar URL correcta
 const safeImageUrl = (url?: string) => {
   if (!url || typeof url !== "string") return "/placeholder.png";
   try {
@@ -48,8 +47,6 @@ const ListaPedidos = () => {
   const loadMore = () => {
     setVisibleOrders((prev) => Math.min(prev + 3, orders.length));
   };
-
-  /* ================= CANCEL ================= */
 
   const handleCancelRequest = (order: Order) => {
     toast((t) => (
@@ -90,11 +87,15 @@ const ListaPedidos = () => {
         <p className="font-semibold">¿Cómo deseas solicitar la cancelación?</p>
 
         <div className="flex flex-col gap-2">
-          <a href={`https://wa.me/573157870130?text=${message}`} target="_blank" rel="noopener noreferrer">
+          <Link
+            href={`https://wa.me/573157870130?text=${message}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
               WhatsApp
             </Button>
-          </a>
+          </Link>
           <Button variant="outline" onClick={() => toast.dismiss(t.id)}>
             Cancelar
           </Button>
@@ -102,8 +103,6 @@ const ListaPedidos = () => {
       </div>
     ));
   };
-
-  /* ================= UI ================= */
 
   return (
     <>
@@ -118,7 +117,7 @@ const ListaPedidos = () => {
               </p>
             </div>
 
-            {/* ================= PC ================= */}
+            {/* ================= DESKTOP ================= */}
             <div className="hidden md:block overflow-hidden bg-white rounded-xl shadow-sm border border-gray-100">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
@@ -153,21 +152,21 @@ const ListaPedidos = () => {
 
                       <td className="p-4">
                         <div className="flex gap-2">
-                          {order.items.slice(0, 3).map((item, i) => (
+                          {order.items?.slice(0, 3).map((item, i) => (
                             <div
                               key={i}
                               className="relative w-12 h-12 border rounded-lg overflow-hidden bg-gray-100"
                             >
                               <Image
-                                src={safeImageUrl(item.image)}
-                                alt={item.name}
+                                src={safeImageUrl(item?.image)}
+                                alt={item?.name || "Producto"}
                                 fill
                                 className="object-cover"
                                 unoptimized
                               />
                             </div>
                           ))}
-                          {order.items.length > 3 && (
+                          {order.items?.length > 3 && (
                             <div className="w-12 h-12 border rounded-lg bg-gray-100 flex items-center justify-center">
                               <span className="text-xs font-semibold text-gray-600">
                                 +{order.items.length - 3}
@@ -188,7 +187,7 @@ const ListaPedidos = () => {
                       </td>
 
                       <td className="p-4 font-bold text-gray-900">
-                        {order.total.toLocaleString("es-CO", {
+                        {order.total?.toLocaleString("es-CO", {
                           style: "currency",
                           currency: "COP",
                           minimumFractionDigits: 0,
@@ -243,22 +242,22 @@ const ListaPedidos = () => {
                   </div>
 
                   <div className="flex gap-2 overflow-x-auto">
-                    {order.items.slice(0, 4).map((item, i) => (
+                    {order.items?.slice(0, 4).map((item, i) => (
                       <div
                         key={i}
-                        className="relative w-16 h-16 shrink-0 border rounded-lg overflow-hidden bg-gray-100"
+                        className="relative w-16 h-16 hrink-0 border rounded-lg overflow-hidden bg-gray-100"
                       >
                         <Image
-                          src={safeImageUrl(item.image)}
-                          alt={item.name}
+                          src={safeImageUrl(item?.image)}
+                          alt={item?.name || "Producto"}
                           fill
                           className="object-cover"
                           unoptimized
                         />
                       </div>
                     ))}
-                    {order.items.length > 4 && (
-                      <div className="w-16 h-16 shrink-0 border rounded-lg bg-gray-100 flex items-center justify-center">
+                    {order.items?.length > 4 && (
+                      <div className="w-16 h-16 hrink-0 border rounded-lg bg-gray-100 flex items-center justify-center">
                         <span className="text-xs font-semibold text-gray-600">
                           +{order.items.length - 4}
                         </span>
@@ -267,7 +266,7 @@ const ListaPedidos = () => {
                   </div>
 
                   <p className="font-black text-blue-600">
-                    {order.total.toLocaleString("es-CO", {
+                    {order.total?.toLocaleString("es-CO", {
                       style: "currency",
                       currency: "COP",
                       minimumFractionDigits: 0,
@@ -335,7 +334,7 @@ const ListaPedidos = () => {
             {/* Content */}
             <div className="p-6 space-y-6 overflow-y-auto flex-1">
               {/* Estado y fecha */}
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center flex-wrap gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Estado:</p>
                   <span
@@ -363,30 +362,30 @@ const ListaPedidos = () => {
               {/* Productos */}
               <div>
                 <h3 className="font-bold text-gray-900 mb-3">
-                  Productos ({selectedOrder.items.length})
+                  Productos ({selectedOrder.items?.length || 0})
                 </h3>
                 <div className="space-y-3">
-                  {selectedOrder.items.map((item, i) => (
+                  {selectedOrder.items?.map((item, i) => (
                     <div
                       key={i}
                       className="flex gap-4 p-3 border rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      <div className="relative w-20 h-20 shrink-0 border rounded-lg overflow-hidden bg-gray-100">
+                      <div className="relative w-20 h-20 hrink-0 border rounded-lg overflow-hidden bg-gray-100">
                         <Image
-                          src={safeImageUrl(item.image)}
-                          alt={item.name}
+                          src={safeImageUrl(item?.image)}
+                          alt={item?.name || "Producto"}
                           fill
                           className="object-cover"
                           unoptimized
                         />
                       </div>
                       <div className="flex-1">
-                        <p className="font-semibold text-gray-900">{item.name}</p>
+                        <p className="font-semibold text-gray-900">{item?.name || "Sin nombre"}</p>
                         <p className="text-sm text-gray-600 mt-1">
-                          Cantidad: <span className="font-semibold">{item.quantity}</span>
+                          Cantidad: <span className="font-semibold">{item?.quantity || 0}</span>
                         </p>
                         <p className="text-sm font-bold text-gray-900 mt-1">
-                          {(item.price * item.quantity).toLocaleString("es-CO", {
+                          {((item?.price || 0) * (item?.quantity || 0)).toLocaleString("es-CO", {
                             style: "currency",
                             currency: "COP",
                             minimumFractionDigits: 0,
@@ -403,7 +402,7 @@ const ListaPedidos = () => {
                 <div>
                   <h3 className="font-bold text-gray-900 mb-2">Dirección de envío:</h3>
                   <div className="p-4 bg-gray-50 rounded-lg">
-                    <p className="text-gray-900">{selectedOrder.shipping.address}</p>
+                    <p className="text-gray-900">{selectedOrder.shipping.address || "No especificada"}</p>
                     <p className="text-gray-700 mt-1">
                       {selectedOrder.shipping.city}, {selectedOrder.shipping.state}
                     </p>
@@ -419,7 +418,7 @@ const ListaPedidos = () => {
                 <div className="flex justify-between text-gray-700">
                   <span>Subtotal:</span>
                   <span className="font-semibold">
-                    {selectedOrder.subtotal.toLocaleString("es-CO", {
+                    {(selectedOrder.subtotal || 0).toLocaleString("es-CO", {
                       style: "currency",
                       currency: "COP",
                       minimumFractionDigits: 0,
@@ -429,9 +428,9 @@ const ListaPedidos = () => {
                 <div className="flex justify-between text-gray-700">
                   <span>Envío:</span>
                   <span className="font-semibold">
-                    {selectedOrder.shippingCost === 0
+                    {(selectedOrder.shippingCost || 0) === 0
                       ? "GRATIS"
-                      : selectedOrder.shippingCost.toLocaleString("es-CO", {
+                      : (selectedOrder.shippingCost || 0).toLocaleString("es-CO", {
                           style: "currency",
                           currency: "COP",
                           minimumFractionDigits: 0,
@@ -441,7 +440,7 @@ const ListaPedidos = () => {
                 <div className="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t">
                   <span>Total:</span>
                   <span>
-                    {selectedOrder.total.toLocaleString("es-CO", {
+                    {(selectedOrder.total || 0).toLocaleString("es-CO", {
                       style: "currency",
                       currency: "COP",
                       minimumFractionDigits: 0,
