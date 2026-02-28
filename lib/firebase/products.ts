@@ -128,3 +128,8 @@ export async function getProductsByIds(ids: string[]): Promise<Productos[]> {
 
   return results;
 }
+
+import { searchProductsAdmin } from './admin';
+
+// Re-exportar para usar en el cliente
+export { searchProductsAdmin };

@@ -2,16 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import Container from "./Container";
-import Title from "./Title";
 import CategoryList from "./shop/CategoryList";
 import PriceList from "./shop/PriceList";
 import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
-import { getFilteredProducts, getAllProducts } from "@/lib/firebase/products";
+import { getFilteredProducts, getAllProducts, searchProductsAdmin } from "@/lib/firebase/products";
 import type { Productos } from "@/lib/firebase/products";
 import type { Category } from "@/lib/firebase/categories";
 import { motion } from "motion/react";
+import SearchBar from "./SearchBar";
 
 interface Props {
   categories: Category[];
@@ -22,30 +22,36 @@ const Shop = ({ categories }: Props) => {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState<string>("");
 
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let minPrice = 0;
-      // IMPORTANTE: Un número muy alto para cubrir precios en COP (ej. 100 millones)
-      let maxPrice = 100000000; 
-
-      if (selectedPrice) {
-        const [min, max] = selectedPrice.split("-").map(Number);
-        minPrice = min;
-        maxPrice = max;
-      }
-
       let data: Productos[];
-      
-      // Si hay algún filtro activo, llamamos a la función filtrada
-      if (selectedCategory || selectedPrice) {
+
+      // PRIORIDAD 1: Búsqueda por nombre
+      if (searchText) {
+        data = await searchProductsAdmin("nombre", searchText);
+      }
+      // PRIORIDAD 2: Filtros (categoría y/o precio)
+      else if (selectedCategory || selectedPrice) {
+        let minPrice = 0;
+        let maxPrice = 100000000;
+
+        if (selectedPrice) {
+          const [min, max] = selectedPrice.split("-").map(Number);
+          minPrice = min;
+          maxPrice = max;
+        }
+
         data = await getFilteredProducts({
-          category: selectedCategory, // Aquí pasas el slug (ej: "celulares")
+          category: selectedCategory,
           minPrice,
           maxPrice,
         });
-      } else {
+      }
+      // PRIORIDAD 3: Todos los productos
+      else {
         data = await getAllProducts();
       }
 
@@ -59,12 +65,20 @@ const Shop = ({ categories }: Props) => {
 
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory, selectedPrice]);
+  }, [selectedCategory, selectedPrice, searchText]);
+
+  const handleSearch = (text: string) => {
+    // Limpiar filtros cuando se busca por nombre
+    if (text) {
+      setSelectedCategory(null);
+      setSelectedPrice(null);
+    }
+    setSearchText(text);
+  };
 
   return (
     <div className="border-t">
       <Container className="mt-5">
-
         <div className="flex flex-col md:flex-row gap-5 border-t-0 md:border-t border-t-shop_dark_green/50">
           {/* Sidebar de filtros */}
           <div className="border-b md:border-b-0 border-b-shop_btn_dark_green/50 md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 md:border-r border-r-shop_btn_dark_green/50 scrollbar-hide space-y-4">
@@ -82,28 +96,71 @@ const Shop = ({ categories }: Props) => {
           {/* Grid de productos */}
           <div className="flex-1 pt-5">
             <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide">
+              {/* Indicador de búsqueda activa */}
+              {searchText && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
+                  <p className="text-sm text-blue-700">
+                    Resultados para: <span className="font-bold">"{searchText}"</span>
+                  </p>
+                  <button
+                    onClick={() => handleSearch("")}
+                    className="text-xs text-blue-600 hover:underline"
+                  >
+                    Limpiar búsqueda
+                  </button>
+                </div>
+              )}
+
               {loading ? (
                 <div className="p-20 flex flex-col gap-2 items-center justify-center bg-white rounded-lg">
                   <Loader2 className="w-10 h-10 text-shop_dark_green animate-spin" />
                   <p className="font-semibold tracking-wide text-base">
-                    Cargando productos...
+                    {searchText ? "Buscando productos..." : "Cargando productos..."}
                   </p>
                 </div>
               ) : products?.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
-                  {products?.map((product) => (
-                    <motion.div
-                      key={product.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <ProductCard product={product} />
-                    </motion.div>
-                  ))}
-                </div>
+                <>  
+                  <div className="mb-10">
+                    <SearchBar onSearch={handleSearch} isSearching={loading} />
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                    {products?.map((product) => (
+                      <motion.div
+                        key={product.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <ProductCard product={product} />
+                      </motion.div>
+                    ))}
+                  </div>
+                </>
               ) : (
-                <NoProductAvailable className="bg-white mt-0" selectedTab="todos" />
+                <div className="bg-white rounded-lg p-12 text-center">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Loader2 className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    {searchText
+                      ? `No se encontraron productos con "${searchText}"`
+                      : "No hay productos disponibles"}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    {searchText
+                      ? "Intenta con otras palabras clave"
+                      : "Prueba ajustando los filtros"}
+                  </p>
+                  {searchText && (
+                    <button
+                      onClick={() => handleSearch("")}
+                      className="px-6 py-2 bg-shop_light_green text-white rounded-lg hover:bg-shop_dark_green transition-colors"
+                    >
+                      Ver todos los productos
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>

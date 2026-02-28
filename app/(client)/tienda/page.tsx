@@ -1,5 +1,6 @@
 import Shop from "@/app/components/Shop";
 import { getAllCategories } from "@/lib/firebase/categories";
+import Container from "@/app/components/Container";
 
 export const metadata = {
   title: "Tienda - GaboShop",
@@ -10,9 +11,9 @@ const ShopPage = async () => {
   const categories = await getAllCategories();
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <Container>
       <Shop categories={categories} />
-    </div>
+    </Container>
   );
 };
 
