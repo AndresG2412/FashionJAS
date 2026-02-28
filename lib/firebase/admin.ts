@@ -478,14 +478,23 @@ export async function getAdminStats() {
 
 // ==================== PRODUCTOS POR CATEGORÍA ====================
 
-export async function getProductsByCategory(categorySlug: string): Promise<Productos[]> {
+export async function getProductsByCategory(categorySlug: string, categoryTitle?: string): Promise<Productos[]> {
   try {
     const productsRef = collection(db, 'productos');
+    
+    // Creamos un array de términos de búsqueda para cubrir ambos casos
+    const searchTerms = [categorySlug];
+    if (categoryTitle && categoryTitle !== categorySlug) {
+      searchTerms.push(categoryTitle);
+    }
+
     const q = query(
       productsRef,
-      where('categorias', 'array-contains', categorySlug),
+      // Usamos array-contains-any para buscar el slug O el título
+      where('categorias', 'array-contains-any', searchTerms),
       orderBy('nombre', 'asc')
     );
+    
     const snapshot = await getDocs(q);
     
     return snapshot.docs.map(doc => ({

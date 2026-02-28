@@ -1,7 +1,6 @@
 import { getProductsByCategory, getCategoryBySlug } from '@/lib/firebase/admin';
 import Container from '@/app/components/Container';
 import ProductCard from '@/app/components/ProductCard';
-import CopyButton from '@/app/components/CopyButton'; // ← Importar
 import { notFound } from 'next/navigation';
 import { Tag, Package, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -13,18 +12,16 @@ interface Props {
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
   
-  // Obtener categoría y productos
-  const [category, products] = await Promise.all([
-    getCategoryBySlug(slug),
-    getProductsByCategory(slug),
-  ]);
+  // 1. Obtenemos primero la categoría
+  const category = await getCategoryBySlug(slug);
 
   // Si la categoría no existe, mostrar 404
   if (!category) {
     notFound();
   }
 
-  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://gaboshop.com'}/categoria/${slug}`;
+  // 2. Ahora obtenemos los productos usando el slug Y el título
+  const products = await getProductsByCategory(slug, category.titulo);
 
   return (
     <div className="min-h-screen bg-gray-50">
