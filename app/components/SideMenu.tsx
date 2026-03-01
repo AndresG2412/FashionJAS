@@ -30,18 +30,18 @@ const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
     return (
         <div 
             onClick={onClose} 
-            className={`fixed inset-y-0 h-screen left-0 z-50 w-full bg-black/50 text-white/70 shadow-2xl transition-transform duration-300 ${
+            className={`fixed inset-y-0 h-screen left-0 z-50 w-full bg-shop-darkColor/50 text-shop-whiteColor/70 shadow-2xl transition-transform duration-300 ${
                 isOpen ? 'translate-x-0' : '-translate-x-full'
             }`}
         >
             <div 
                 ref={sidebarRef} // Añadimos el ref aquí para el hook useOutsideClick
                 onClick={(e) => e.stopPropagation()} 
-                className='min-w-72 max-w-96 bg-black h-screen p-10 border-r border-shop_light_green flex flex-col gap-6'
+                className='min-w-72 max-w-96 bg-shop-darkColor h-screen p-10 border-r border-shop-light-green flex flex-col gap-6'
             >
-                <div className='flex items-center justify-between gap-5 border-b-2 pb-2 border-shop_light_green'>
-                    <Logo className="text-white" spanDesing="group-hover:text-white "/>
-                    <button onClick={onClose} className='hover:text-shop_light_green transition-colors'>
+                <div className='flex items-center justify-between gap-5 border-b-2 pb-2 border-shop-light-green'>
+                    <Logo className="text-shop-whiteColor" spanDesing="group-hover:text-shop-whiteColor "/>
+                    <button onClick={onClose} className='hover:text-shop-liborder-shop-light-green transition-colors'>
                         <X size={24} />
                     </button>
                 </div>
@@ -53,7 +53,7 @@ const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
                             key={item?.title} 
                             // CLAVE: Al hacer clic en el link, ejecutamos onClose
                             onClick={onClose} 
-                            className={`hover:text-shop_light_green hoverEffect ${
+                            className={`hover:text-shop-liborder-shop-light-green hoverEffect ${
                                 pathname === item?.href ? 'text-white' : ''
                             }`}
                         >

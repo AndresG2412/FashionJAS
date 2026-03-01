@@ -10,9 +10,9 @@ const CartIcon = () => {
   
   return (
     <Link href="/cart" className="group relative">
-      <ShoppingBag className="w-5 h-5 hover:text-shop_light_green transition-colors" />
+      <ShoppingBag className="w-5 h-5 hover:text-shop-light-green transition-colors" />
       {totalItems > 0 && (
-        <span className="absolute -top-2 -right-2 bg-shop_dark_green text-white h-5 w-5 rounded-full text-xs font-semibold flex items-center justify-center">
+        <span className="absolute -top-2 -right-2 bg-shop-dark-green text-shop-whiteColor h-5 w-5 rounded-full text-xs font-semibold flex items-center justify-center">
           {totalItems}
         </span>
       )}
