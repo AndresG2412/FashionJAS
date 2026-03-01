@@ -12,13 +12,14 @@
   --color-shop_btn_dark_green: #036d29;
   --color-shop_light_bg: #f6f6f6;
   --color-shop_orange: #fb6c08;
-  --color-shop-whiteColor: #F8F8FB;
-  --color-shop-darkColor: #151515;
+  --color-shop-whiteColor: #FEFEFA;
+  --color-shop-darkColor: #121214;
   --color-shop-lightColor: #52525b;
   --color-lightOrange: #fca99b;
   --color-lightBlue: #7688DB;
   --color-darkBlue: #6c7fd8;
   --color-darkText: #686e7d;
+  --color-shop-darkText: #686e7d;
   --color-lightText: #ababab;
   --color-shop-lightBg: #F8F8FB;
   --color-darkRed: #F02757;
@@ -29,7 +30,7 @@
   --color-shop-light-green: #3b9c3c;
   --color-shop-btn-dark-green: #036d29;
   --color-shop-light-bg: #f6f6f6;
-  --color-shop-orange: #fb6c08; 
+  --color-shop-orange: #fb6c08;
 }
 
 @theme inline {
