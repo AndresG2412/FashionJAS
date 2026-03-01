@@ -12,18 +12,15 @@ export const metadata: Metadata = {
 
 import AuthSync from './components/AuthSync';
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+// ... otros imports
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="es">
-        <body>
+      <html lang="es" className="dark" style={{ colorScheme: 'dark' }}>
+        <body className=" antialiased">
           <AuthSync />
           {children}
-          <Toaster position="top-right" />
+          <Toaster position="top-center" />
         </body>
       </html>
     </ClerkProvider>
