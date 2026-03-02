@@ -11,6 +11,7 @@
   --color-danashop-bgColorCard: #1C182D;      /* Fondo de tarjetas y secciones */
   --color-danashop-borderColor: #2D2845;      /* Bordes y separadores sutiles */
 
+  --color-danashop-brandHover: #7C3AED;       /* Morado más oscuro para hover en botones */
   --color-danashop-brandMain: #8B5CF6;        /* Morado vibrante para botones y logos */
   --color-danashop-brandSoft: #A78BFA;        /* Morado suave para estados hover o iconos */
   
@@ -18,7 +19,10 @@
   --color-danashop-accentHighlight: #FBBF24;  /* Ámbar para ofertas o ratings */
 
   --color-danashop-textPrimary: #F3F4F6;      /* Blanco grisáceo para lectura cómoda */
-  --color-danashop-textSecondary: #9CA3AF;
+  --color-danashop-textSecondary: #9CA3AF;    /* Gris claro para subtítulos o info menos importante */
+  --color-danashop-textMuted: #6B7280;        /* Gris medio para descripciones o info secundaria */
+  --color-danashop-textDisabled: #4B5563;     /* Gris oscuro para texto deshabilitado */
+  --color-danashop-textDark: #111827;         /* Gris muy oscuro para texto sobre fondos claros */
   
   --color-danashop-error: #EF4444;            /* Rojo para errores críticos (pago fallido) */
   --color-danashop-warning: #F59E0B;          /* Naranja para "Pocas unidades" o "Stock bajo" */

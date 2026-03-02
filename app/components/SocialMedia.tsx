@@ -46,14 +46,14 @@ const SocialMedia = ({className, iconClassName, tooltipClassName}:Props) => {
                     <Tooltip key={item?.tittle}>
                         <TooltipTrigger asChild>
                             <Link href={item?.href} target='_blank' rel='noopener noreferrer' 
-                            className={cn("p-2 border rounded-full hover:text-white hover:border-shop_light_green hoverEffect", iconClassName)}>
+                            className={cn("p-2 border rounded-full hover:text-danashop-textPrimary hover:border-danashop-brandSoft hoverEffect", iconClassName)}>
                                 {item?.icon}
                             </Link>
                         </TooltipTrigger>
                         <TooltipContent>
                             {item?.tittle}
                         </TooltipContent>
-                        <TooltipContent className={cn("bg-white text-black font-semibold", tooltipClassName)}>
+                        <TooltipContent className={cn("bg-black text-white font-semibold", tooltipClassName)}>
                             {item?.tittle}
                         </TooltipContent>
                     </Tooltip>
