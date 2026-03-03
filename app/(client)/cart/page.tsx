@@ -1,6 +1,7 @@
 import CartProducts from "@/app/components/CartProducts";
 import NoAccess from "@/app/components/NoAccess";
 import { auth } from "@clerk/nextjs/server";
+import Container from "@/app/components/Container";
 
 export const metadata = {
   title: "Carrito - GaboShop",
@@ -11,7 +12,7 @@ const CartPage = async () => {
   const { userId } = await auth();
 
   return (
-    <div className="bg-gray-50 min-h-screen py-10">
+    <Container>
       {userId ? (
         <CartProducts />
       ) : (
@@ -19,7 +20,7 @@ const CartPage = async () => {
           details="Inicia sesión para ver tu carrito y finalizar tu compra. ¡Tus productos te están esperando!" 
         />
       )}
-    </div>
+    </Container>
   );
 };
 

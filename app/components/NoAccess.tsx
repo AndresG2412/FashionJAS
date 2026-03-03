@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ShieldAlert } from "lucide-react";
 import { Button } from "./ui/button";
+import { SignInButton } from '@clerk/nextjs'
 
 interface Props {
   details: string;
@@ -15,20 +16,22 @@ const NoAccess = ({ details }: Props) => {
       </div>
       
       <div className="space-y-2">
-        <h2 className="text-2xl font-semibold tracking-tight">
+        <h2 className="text-2xl font-semibold tracking-tight text-danashop-textPrimary">
           Acceso Restringido
         </h2>
-        <p className="text-sm text-gray-600 max-w-md">
+        <p className="text-sm text-danashop-textPrimary/60 max-w-md">
           {details}
         </p>
       </div>
 
       <div className="flex gap-3">
-        <Button asChild variant="default">
-          <Link href="/sign-in">Iniciar Sesión</Link>
-        </Button>
+        <SignInButton mode='modal'>
+          <button className="bg-danashop-brandHover cursor-pointer px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-danashop-brandHover/60 transition-colors">
+            <p>Iniciar Sesión</p>
+          </button>
+        </SignInButton>
         <Button asChild variant="outline">
-          <Link href="/tienda">Ir a la Tienda</Link>
+          <Link href="/tienda" className="text-danashop-textPrimary">Ir a la Tienda</Link>
         </Button>
       </div>
     </div>

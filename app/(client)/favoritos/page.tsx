@@ -1,6 +1,7 @@
 import NoAccess from "@/app/components/NoAccess";
 import WishListProducts from "@/app/components/WishListProducts";
 import { auth } from "@clerk/nextjs/server";
+import Container from "@/app/components/Container";
 
 export const metadata = {
   title: "Favoritos - GaboShop",
@@ -11,7 +12,7 @@ const FavoritosPage = async () => {
   const { userId } = await auth();
 
   return (
-    <div className="bg-gray-50 min-h-screen py-10">
+    <Container>
       {userId ? (
         <WishListProducts />
       ) : (
@@ -19,7 +20,7 @@ const FavoritosPage = async () => {
           details="Inicia sesión para ver tus productos favoritos. ¡No pierdas de vista los productos que te gustan!" 
         />
       )}
-    </div>
+    </Container>
   );
 };
 
