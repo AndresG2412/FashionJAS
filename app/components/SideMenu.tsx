@@ -30,18 +30,18 @@ const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
     return (
         <div 
             onClick={onClose} 
-            className={`fixed inset-y-0 h-screen left-0 z-50 w-full bg-shop-darkColor/50 text-shop-whiteColor/70 shadow-2xl transition-transform duration-300 ${
+            className={`fixed inset-y-0 h-screen left-0 z-50 w-full bg-danashop-textDark/50 text-danashop-textPrimary/70 shadow-2xl transition-transform duration-300 ${
                 isOpen ? 'translate-x-0' : '-translate-x-full'
             }`}
         >
             <div 
                 ref={sidebarRef} // Añadimos el ref aquí para el hook useOutsideClick
                 onClick={(e) => e.stopPropagation()} 
-                className='min-w-72 max-w-96 bg-shop-darkColor h-screen p-10 border-r border-shop-light-green flex flex-col gap-6'
+                className='min-w-72 max-w-96 bg-danashop-textDark h-screen p-10 border-r border-danashop-brandSoft flex flex-col gap-6'
             >
-                <div className='flex items-center justify-between gap-5 border-b-2 pb-2 border-shop-light-green'>
-                    <Logo className="text-shop-whiteColor" spanDesing="group-hover:text-shop-whiteColor "/>
-                    <button onClick={onClose} className='hover:text-shop-liborder-shop-light-green transition-colors'>
+                <div className='flex items-center justify-between gap-5 border-b-2 pb-2 border-danashop-brandSoft'>
+                    <Logo className="text-danashop-brandMain" spanDesing="group-hover:text-danashop-brandMain "/>
+                    <button onClick={onClose} className='hover:text-danashop-brandSoft border-danashop-brandSoft transition-colors'>
                         <X size={24} />
                     </button>
                 </div>
@@ -53,8 +53,8 @@ const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
                             key={item?.title} 
                             // CLAVE: Al hacer clic en el link, ejecutamos onClose
                             onClick={onClose} 
-                            className={`hover:text-shop-liborder-shop-light-green hoverEffect ${
-                                pathname === item?.href ? 'text-white' : ''
+                            className={`hover:text-danashop-brandSoft border-danashop-brandSoft hoverEffect ${
+                                pathname === item?.href ? 'text-danashop-textPrimary' : ''
                             }`}
                         >
                             {item?.title}
