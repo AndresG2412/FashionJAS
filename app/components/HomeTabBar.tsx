@@ -17,13 +17,17 @@ const HomeTabBar = ({ selectedTab, onTabSelect }: Props) => {
             <button
               onClick={() => onTabSelect(item?.value)}
               key={item?.value}
-              className={`border border-shop_light_green/30 px-4 py-1.5 md:px-6 md:py-2 rounded-full hover:bg-shop_light_green hover:border-shop_light_green hover:text-white hoverEffect whitespace-nowrap text-sm font-semibold transition-all ${
+              // 1. Agregamos la clase 'group' y quitamos 'hover:scale-110' del botón
+              className={`group cursor-pointer border-2 hoverEffect border-danashop-brandSoft/30 px-4 py-1.5 md:px-6 md:py-2 rounded-full hover:bg-danashop-brandHover hover:border-shop_light_green hover:text-white whitespace-nowrap text-sm font-semibold transition-all ${
                 selectedTab === item?.value
-                  ? "bg-shop_light_green text-white border-shop_light_green"
-                  : "bg-shop_light_green/10"
+                  ? "bg-danashop-brandHover text-danashop-textPrimary border-danashop-brandSoft border-2"
+                  : "bg-danashop-brandSoft/10"
               }`}
             >
-              {item?.title}
+              {/* 2. Aplicamos el scale solo aquí usando group-hover */}
+              <span className="block transition-transform duration-300 group-hover:scale-105">
+                {item?.title}
+              </span>
             </button>
           ))}
         </div>
@@ -32,7 +36,7 @@ const HomeTabBar = ({ selectedTab, onTabSelect }: Props) => {
       {/* Botón "Mostrar Todos" */}
       <Link
         href={"/tienda"}
-        className="border border-darkColor px-4 py-1.5 md:px-6 md:py-2 rounded-full hover:bg-shop_light_green hover:text-white hover:border-shop_light_green hoverEffect text-sm font-semibold whitespace-nowrap transition-all shrink-0"
+        className="border-2 border-danashop-brandSoft/30 bg-danashop-brandSoft/10 px-4 py-1.5 md:px-6 md:py-2 rounded-full hover:bg-danashop-brandHover text-danashop-textPrimary hoverEffect text-sm font-semibold whitespace-nowrap shrink-0"
       >
         Mostrar Todos
       </Link>

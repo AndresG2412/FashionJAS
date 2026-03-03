@@ -6,15 +6,15 @@ import { banner_1 } from "../images";
 
 const HomeBanner = () => {
   return (
-    <div className="mt-6 md:mt-0 py-8 md:py-0 bg-shop_light_pink rounded-lg px-4 lg:px-24 flex items-center justify-between">
+    <div className="mt-6 md:mt-0 py-8 md:py-0 bg-danashop-focus rounded-lg px-4 lg:px-24 flex items-center justify-between">
       <div className="space-y-5">
-        <Title>
+        <Title className="text-danashop-textDark">
           Conoce nuestros productos <br />
           Elige lo que necesites
         </Title>
         <Link
           href={"/shop"}
-          className="bg-shop_dark_green/90 text-white/90 px-5 py-2 rounded-md text-sm font-semibold hover:text-white hover:bg-shop_dark_green hoverEffect"
+          className="bg-danashop-textDark text-danashop-textPrimary/90 px-5 py-2 rounded-md text-sm font-bold tracking-wider hover:bg-danashop-brandHover hover:text-white hover:bg-shop_dark_green hoverEffect"
         >
           Comprar Ahora
         </Link>

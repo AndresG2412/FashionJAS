@@ -31,8 +31,8 @@ export default function SearchBar({ onSearch, isSearching = false }: Props) {
   };
 
   return (
-    <div className="px-4 py-3 border-t border-gray-200">
-      <p className="text-xs font-semibold uppercase tracking-wide text-gray-600 mb-2">
+    <div className="px-4">
+      <p className="text-base font-semibold uppercase text-danashop-textPrimary tracking-wider mb-2">
         Buscar Producto
       </p>
 
@@ -42,12 +42,12 @@ export default function SearchBar({ onSearch, isSearching = false }: Props) {
           className="w-full flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:border-shop_light_green transition-colors text-gray-600"
         >
           <Search className="w-4 h-4" />
-          <span className="text-sm">Buscar por nombre...</span>
+          <span className="text-base text-danashop-textPrimary">Buscar por nombre...</span>
         </button>
       ) : (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <div className="flex-1 flex items-center gap-2 px-3 py-2 border border-shop_light_green rounded-lg bg-white">
+            <div className="flex-1 flex bg-danashop-brandHover/30 items-center gap-2 px-3 py-2 border border-shop_light_green rounded-lg">
               <Search className="w-4 h-4 text-gray-400 shrink-0" />
               <input
                 type="text"
@@ -56,7 +56,7 @@ export default function SearchBar({ onSearch, isSearching = false }: Props) {
                 onKeyPress={handleKeyPress}
                 placeholder="Ej: iPhone, Laptop..."
                 autoFocus
-                className="flex-1 text-sm outline-none"
+                className="flex-1 outline-none text-danashop-textPrimary text-base"
               />
               {searchText && (
                 <button
@@ -70,9 +70,9 @@ export default function SearchBar({ onSearch, isSearching = false }: Props) {
             <button
               onClick={handleSearch}
               disabled={searchText.length < 2 || isSearching}
-              className="px-4 py-2 bg-shop_light_green text-white rounded-lg hover:bg-shop_dark_green transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+              className="px-4 py-2 bg-danashop-brandMain rounded-lg hover:bg-shop_dark_green transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-4 h-4 text-white font-bold" />
             </button>
           </div>
 

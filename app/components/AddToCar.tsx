@@ -60,7 +60,7 @@ const AddToCar = ({ product, className }: Props) => {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={handleAddToCart}
-        className={`w-full py-2 px-3 bg-shop_dark_green text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:bg-shop_light_green transition-all duration-300 shadow-sm ${className}`}
+        className={`w-full py-2 px-3 bg-danashop-brandHover hover:bg-danashop-brandHover/50 tracking-wider text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:bg-shop_light_green transition-all duration-300 shadow-sm ${className}`}
       >
         <ShoppingBag className="w-4 h-4" />
         Agregar
@@ -77,7 +77,7 @@ const AddToCar = ({ product, className }: Props) => {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={handleRemoveFromCart}
-        className="flex-1 py-2 px-2 bg-red-500 text-white rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 hover:bg-red-600 transition-all duration-300 shadow-sm"
+        className="flex-1 py-2 px-2 bg-red-500 text-danashop-textPrimary rounded-lg font-semibold text-xs sm:text-sm tracking-wider flex items-center justify-center gap-1 hover:bg-red-600 transition-all duration-300 shadow-sm"
       >
         <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         <span className="inline">Quitar</span>

@@ -54,11 +54,11 @@ const AddToFav = ({ product, iconOnly = false }: Props) => {
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={handleToggleFavorite}
-        className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all z-10"
+        className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md shadow-black hover:shadow-lg transition-all z-10"
       >
         <Heart
           className={`w-5 h-5 transition-colors ${
-            isInFavorites ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500'
+            isInFavorites ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'
           }`}
         />
       </motion.button>

@@ -77,11 +77,11 @@ const Shop = ({ categories }: Props) => {
   };
 
   return (
-    <div className="border-t">
-      <Container className="mt-5">
-        <div className="flex flex-col md:flex-row gap-5 border-t-0 md:border-t border-t-shop_dark_green/50">
+    <div className="">
+      <Container className="">
+        <div className="flex flex-col md:flex-row gap-5 border-t-0">
           {/* Sidebar de filtros */}
-          <div className="border-b md:border-b-0 border-b-shop_btn_dark_green/50 md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 md:border-r border-r-shop_btn_dark_green/50 scrollbar-hide space-y-4">
+          <div className="border-b mt-5 md:border-b-0 border-white md:mt-4 md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 scrollbar-hide space-y-4">
             <CategoryList
               categories={categories}
               selectedCategory={selectedCategory}
@@ -94,17 +94,17 @@ const Shop = ({ categories }: Props) => {
           </div>
 
           {/* Grid de productos */}
-          <div className="flex-1 pt-5">
+          <div className="flex-1 pt-5 md:border-l border-l-gray-300/50 pl-5">
             <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide">
               {/* Indicador de búsqueda activa */}
               {searchText && (
-                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
-                  <p className="text-sm text-blue-700">
+                <div className="mb-4 p-3 bg-danashop-brandHover/30 border-danashop-brandSoft border-2 rounded-lg flex items-center justify-between">
+                  <p className="text-sm text-danashop-textPrimary">
                     Resultados para: <span className="font-bold">"{searchText}"</span>
                   </p>
                   <button
                     onClick={() => handleSearch("")}
-                    className="text-xs text-blue-600 hover:underline"
+                    className="text-xs text-danashop-error hover:underline"
                   >
                     Limpiar búsqueda
                   </button>
@@ -112,15 +112,15 @@ const Shop = ({ categories }: Props) => {
               )}
 
               {loading ? (
-                <div className="p-20 flex flex-col gap-2 items-center justify-center bg-white rounded-lg">
-                  <Loader2 className="w-10 h-10 text-shop_dark_green animate-spin" />
-                  <p className="font-semibold tracking-wide text-base">
+                <div className="p-20 flex flex-col gap-2 items-center justify-center bg-danashop-brandSoft/30 rounded-lg">
+                  <Loader2 className="w-10 h-10 text-gray-600 animate-spin" />
+                  <p className="font-semibold tracking-wide text-base text-danashop-textPrimary">
                     {searchText ? "Buscando productos..." : "Cargando productos..."}
                   </p>
                 </div>
               ) : products?.length > 0 ? (
                 <>  
-                  <div className="mb-10">
+                  <div className="mb-5">
                     <SearchBar onSearch={handleSearch} isSearching={loading} />
                   </div>
 
@@ -138,16 +138,16 @@ const Shop = ({ categories }: Props) => {
                   </div>
                 </>
               ) : (
-                <div className="bg-white rounded-lg p-12 text-center">
+                <div className="bg-danashop-brandSoft/30 rounded-lg p-12 text-center">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Loader2 className="w-8 h-8 text-gray-400" />
+                    <Loader2 className="w-8 h-8 text-gray-600 animate-spin" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  <h3 className="text-lg font-bold text-danashop-textPrimary mb-2">
                     {searchText
                       ? `No se encontraron productos con "${searchText}"`
                       : "No hay productos disponibles"}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-4">
+                  <p className="text-danashop-textPrimary/70 text-sm mb-4">
                     {searchText
                       ? "Intenta con otras palabras clave"
                       : "Prueba ajustando los filtros"}
@@ -155,7 +155,7 @@ const Shop = ({ categories }: Props) => {
                   {searchText && (
                     <button
                       onClick={() => handleSearch("")}
-                      className="px-6 py-2 bg-shop_light_green text-white rounded-lg hover:bg-shop_dark_green transition-colors"
+                      className="px-6 py-2 bg-danashop-brandHover border-2 border-danashop-brandSoft hover:bg-danashop-brandHover/40 text-white rounded-lg hover:bg-shop_dark_green transition-colors"
                     >
                       Ver todos los productos
                     </button>

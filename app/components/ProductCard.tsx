@@ -12,13 +12,13 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link href={`/${product.slug}`}>
-      <div className="group relative bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden h-full flex flex-col">
+      <div className="group relative bg-danashop-bgColorCard rounded-lg shadow-sm shadow-danashop-brandHover hover:shadow-md transition-shadow duration-300 overflow-hidden h-full flex flex-col">
         {/* Botón de favorito (ícono flotante) */}
         <AddToFav product={product} iconOnly />
         
         {/* Link a la página del producto (solo en imagen y nombre) */}
           {/* Imagen del producto */}
-          <div className="aspect-square overflow-hidden bg-gray-100 relative">
+          <div className="aspect-square overflow-hidden bg-danashop-brandSoft relative">
             {product?.imagenes && product.imagenes[0] && (
               <Image 
                 src={product.imagenes[0]}
@@ -33,7 +33,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Información del producto */}
         <div className="p-4 flex flex-col grow">
           {/* Nombre con altura fija de 2 líneas */}
-            <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-10 hover:text-shop_light_green transition-colors">
+            <h3 className="text-sm font-medium text-danashop-textPrimary line-clamp-2 mb-2 min-h-10 hover:text-shop_light_green transition-colors">
               {product.nombre}
             </h3>
           

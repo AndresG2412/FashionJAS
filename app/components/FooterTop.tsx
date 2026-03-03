@@ -11,22 +11,22 @@ const data: ContactItemData[] = [
   {
     title: "Visitanos",
     subtitle: "Cali, Colombia",
-    icon: <MapPin className="h-6 w-6 text-danashop-textPrimary group-hover:text-primary transition-colors shrink-0" />,
+    icon: <MapPin className="h-6 w-6 text-danashop-textPrimary " />,
   },
   {
     title: "Contacto",
     subtitle: "+57 315 787 0130",
-    icon: <Phone className="h-6 w-6 text-danashop-textPrimary group-hover:text-primary transition-colors shrink-0" />,
+    icon: <Phone className="h-6 w-6 text-danashop-textPrimary " />,
   },
   {
     title: "Horario de Trabajo",
     subtitle: "Lun - Sab: 8:00 - 5:00 PM",
-    icon: <Clock className="h-6 w-6 text-danashop-textPrimary group-hover:text-primary transition-colors shrink-0" />,
+    icon: <Clock className="h-6 w-6 text-danashop-textPrimary " />,
   },
   {
     title: "Correo",
     subtitle: "Cgaviria930@gmail.com",
-    icon: <Mail className="h-6 w-6 text-danashop-textPrimary group-hover:text-primary transition-colors shrink-0" />,
+    icon: <Mail className="h-6 w-6 text-danashop-textPrimary " />,
   },
 ];
 
@@ -36,21 +36,21 @@ const FooterTop = () => {
       {data?.map((item, index) => (
         <div
           key={index}
-          className="flex justify-center items-start gap-2 border-t border-danashop-brandSoft shadow-lg/50 md:shadow-lg rounded-lg shadow-purple-400 group hover:bg-gray-100 p-2 md:p-4 transition-colors hoverEffect min-w-0"
+          className="flex  justify-center items-start gap-2 border-t border-danashop-brandSoft bg-danashop-brandHover/10 shadow-lg/50 md:shadow-lg rounded-lg shadow-purple-400 group hover:bg-danashop-brandHover/30 p-2 md:p-4 transition-colors hoverEffect min-w-0"
         >
           
-          <div className="flex flex-col min-w-0">
+          <div className="flex flex-col min-w-0 group-hover:scale-105 hoverEffect">
             
           <div className="flex gap-2 justify-center items-center">
             {/* shrink-0 es vital para que el icono no se aplaste cuando el texto salte de línea */}
-          <div className="shrink-0 mt-1">
+          <div className="">
               {item?.icon}
           </div>
-            <h3 className="font-semibold text-danashop-textPrimary tracking-wide group-hover:text-danashop-textDark hoverEffect">
+            <h3 className="font-semibold text-danashop-textPrimary tracking-wide">
               {item?.title}
             </h3>
           </div>
-            <p className="text-gray-300 text-xs text-center md:text-sm mt-1 group-hover:text-danashop-textDark tracking-wide hoverEffect wrap-break-word leading-relaxed">
+            <p className="text-danashop-textPrimary/80 text-xs text-center md:text-sm mt-1 tracking-wide wrap-break-word leading-relaxed">
               {item?.subtitle}
             </p>
           </div>

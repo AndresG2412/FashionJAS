@@ -11,7 +11,7 @@ const ShopPage = async () => {
   const categories = await getAllCategories();
 
   return (
-    <Container>
+    <Container className="">
       <Shop categories={categories} />
     </Container>
   );

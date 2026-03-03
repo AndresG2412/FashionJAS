@@ -27,15 +27,15 @@ const CategoryList = ({
   };
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+    <div className="w-full bg-danashop-brandHover/30 rounded-lg shadow-sm border-danashop-brandSoft border-2 overflow-hidden">
       {/* Encabezado del Acordeón */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-2.5 hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between p-2.5 hover:bg-danashop-brandHover transition-colors"
       >
-        <Title className="text-base font-black mb-0">Categorías</Title>
+        <Title className="text-base font-black text-danashop-textPrimary tracking-wider mb-0">Categorías</Title>
         <ChevronDown 
-          className={`w-5 h-5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} 
+          className={`w-5 h-5 hoverEffect duration-300 text-white ${isOpen ? "rotate-180" : ""}`} 
         />
       </button>
 
@@ -48,7 +48,7 @@ const CategoryList = ({
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <div className="px-5 pb-5 pt-0">
+            <div className="px-5 pb-5 pt-0 ">
               <RadioGroup value={selectedCategory || ""} className="mt-2 space-y-1">
                 {categories?.map((category) => (
                   <div
@@ -59,14 +59,14 @@ const CategoryList = ({
                     <RadioGroupItem
                       value={category?.slug}
                       id={`cat-${category?.slug}`}
-                      className="rounded-sm"
+                      className="rounded-sm color-white text-white peer-data-[state=checked]:bg-danashop-brand text-sm hoverEffect group-hover:bg-danashop-brandHover/50"
                     />
                     <Label
                       htmlFor={`cat-${category?.slug}`}
                       className={`cursor-pointer flex-1 ${
                         selectedCategory === category?.slug
-                          ? "font-semibold text-shop_dark_green"
-                          : "font-normal group-hover:text-shop_dark_green"
+                          ? "font-semibold text-danashop-textPrimary"
+                          : "font-normal text-danashop-textPrimary/60"
                       }`}
                     >
                       {category?.titulo} {/* Usamos titulo según tu captura */}
@@ -81,7 +81,7 @@ const CategoryList = ({
                     e.stopPropagation();
                     setSelectedCategory(null);
                   }}
-                  className="text-sm font-medium mt-4 underline underline-offset-2 decoration-1 hover:text-red-600 text-left block"
+                  className="text-sm font-medium mt-4 underline underline-offset-2 decoration-1 cursor-pointer hoverEffect text-red-600 hover:text-red-400 text-left block"
                 >
                   Limpiar selección
                 </button>
