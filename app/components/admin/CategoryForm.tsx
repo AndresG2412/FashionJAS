@@ -89,10 +89,10 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-6 max-w-2xl">
+    <form onSubmit={handleSubmit} className="bg-danashop-brandMain/30 rounded-lg shadow p-6 space-y-6 max-w-2xl">
       {/* Título */}
       <div>
-        <Label htmlFor="titulo" className='pb-2'>
+        <Label htmlFor="titulo" className='pb-2 text-danashop-textPrimary'>
           Título <span className="text-red-500">*</span>
         </Label>
         <Input
@@ -103,14 +103,15 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
           placeholder="Ej: Celulares"
           required
           disabled={isEditing} // No se puede cambiar al editar
+          className='text-danashop-textPrimary'
         />
         {isEditing && (
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-danashop-textSecondary mt-1">
             El título no se puede modificar una vez creada la categoría
           </p>
         )}
         {!isEditing && (
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-danashop-textSecondary mt-1">
             Se guardará con la primera letra en mayúscula
           </p>
         )}
@@ -118,10 +119,11 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
 
       {/* Slug */}
       <div>
-        <Label htmlFor="slug" className='pb-2'>
+        <Label htmlFor="slug" className='pb-2 text-danashop-textPrimary'>
           Slug (URL) <span className="text-red-500">*</span>
         </Label>
         <Input
+          className='text-danashop-textPrimary'
           id="slug"
           name="slug"
           value={formData.slug}
@@ -129,14 +131,14 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
           placeholder="celulares"
           required
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-danashop-textSecondary mt-1">
           Usado en las URLs y filtros (solo letras minúsculas y guiones)
         </p>
       </div>
 
       {/* Descripción */}
       <div>
-        <Label htmlFor="descripcion" className='pb-2'>
+        <Label htmlFor="descripcion" className='pb-2 text-danashop-textPrimary'>
           Descripción (Opcional)
         </Label>
         <Textarea
@@ -146,20 +148,24 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
           onChange={handleChange}
           placeholder="celulares de cualquier gama y precio"
           rows={3}
+          className='placeholder:text-danashop-textSecondary text-danashop-textPrimary'
         />
       </div>
 
       {/* Botones */}
-      <div className="flex gap-4 pt-6 border-t">
-        <Button
-          type="button"
-          variant="outline"
+      <div className="flex gap-4 py-3 border-t items-center justify-center">
+        <button
+          type="button" 
           onClick={() => router.back()}
           disabled={loading}
+          className='border-2 font-semibold hoverEffect hover:scale-110 bg-red-300 hover:bg-danashop-error tracking-wide border-danashop-error rounded-lg px-4 py-1 w-2/5 hover:text-danashop-textPrimary'
         >
           Cancelar
-        </Button>
-        <Button type="submit" disabled={loading}>
+        </button>
+        <button 
+          type="submit" 
+          disabled={loading}
+          className='border-2 font-semibold hover:scale-110 tracking-wide border-danashop-brandHover bg-danashop-brandSoft/90 hover:bg-danashop-brandHover hoverEffect text-danashop-textDark hover:text-danashop-textPrimary rounded-lg px-4 py-1 w-2/5'>
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -168,7 +174,7 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
           ) : (
             <>{isEditing ? 'Guardar Cambios' : 'Crear Categoría'}</>
           )}
-        </Button>
+        </button>
       </div>
     </form>
   );

@@ -30,16 +30,18 @@ export default async function EditCategoryPage({ params }: Props) {
 
   return (
     <Container>
-        <div className='max-w-2xl mx-auto w-full px-4 shadow-2xl rounded-lg py-6 border-2'>
-            <Link
-                href="/studio/categories"
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
-            >
-                <ArrowLeft className="w-4 h-4" />
-                Volver a categorías
-            </Link>
+        <div className='max-w-2xl mx-auto w-full px-4 shadow-2xl rounded-lg py-6 border-2 bg-danashop-borderColor'>
+            <button className='mb-6' type='button'>
+                <Link
+                    href="/studio/categories"
+                    className="flex items-center gap-2 text-danashop-error "
+                >
+                    <ArrowLeft className="w-4 h-4" />
+                    Volver a categorías
+                </Link>
+            </button>
 
-            <h1 className="text-3xl font-bold mb-6">Editar Categoría: {category.titulo}</h1>
+            <h1 className="text-3xl font-bold mb-6 text-center text-danashop-textPrimary">Editar Categoría: {category.titulo}</h1>
 
             <CategoryForm category={category} isEditing />
         </div>
