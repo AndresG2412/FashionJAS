@@ -41,7 +41,7 @@ const NoProductAvailable = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        className="text-sm text-gray-300"
+        className="text-sm text-gray-300 px-10 md:px-0"
       >
         Lo sentimos, pero no hay productos que coincidan con{" "}
         <span className="text-base font-semibold text-darkColor">

@@ -7,7 +7,7 @@ const ShopButton = () => {
   
   return (
     <Link href="/" className="group relative">
-      <Store className="w-7 h-7 hover:text-shop_light_green transition-colors" />
+      <Store className="w-7 text-danashop-textPrimary h-7 hover:text-danashop-brandHover transition-colors" />
     </Link>
   );
 };

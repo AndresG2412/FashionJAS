@@ -1,11 +1,10 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
-import { SignOutButton } from '@clerk/nextjs';
 import HeaderAdmin from '../components/admin/HeaderAdmin';
 
-// Lista de emails admin
-const ADMIN_EMAILS = ['cgaviria930@gmail.com'];
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? 'cgaviria930@gmail.com')
+  .split(',')
+  .map(e => e.trim().toLowerCase());
 
 export default async function StudioLayout({
   children,
@@ -13,28 +12,26 @@ export default async function StudioLayout({
   children: React.ReactNode;
 }) {
   const { userId } = await auth();
-  
-  // Si no está logueado, redirige al login
+
   if (!userId) {
     redirect('/sign-in?redirect_url=/studio');
   }
 
-  // Obtener email del usuario
   const user = await currentUser();
-  const email = user?.emailAddresses[0]?.emailAddress;
+  
+  // Busca en todos los emails, no solo el primero
+  const isAdmin = user?.emailAddresses.some(e =>
+    ADMIN_EMAILS.includes(e.emailAddress.toLowerCase())
+  );
 
-  // Verificar si es admin
-  if (!email || !ADMIN_EMAILS.includes(email.toLowerCase())) {
+  if (!isAdmin) {
     redirect('/?error=unauthorized');
   }
 
   return (
     <>
-      {/* Sidebar */}
       <HeaderAdmin />
-
-      {/* Main Content */}
-      <main className="min-h-screen pt-4 md:pt-10">
+      <main className="min-h-screen pt-5 bg-danashop-colorMain">
         {children}
       </main>
     </>

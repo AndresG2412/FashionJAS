@@ -28,17 +28,17 @@ const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
     return (
         <div 
             onClick={onClose} 
-            className={`fixed inset-y-0 h-screen left-0 z-50 w-full bg-black/50 text-white/70 shadow-2xl transition-transform duration-300 ${
+            className={`fixed inset-y-0 h-screen left-0 z-50 w-full bg-danashop-textDark/50 text-danashop-textPrimary/70 shadow-2xl transition-transform duration-300 ${
                 isOpen ? 'translate-x-0' : '-translate-x-full'
             }`}
         >
             <div 
                 ref={sidebarRef} // Añadimos el ref aquí para el hook useOutsideClick
                 onClick={(e) => e.stopPropagation()} 
-                className='min-w-72 max-w-96 bg-black h-screen p-10 border-r border-shop_light_green flex flex-col gap-6'
+                className='min-w-72 max-w-96 bg-danashop-textDark h-screen p-10 border-r border-danashop-brandSoft flex flex-col gap-6'
             >
                 <div className='flex items-center justify-between gap-5 border-b-2 pb-3 border-shop_light_green'>
-                    <p className='font-bold tracking-wider text-2xl flex justify-end md:justify-start'>GABOSHOP</p>
+                    <p className='font-extrabold tracking-wider text-2xl text-danashop-textPrimary'>DANNASHOP</p>
                     <button onClick={onClose} className='hover:text-shop_light_green transition-colors'>
                         <X size={24} />
                     </button>

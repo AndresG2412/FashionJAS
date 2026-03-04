@@ -11,7 +11,7 @@ export default function MobileMenu() {
     return (
         <>
             <button onClick={() => setIsSideBarOpen(!isSideBarOpen)}>
-                <AlignLeft className='hover:text-darkColor hoverEffect md:hidden hover:cursor-pointer'/>
+                <AlignLeft className='text-danashop-textPrimary hoverEffect md:hidden hover:cursor-pointer'/>
             </button>
             <div className='md:hidden'>
                 <SideMenuAdmin isOpen={isSideBarOpen} onClose={() => setIsSideBarOpen(false)}/>

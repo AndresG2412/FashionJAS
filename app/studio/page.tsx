@@ -10,37 +10,37 @@ export default async function StudioDashboard() {
   
   return (
     <Container>
-      <h1 className="text-3xl font-bold mb-8 text-center md:text-start">
+      <h1 className="text-3xl font-bold mb-8 text-center md:text-start text-danashop-textPrimary">
         Bienvenido, {user?.firstName}!
       </h1>
 
       {/* Estadísticas */}
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 md:gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
 
         {/* productos */}
-        <div className="bg-white shadow-2xl border-2 p-6 rounded-lg border-l-4 border-blue-500">
+        <div className="bg-danashop-brandSoft/30 shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
-                <Package className="w-6 h-6 text-red-500 opacity-20" />
-                <h3 className="text-gray-500 text-sm font-medium">Productos</h3>
+                <Package className="w-6 h-6 text-red-500" />
+                <h3 className="text-danashop-textPrimary text-base font-medium tracking-wider">Productos</h3>
               </div>
-              <p className="text-3xl font-bold mt-2">{stats.totalProducts}</p>
+              <p className="text-3xl font-bold text-danashop-textPrimary mt-2">{stats.totalProducts}</p>
             </div>
           </div>
         </div>
 
         {/* Ordenes */}
-        <div className="bg-white shadow-2xl border-2 p-6 rounded-lg border-l-4 border-green-500">
+        <div className="bg-danashop-brandSoft/30 shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
-                <ShoppingCart className="w-6 h-6 text-blue-500 opacity-20" />
-                <h3 className="text-gray-500 text-sm font-medium">Órdenes</h3>
+                <ShoppingCart className="w-6 h-6 text-blue-500" />
+                <h3 className="text-danashop-textPrimary text-base font-medium tracking-wider">Órdenes</h3>
               </div>
               <div className='flex gap-3 items-center'>
-                <p className="text-3xl font-bold mt-2">{stats.totalOrders}</p>
+                <p className="text-3xl font-bold mt-2 text-danashop-textPrimary">{stats.totalOrders}</p>
                 {stats.pendingOrders > 0 && (
                   <p className="text-xs text-orange-600 mt-1 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
@@ -73,22 +73,22 @@ export default async function StudioDashboard() {
         </div> */}
 
         {/* Categorias */}
-        <div className="bg-white shadow-2xl border-2 p-6 rounded-lg border-l-4 border-yellow-500">
+        <div className="bg-danashop-brandSoft/30 shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
-                <Tag className="w-6 h-6 text-yellow-500 opacity-20" />
-                <h3 className="text-gray-500 text-sm font-medium">Categorías</h3>
+                <Tag className="w-6 h-6 text-yellow-500" />
+                <h3 className="text-danashop-textPrimary text-sm font-medium">Categorías</h3>
               </div>
-              <p className="text-3xl font-bold mt-2">{stats.totalCategories}</p>
+              <p className="text-3xl text-danashop-textPrimary font-bold mt-2">{stats.totalCategories}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Acciones Rápidas */}
-      <div className="bg-white shadow-2xl border-2 border-black p-6 rounded-lg">
-        <h2 className="text-xl font-bold mb-4">Acciones Rápidas</h2>
+        <div className="bg-danashop-brandSoft/30 shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
+        <h2 className="text-xl font-bold mb-4 text-danashop-textPrimary">Acciones Rápidas</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link 
             href="/studio/products" 

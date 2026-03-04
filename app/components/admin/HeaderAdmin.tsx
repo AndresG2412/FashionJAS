@@ -10,11 +10,11 @@ import ShopButton from './ShopButton'
 
 const HeaderAdmin = () => {
     return (
-        <header className="sticky top-0 z-50 py-5 bg-white/70 backdrop-blur-xl shadow-sm">
+        <header className="sticky top-0 z-50 py-5 bg-danashop-colorMain/70 backdrop-blur-xl shadow-sm border-b border-danashop-textPrimary/50">
             <Container className='flex items-center justify-between text-lightColor'> 
                 <div className='flex w-auto md:w-1/3 items-center justify-start gap-2.5 md:gap-0'>
                     <MobileMenuAdmin/>
-                    <p className='font-bold tracking-wider text-2xl'>GABOSHOP</p>
+                    <p className='font-extrabold tracking-wider text-2xl text-danashop-textPrimary'>DANNASHOP</p>
                 </div>
                 <HeaderMenuAdmin/>
                 <div className='flex w-auto md:w-1/3 items-center justify-end gap-5'>
