@@ -16,21 +16,17 @@ export default function CategoriesTable({ categories }: Props) {
   const router = useRouter();
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  const handleDelete = async (categoryId: string, categoryTitle: string) => {
-    // Notificación de confirmación mejorada
+  const handleDelete = (categoryId: string, categoryTitle: string) => {
     toast((t) => (
-      <div className="flex flex-col gap-3 max-w-md">
+      <div className="space-y-3">
         <div className="flex items-start gap-3">
-          <div className="shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
+          <div className="shrink-0 w-10 h-10 bg-danashop-error/10 rounded-full flex items-center justify-center">
+            <AlertTriangle className="w-5 h-5 text-danashop-error" />
           </div>
           <div className="flex-1">
-            <p className="font-bold text-gray-900 mb-1">¿Eliminar categoría?</p>
-            <p className="text-sm text-gray-600">
-              Se eliminará <span className="font-semibold">"{categoryTitle}"</span>
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Los productos asociados no se eliminarán
+            <p className="font-bold text-danashop-textPrimary mb-1 text-lg">¿Eliminar categoría?</p>
+            <p className="text-sm text-danashop-textSecondary">
+              Se eliminará <span className="font-bold text-danashop-brandSoft">"{categoryTitle}"</span>
             </p>
           </div>
         </div>
@@ -38,7 +34,7 @@ export default function CategoriesTable({ categories }: Props) {
         <div className="flex gap-2 justify-end">
           <button
             onClick={() => toast.dismiss(t.id)}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-sm font-bold text-danashop-textSecondary border border-danashop-borderColor rounded-lg hover:bg-danashop-hover transition-colors"
           >
             Cancelar
           </button>
@@ -46,85 +42,40 @@ export default function CategoriesTable({ categories }: Props) {
             onClick={async () => {
               toast.dismiss(t.id);
               setDeleting(categoryId);
-              
               try {
                 await deleteCategory(categoryId);
-                
-                // Toast de éxito mejorado
-                toast.success(
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <Trash2 className="w-4 h-4 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">¡Categoría eliminada!</p>
-                      <p className="text-sm text-gray-600">"{categoryTitle}" ya no existe</p>
-                    </div>
-                  </div>,
-                  {
-                    duration: 4000,
-                    style: {
-                      background: '#fff',
-                      padding: '16px',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                    },
-                  }
-                );
-                
+                toast.success("Categoría eliminada", {
+                  style: { background: '#1C182D', color: '#F3F4F6', border: '1px solid #2D2845' }
+                });
                 router.refresh();
               } catch (error: any) {
-                toast.error(
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                      <AlertTriangle className="w-4 h-4 text-red-600" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">Error al eliminar</p>
-                      <p className="text-sm text-gray-600">{error.message || 'Intenta de nuevo'}</p>
-                    </div>
-                  </div>,
-                  {
-                    duration: 4000,
-                    style: {
-                      background: '#fff',
-                      padding: '16px',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                    },
-                  }
-                );
+                toast.error("Error al eliminar");
               } finally {
                 setDeleting(null);
               }
             }}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
+            className="px-4 py-2 text-sm font-black text-white bg-danashop-error rounded-lg hover:bg-red-700 transition-colors"
           >
             Sí, eliminar
           </button>
         </div>
       </div>
-    ), {
-      duration: Infinity,
-      position: 'top-center',
-      style: {
-        background: '#fff',
-        padding: '20px',
-        borderRadius: '12px',
-        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
-        border: '1px solid #fee2e2',
-      },
+    ), { 
+      style: { background: '#1C182D', color: '#F3F4F6', border: '1px solid #2D2845' },
+      duration: Infinity 
     });
   };
 
   if (categories.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-12 text-center">
-        <Tag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <p className="text-gray-500 mb-4">No hay categorías registradas</p>
+      <div className="bg-danashop-bgColorCard rounded-3xl border border-dashed border-danashop-borderColor p-12 text-center">
+        <div className="p-6 bg-danashop-colorMain rounded-full w-fit mx-auto mb-4">
+          <Tag className="w-12 h-12 text-danashop-brandSoft" strokeWidth={1} />
+        </div>
+        <p className="text-danashop-textSecondary mb-4 font-medium">No hay categorías registradas</p>
         <Link
           href="/studio/categories/new"
-          className="text-green-600 hover:underline font-medium"
+          className="text-danashop-brandSoft hover:text-danashop-brandMain font-black underline underline-offset-4 transition-colors"
         >
           Crear primera categoría
         </Link>
@@ -133,138 +84,127 @@ export default function CategoriesTable({ categories }: Props) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-        {/* VISTA DESKTOP - Tabla */}
-        <div className="hidden md:block overflow-x-auto">
-            <table className="w-full">
-                <thead className="bg-gray-50 border-b">
-                    <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        ID / Título
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Slug
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Descripción
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                        Acciones
-                    </th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                    {categories.map((category) => (
-                    <tr key={category.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
-                            <Tag className="w-5 h-5 text-green-600" />
-                            </div>
-                            <div>
-                            <p className="font-bold text-gray-900">{category.titulo}</p>
-                            <p className="text-xs text-gray-500">ID: {category.id}</p>
-                            </div>
-                        </div>
-                        </td>
-                        <td className="px-6 py-4">
-                        <code className="text-sm bg-gray-100 px-2 py-1 rounded text-gray-700">
-                            {category.slug}
-                        </code>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600 max-w-xs">
-                        {category.descripcion || (
-                            <span className="text-gray-400 italic">Sin descripción</span>
-                        )}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                            <Link
-                            href={`/studio/categories/${category.id}/edit`}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Editar"
-                            >
-                            <Pencil className="w-4 h-4" />
-                            </Link>
-                            <button
-                            onClick={() => handleDelete(category.id, category.titulo)}
-                            disabled={deleting === category.id}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            title="Eliminar"
-                            >
-                            <Trash2 className="w-4 h-4" />
-                            </button>
-                        </div>
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-
-        {/* VISTA MÓVIL - Cards Separadas */}
-        <div className="md:hidden flex flex-col gap-4 bg-gray-50">
+    <div className="bg-danashop-bgColorCard overflow-hidden mb-16">
+      {/* VISTA DESKTOP */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full border rounded-lg">
+          <thead className="bg-danashop-colorMain/80 border-b border-danashop-borderColor">
+            <tr>
+              <th className="px-6 py-4 text-left text-xs font-black text-danashop-textPrimary uppercase tracking-widest">
+                Categoría
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-black text-danashop-textPrimary uppercase tracking-widest">
+                Slug
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-black text-danashop-textPrimary uppercase tracking-widest">
+                Descripción
+              </th>
+              <th className="px-6 py-4 text-center text-xs font-black text-danashop-textPrimary uppercase tracking-widest">
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-danashop-borderColor">
             {categories.map((category) => (
-            <div
-                key={category.id}
-                className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 transition-all active:scale-[0.98]"
-            >
-                <div className="flex items-start gap-3 mb-3">
-                    {/* Icono */}
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
-                        <Tag className="w-6 h-6 text-green-600" />
+              <tr key={category.id} className="hover:bg-danashop-hover transition-colors group">
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-danashop-brandMain/10 rounded-xl flex items-center justify-center shrink-0 border border-danashop-brandMain/20">
+                      <Tag className="w-5 h-5 text-danashop-brandMain" />
                     </div>
-
-                    {/* Contenedor principal ajustado */}
-                    <div className="flex flex-1 justify-between items-start min-w-0"> 
-                        <div className="min-w-0">
-                            <h3 className="font-bold text-gray-900 text-lg truncate">
-                                {category.titulo}
-                            </h3>
-                            <p className="text-xs text-gray-500 mt-0.5">ID: {category.id}</p>
-                        </div>
-                        
-                        <div className="shrink-0">
-                            <code className="inline-block text-sm font-mono bg-gray-100 px-2 py-1 rounded text-gray-700">
-                                {category.slug}
-                            </code>
-                        </div>
+                    <div>
+                      <p className="font-bold text-danashop-textPrimary transition-colors">{category.titulo}</p>
+                      <p className="text-[10px] font-mono text-danashop-textMuted uppercase tracking-tighter">ID: {category.id}</p>
                     </div>
-                </div>
-
-                {category.descripcion && (
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2 bg-gray-50 p-2 rounded-lg">
-                        {category.descripcion}
-                    </p>
-                )}
-
-                <div className="flex gap-3">
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <code className="text-xs bg-danashop-colorMain px-2 py-1 rounded-md text-danashop-brandSoft font-bold border border-danashop-borderColor">
+                    /{category.slug}
+                  </code>
+                </td>
+                <td className="px-6 py-4 text-sm text-danashop-textSecondary max-w-xs truncate">
+                  {category.descripcion || <span className="text-danashop-textMuted italic text-xs">Sin descripción</span>}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center justify-center gap-2">
                     <Link
-                        href={`/studio/categories/${category.id}/edit`}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                      href={`/studio/categories/${category.id}/edit`}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-black text-danashop-textDark hover:text-danashop-textPrimary bg-danashop-brandSoft rounded-xl hover:bg-danashop-brandHover hoverEffect transition-colors"
                     >
-                        <Pencil className="w-4 h-4" />
-                        Editar
+                      <Pencil className="w-4 h-4" />
+                      EDITAR
                     </Link>
                     <button
-                        onClick={() => handleDelete(category.id, category.titulo)}
-                        disabled={deleting === category.id}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                      onClick={() => handleDelete(category.id, category.titulo)}
+                      disabled={deleting === category.id}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-black text-danashop-error bg-danashop-error/10 border border-danashop-error/20 rounded-xl hoverEffect hover:bg-danashop-error hover:text-white transition-all"
                     >
-                        <Trash2 className="w-4 h-4" />
-                        {deleting === category.id ? '...' : 'Eliminar'}
+                      <Trash2 className="w-4 h-4" />
+                      {deleting === category.id ? '...' : 'ELIMINAR'}
                     </button>
-                </div>
-            </div>
+                  </div>
+                </td>
+              </tr>
             ))}
-        </div>
+          </tbody>
+        </table>
+      </div>
 
-        {/* Footer con total */}
-        <div className="px-4 md:px-6 py-4 bg-gray-50 border-t mb-16">
-            <p className="text-sm text-gray-600">
-                Total: <span className="font-bold">{categories.length}</span> categoría{categories.length !== 1 ? 's' : ''}
-            </p>
-        </div>
+      {/* VISTA MÓVIL */}
+      <div className="md:hidden grid gap-4">
+        {categories.map((category) => (
+          <div
+            key={category.id}
+            className="bg-danashop-colorMain/50 border border-danashop-brandSoft rounded-lg p-5 hover:border-danashop-brandSoft/50 transition-all"
+          >
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-12 h-12 bg-danashop-brandMain/10 rounded-2xl flex items-center justify-center shrink-0 border border-danashop-brandMain/20">
+                <Tag className="w-6 h-6 text-danashop-brandMain" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-black text-danashop-textPrimary text-lg truncate uppercase tracking-tight">
+                  {category.titulo}
+                </h3>
+                <code className="text-[10px] text-danashop-brandSoft font-bold uppercase">
+                  Slug: {category.slug}
+                </code>
+              </div>
+            </div>
+
+            {category.descripcion && (
+              <p className="text-sm text-danashop-textSecondary mb-5 bg-danashop-bgColorCard/50 p-3 rounded-xl border border-danashop-borderColor/50 line-clamp-2">
+                {category.descripcion}
+              </p>
+            )}
+
+            <div className="flex gap-3">
+              <Link
+                href={`/studio/categories/${category.id}/edit`}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-black text-danashop-textDark bg-danashop-brandSoft rounded-xl hover:bg-danashop-brandMain transition-colors"
+              >
+                <Pencil className="w-4 h-4" />
+                EDITAR
+              </Link>
+              <button
+                onClick={() => handleDelete(category.id, category.titulo)}
+                disabled={deleting === category.id}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-black text-danashop-error bg-danashop-error/10 border border-danashop-error/20 rounded-xl hover:bg-danashop-error hover:text-white transition-all"
+              >
+                <Trash2 className="w-4 h-4" />
+                {deleting === category.id ? '...' : 'ELIMINAR'}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer con total */}
+      <div className="px-6 py-4 bg-danashop-colorMain/30 border-t border-danashop-borderColor">
+        <p className="text-xs font-bold text-danashop-textMuted uppercase tracking-widest text-center md:text-left">
+          Total: <span className="text-danashop-brandSoft">{categories.length}</span> {categories.length === 1 ? 'Categoría registrada' : 'Categorías registradas'}
+        </p>
+      </div>
     </div>
   );
 }

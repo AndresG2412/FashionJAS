@@ -275,7 +275,7 @@ const ListaPedidos = () => {
             )}
           </>
         ) : (
-          <div className="flex min-h-[400px] flex-col items-center justify-center space-y-6 px-4 text-center bg-danashop-bgColorCard rounded-3xl border border-dashed border-danashop-borderColor py-12">
+          <div className="flex min-h-100 flex-col items-center justify-center space-y-6 px-4 text-center bg-danashop-bgColorCard rounded-3xl border border-dashed border-danashop-borderColor py-12">
             <div className="p-6 bg-danashop-colorMain rounded-full">
                 <Store className="h-16 w-16 text-danashop-brandSoft" strokeWidth={1} />
             </div>
