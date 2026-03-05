@@ -89,7 +89,7 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-danashop-brandMain/30 rounded-lg shadow p-6 space-y-6 max-w-2xl">
+    <form onSubmit={handleSubmit} className="rounded-lg mx-auto p-6 space-y-6 max-w-2xl">
       {/* Título */}
       <div>
         <Label htmlFor="titulo" className='pb-2 text-danashop-textPrimary'>
@@ -158,14 +158,14 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
           type="button" 
           onClick={() => router.back()}
           disabled={loading}
-          className='border-2 font-semibold hoverEffect hover:scale-110 bg-red-300 hover:bg-danashop-error tracking-wide border-danashop-error rounded-lg px-4 py-1 w-2/5 hover:text-danashop-textPrimary'
+          className='border-2 font-semibold hoverEffect hover:scale-110 bg-red-300 hover:bg-danashop-error tracking-wide border-danashop-error rounded-lg px-4 py-2 w-full md:w-2/4 hover:text-danashop-textPrimary'
         >
           Cancelar
         </button>
         <button 
           type="submit" 
           disabled={loading}
-          className='border-2 font-semibold hover:scale-110 tracking-wide border-danashop-brandHover bg-danashop-brandSoft/90 hover:bg-danashop-brandHover hoverEffect text-danashop-textDark hover:text-danashop-textPrimary rounded-lg px-4 py-1 w-2/5'>
+          className='border-2 font-semibold hover:scale-110 tracking-wide border-danashop-brandHover bg-danashop-brandSoft/90 hover:bg-danashop-brandHover hoverEffect text-danashop-textDark hover:text-danashop-textPrimary rounded-lg px-4 py-2 w-full md:w-2/4'>
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />

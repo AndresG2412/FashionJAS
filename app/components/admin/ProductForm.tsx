@@ -192,15 +192,16 @@ export default function ProductForm({ categories, product, isEditing = false }: 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-6">
+    <form onSubmit={handleSubmit} className="px-6 pb-6 pt-2 space-y-6">
       {/* Información básica */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Nombre */}
         <div>
-          <Label htmlFor="nombre">
+          <Label className='pb-3 text-base text-danashop-textPrimary' htmlFor="nombre">
             Nombre del Producto <span className="text-red-500">*</span>
           </Label>
           <Input
+            className='text-danashop-textPrimary placeholder:text-danashop-text-Secondary tracking-wide'
             id="nombre"
             name="nombre"
             value={formData.nombre}
@@ -212,10 +213,11 @@ export default function ProductForm({ categories, product, isEditing = false }: 
 
         {/* Slug */}
         <div>
-          <Label htmlFor="slug">
+          <Label className='pb-3 text-base text-danashop-textPrimary' htmlFor="slug">
             Slug (URL) <span className="text-red-500">*</span>
           </Label>
           <Input
+            className='text-danashop-textPrimary placeholder:text-danashop-text-Secondary tracking-wide'
             id="slug"
             name="slug"
             value={formData.slug}
@@ -223,17 +225,15 @@ export default function ProductForm({ categories, product, isEditing = false }: 
             placeholder="iphone-15-pro-128gb"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">
-            URL: /product/{formData.slug || 'slug-del-producto'}
-          </p>
         </div>
 
         {/* Precio */}
         <div>
-          <Label htmlFor="precio">
+          <Label className='pb-3 text-base text-danashop-textPrimary' htmlFor="precio">
             Precio (COP) <span className="text-red-500">*</span>
           </Label>
           <Input
+            className='text-danashop-textPrimary placeholder:text-danashop-text-Secondary tracking-wide'
             id="precio"
             name="precio"
             type="number"
@@ -247,10 +247,11 @@ export default function ProductForm({ categories, product, isEditing = false }: 
 
         {/* Stock */}
         <div>
-          <Label htmlFor="stock">
+          <Label className='pb-3 text-base text-danashop-textPrimary' htmlFor="stock">
             Stock <span className="text-red-500">*</span>
           </Label>
           <Input
+            className='text-danashop-textPrimary placeholder:text-danashop-text-Secondary tracking-wide'
             id="stock"
             name="stock"
             type="number"
@@ -265,7 +266,7 @@ export default function ProductForm({ categories, product, isEditing = false }: 
 
       {/* Descripción */}
       <div>
-        <Label htmlFor="descripcion">
+        <Label className='pb-3 text-base text-danashop-textPrimary' htmlFor="descripcion">
           Descripción <span className="text-red-500">*</span>
         </Label>
         <Textarea
@@ -276,32 +277,33 @@ export default function ProductForm({ categories, product, isEditing = false }: 
           placeholder="Describe el producto..."
           rows={4}
           required
+          className='text-danashop-textPrimary placeholder:text-danashop-textSecondary'
         />
       </div>
 
       {/* Categorías (Múltiples) */}
       <div>
-        <Label>
+        <Label className='pb-3 text-base text-danashop-textPrimary'>
           Categorías <span className="text-red-500">*</span>
         </Label>
-        <p className="text-sm text-gray-500 mb-3">
+        <p className="text-sm text-danashop-textSecondary mb-3">
           Selecciona una o más categorías. La primera será la principal.
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {categories.map(category => (
             <label
               key={category.id}
-              className={`flex items-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition-all ${
+              className={`text-danashop-textPrimary flex items-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                 formData.categorias.includes(category.slug)
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-danashop-brandHover bg-danashop-bgColorCard'
+                  : 'border-danashop-secontext-danashop-textSecondary hover:border-danashop-secontext-danashop-textSecondary hover:scale-105 hoverEffect'
               }`}
             >
               <input
+                className='text-danashop-textPrimary tracking-wide w-4 h-4'
                 type="checkbox"
                 checked={formData.categorias.includes(category.slug)}
                 onChange={() => handleCategoryChange(category.slug)}
-                className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
               />
               <span className="text-sm font-medium">{category.titulo}</span>
             </label>
@@ -310,13 +312,13 @@ export default function ProductForm({ categories, product, isEditing = false }: 
         {categories.length === 0 && (
           <p className="text-sm text-red-500 mt-2">
             ⚠️ No hay categorías disponibles.{' '}
-            <a href="/studio/categories" className="text-green-600 hover:underline">
+            <a href="/studio/categories" className="text-danashop-textPrimary hover:underline">
               Crear categoría primero
             </a>
           </p>
         )}
         {formData.categorias.length > 0 && (
-          <p className="text-xs text-gray-600 mt-2">
+          <p className="text-xs text-danashop-textSecondary mt-2">
             Categoría principal: <span className="font-bold">{formData.categorias[0]}</span>
             {formData.categorias.length > 1 && (
               <>, Secundarias: <span className="font-bold">{formData.categorias.slice(1).join(', ')}</span></>
@@ -327,39 +329,40 @@ export default function ProductForm({ categories, product, isEditing = false }: 
 
       {/* Variante (Texto libre) */}
       <div>
-        <Label htmlFor="variante">
+        <Label className='pb-3 text-base text-danashop-textPrimary' htmlFor="variante">
           Variante (Opcional)
         </Label>
         <Input
+          className='placeholder:text-danashop-textPrimary focus-visible:ring-danashop-brandHover/70 focus-visible:border-ring focus-visible:ring-[3px] text-danashop-textPrimary tracking-wide'
           id="variante"
           name="variante"
           value={formData.variante}
           onChange={handleChange}
           placeholder="Ej: Tecnologia, Gama Alta, Oferta, etc."
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-danashop-textSecondary mt-1">
           Usa esto para clasificaciones adicionales o etiquetas especiales
         </p>
       </div>
 
       {/* Imágenes */}
       <div>
-        <Label>
+        <Label className='pb-3 text-base text-danashop-textPrimary'>
           Imágenes del Producto <span className="text-red-500">*</span>
         </Label>
-        <p className="text-sm text-gray-500 mb-3">
+        <p className="text-sm text-danashop-textSecondary mb-3">
           Sube al menos una imagen (máximo 5)
         </p>
 
         {/* Zona de subida */}
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+        <div className="border-2 border-dashed border-danashop-secontext-danashop-textSecondary rounded-lg p-6">
           <input
+            className='text-danashop-textPrimary placeholder:text-danashop-text-Secondary tracking-wide hidden'
             type="file"
             accept="image/*"
             multiple
             onChange={handleImageUpload}
             disabled={uploading || formData.imagenes.length >= 5}
-            className="hidden"
             id="image-upload"
           />
           <label
@@ -369,18 +372,18 @@ export default function ProductForm({ categories, product, isEditing = false }: 
             }`}
           >
             {uploading ? (
-              <Loader2 className="w-12 h-12 text-gray-400 animate-spin mb-3" />
+              <Loader2 className="w-12 h-12 text-danashop-textSecondary animate-spin mb-3" />
             ) : (
-              <Upload className="w-12 h-12 text-gray-400 mb-3" />
+              <Upload className="w-12 h-12 text-danashop-textSecondary mb-3" />
             )}
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-danashop-textSecondary">
               {uploading
                 ? 'Subiendo imágenes...'
                 : formData.imagenes.length >= 5
                 ? 'Máximo 5 imágenes alcanzado'
                 : 'Click para subir imágenes'}
             </p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-danashop-textSecondary mt-1">
               PNG, JPG o WEBP (máx. 5MB cada una)
             </p>
           </label>
@@ -393,7 +396,7 @@ export default function ProductForm({ categories, product, isEditing = false }: 
             .filter(url => url && url.trim() !== '') // ← FILTRAR URLs vacías
             .map((url, index) => (
                 <div key={index} className="relative group">
-                <div className="relative w-full h-32 border rounded-lg overflow-hidden bg-gray-100">
+                <div className="relative w-full h-32 border rounded-lg overflow-hidden bg-danashop-secontext-danashop-textSecondary">
                     <Image
                     src={url}
                     alt={`Imagen ${index + 1}`}
@@ -415,7 +418,7 @@ export default function ProductForm({ categories, product, isEditing = false }: 
                     <X className="w-4 h-4" />
                 </button>
                 {index === 0 && (
-                    <span className="absolute bottom-2 left-2 px-2 py-1 bg-green-500 text-white text-xs rounded">
+                    <span className="absolute bottom-2 left-2 px-2 py-2 bg-green-500 text-white text-xs rounded">
                     Principal
                     </span>
                 )}
@@ -426,16 +429,18 @@ export default function ProductForm({ categories, product, isEditing = false }: 
         </div>
 
       {/* Botones */}
-      <div className="flex gap-4 pt-6 border-t">
-        <Button
+      <div className="flex gap-4 pt-6 border-t items-center justify-center">
+        <button
+          className='border-2 font-semibold hoverEffect hover:scale-105 bg-red-300 hover:bg-danashop-error tracking-wide border-danashop-error rounded-lg px-4 py-2 w-full md:w-1/4 hover:text-danashop-textPrimary'
           type="button"
-          variant="outline"
           onClick={() => router.back()}
           disabled={loading}
         >
           Cancelar
-        </Button>
-        <Button type="submit" disabled={loading || uploading}>
+        </button>
+        <button 
+          className='border-2 font-semibold hover:scale-105 tracking-wide border-danashop-brandHover bg-danashop-brandSoft/90 hover:bg-danashop-brandHover hoverEffect text-danashop-textDark hover:text-danashop-textPrimary rounded-lg px-4 py-2 w-full md:w-1/4'
+          type="submit" disabled={loading || uploading}>
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -444,7 +449,7 @@ export default function ProductForm({ categories, product, isEditing = false }: 
           ) : (
             <>{isEditing ? 'Guardar Cambios' : 'Crear Producto'}</>
           )}
-        </Button>
+        </button>
       </div>
     </form>
   );

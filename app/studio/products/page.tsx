@@ -6,18 +6,18 @@ import ProductsTable from '@/app/components/admin/ProducTable';
 export default function ProductsPage() {
   return (
     <Container>
-      <div className="py-6">
+      <div className="mb-6">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold">Gestión de Productos</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-danashop-textPrimary">Gestión de Productos</h1>
+            <p className="text-danashop-textSecondary mt-1">
               Busca por nombre o filtra por categoría
             </p>
           </div>
           
           <Link
             href="/studio/products/new"
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            className="font-bold tracking-wider flex items-center gap-2 px-4 py-2 bg-danashop-brandMain hover:bg-danashop-brandHover text-danashop-textPrimary rounded-lg hoverEffect"
           >
             <Plus className="w-5 h-5" />
             Nuevo Producto

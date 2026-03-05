@@ -7,7 +7,7 @@
 @theme {
 
   /* nuevos colores para el tema */
-  --color-danashop-colorMain: #0F0C1B;        /* Fondo principal profundo */
+  --color-danashop-colorMain: #161821;        /* Fondo principal profundo */
   --color-danashop-bgColorCard: #1C182D;      /* Fondo de tarjetas y secciones */
   --color-danashop-borderColor: #2D2845;      /* Bordes y separadores sutiles */
 
@@ -35,6 +35,8 @@
   --color-danashop-hover: #1E1B33;            /* Un morado casi negro para fondos al pasar el mouse */
   
   --color-danashop-focus: #C084FC;            /* Morado neón para el borde de los inputs al escribir */
+
+  --color-bgForms: #60519b;
 }
 
 @theme inline {
@@ -114,7 +116,7 @@
 }
 
 .dark {
-  --background: #0F0C1B;
+  --background: #161821;
 }
 
 @layer base {

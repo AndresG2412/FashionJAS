@@ -34,7 +34,7 @@ export default function CategoriesTable({ categories }: Props) {
         <div className="flex gap-2 justify-end">
           <button
             onClick={() => toast.dismiss(t.id)}
-            className="px-4 py-2 text-sm font-bold text-danashop-textSecondary border border-danashop-borderColor rounded-lg hover:bg-danashop-hover transition-colors"
+            className="px-4 py-2 text-sm font-bold text-danashop-textDark hover:text-danashop-textPrimary hover:bg-danashop-brandHover hoverEffect bg-danashop-brandSoft rounded-lg transition-colors"
           >
             Cancelar
           </button>
@@ -84,11 +84,11 @@ export default function CategoriesTable({ categories }: Props) {
   }
 
   return (
-    <div className="bg-danashop-bgColorCard overflow-hidden mb-16">
+    <div className="bg-bgForms/30 overflow-hidden mb-16">
       {/* VISTA DESKTOP */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full border rounded-lg">
-          <thead className="bg-danashop-colorMain/80 border-b border-danashop-borderColor">
+          <thead className="bg-danashop-colorMain/80 border-b border-white">
             <tr>
               <th className="px-6 py-4 text-left text-xs font-black text-danashop-textPrimary uppercase tracking-widest">
                 Categoría
@@ -104,7 +104,7 @@ export default function CategoriesTable({ categories }: Props) {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-danashop-borderColor">
+          <tbody className="divide-y divide-danashop-brandSoft">
             {categories.map((category) => (
               <tr key={category.id} className="hover:bg-danashop-hover transition-colors group">
                 <td className="px-6 py-4">

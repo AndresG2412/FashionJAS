@@ -45,17 +45,25 @@ export default async function EditProductPage({ params }: Props) {
   return (
     <Container>
       <div className="py-6">
-        <Link
-          href="/studio/products"
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Volver a productos
-        </Link>
+        <div className='flex justify-end'>
+          <button type='button' className='mb-4'>
+            <Link
+              href="/studio/products"
+              className="flex items-center gap-2 text-danashop-error "
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Volver a productos
+            </Link>
+          </button>
+        </div>
 
-        <h1 className="text-3xl font-bold mb-6">Editar Producto</h1>
 
-        <ProductForm categories={categories} product={product} isEditing />
+        <div className='bg-bgForms/30 rounded-lg mb-20 border'>
+
+          <h1 className="text-3xl py-5 text-center font-bold text-danashop-textPrimary tracking-wide">Editar Producto</h1>
+
+          <ProductForm categories={categories} product={product} isEditing />
+        </div>
       </div>
     </Container>
   );

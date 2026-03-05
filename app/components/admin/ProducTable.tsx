@@ -115,7 +115,7 @@ export default function ProductsTable() {
         <div className="flex gap-2 justify-end">
           <button
             onClick={() => toast.dismiss(t.id)}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-danashop-textPrimary bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
             Cancelar
           </button>
@@ -182,12 +182,12 @@ export default function ProductsTable() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 ">
       {/* PANEL DE BÚSQUEDA */}
-      <div className="bg-white border rounded-lg p-6 shadow-sm space-y-4">
+      <div className="bg-bgForms/30 border rounded-lg p-6 shadow-sm space-y-4">
         {/* Selector de modo */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-lg font-medium text-danashop-textPrimary mb-2">
             Buscar por:
           </label>
           <div className="flex gap-3">
@@ -199,8 +199,8 @@ export default function ProductsTable() {
               }}
               className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
                 mode === "nombre"
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? "bg-danashop-brandHover text-danashop-textPrimary border-danashop-brandSoft border-2 hoverEffect"
+                  : "bg-danashop-disabled border-black border-2 hoverEffect hover:bg-danashop-brandHover text-danashop-textPrimary"
               }`}
             >
               Nombre
@@ -212,9 +212,9 @@ export default function ProductsTable() {
                 setResults([]);
               }}
               className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
-                mode === "categoria"
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                mode === "nombre"
+                  ? "bg-danashop-disabled border-black border-2 hoverEffect hover:bg-danashop-brandHover text-danashop-textPrimary"
+                  : "bg-danashop-brandHover text-danashop-textPrimary border-danashop-brandSoft border-2 hoverEffect"
               }`}
             >
               Categoría
@@ -225,7 +225,7 @@ export default function ProductsTable() {
         {/* Búsqueda por nombre */}
         {mode === "nombre" && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-lg font-medium text-danashop-textPrimary mb-2">
               Nombre del producto:
             </label>
             <div className="flex gap-2">
@@ -235,18 +235,18 @@ export default function ProductsTable() {
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ej: iPhone, Laptop, etc."
-                className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="flex-1 text-danashop-textPrimary placeholder:text-danashop-textPrimary border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-danashop-brandSoft"
               />
               <button
                 onClick={handleSearch}
                 disabled={loading}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                className="px-6 py-2 bg-danashop-brandSoft text-danashop-textDark rounded-lg hover:bg-danashop-brandHover hover:text-danashop-textPrimary transition-colors flex items-center gap-2 disabled:opacity-50"
               >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4 " />}
                 Buscar
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-danashop-textSecondary mt-1">
               Busca en mayúsculas o minúsculas, funciona igual
             </p>
           </div>
@@ -255,7 +255,7 @@ export default function ProductsTable() {
         {/* Filtro por categoría */}
         {mode === "categoria" && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-danashop-textPrimary mb-2">
               Selecciona una categoría:
             </label>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -266,10 +266,10 @@ export default function ProductsTable() {
                     setSelectedCategory(cat.slug);
                     setResults([]);
                   }}
-                  className={`p-3 rounded-lg border-2 font-medium transition-all ${
+                  className={`py-2 px-1 rounded-lg border-2 font-medium transition-all ${
                     selectedCategory === cat.slug
-                      ? "border-green-500 bg-green-50 text-green-700"
-                      : "border-gray-200 hover:border-gray-300 text-gray-700"
+                      ? "border-danashop-brandSoft bg-danashop-brandHover text-danashop-textPrimary"
+                      : "border-gray-200 hover:border-gray-300 text-danashop-textPrimary"
                   }`}
                 >
                   {cat.titulo}
@@ -280,7 +280,7 @@ export default function ProductsTable() {
               <button
                 onClick={handleSearch}
                 disabled={loading}
-                className="mt-3 w-full px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                className="mt-3 w-full px-6 py-2 bg-danashop-brandSoft font-semibold wide hoverEffect text-danashop-textDark rounded-lg hover:bg-danashop-brandHover hover:text-danashop-textPrimary transition-colors disabled:opacity-50"
               >
                 {loading ? "Buscando..." : `Buscar en "${selectedCategory}"`}
               </button>
@@ -293,7 +293,7 @@ export default function ProductsTable() {
           <button
             onClick={handleLowStock}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 border-2 border-orange-200 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 border-2 border-danashop-error bg-red-200 text-danashop-error font-semibold tracking-wide rounded-lg hover:bg-danashop-error hover:text-danashop-textPrimary transition-colors disabled:opacity-50"
           >
             <AlertCircle className="w-4 h-4" />
             Ver productos con stock bajo (≤5)
@@ -304,28 +304,28 @@ export default function ProductsTable() {
       {/* LOADING */}
       {loading && (
         <div className="flex justify-center py-10">
-          <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-danashop-brandHover" />
         </div>
       )}
 
       {/* RESULTADOS */}
       {!loading && results.length > 0 && (
-        <div className="bg-white rounded-lg border shadow-sm">
+        <div className="bg-danashop-borderColor rounded-lg border shadow-sm">
           {/* DESKTOP */}
           <div className="hidden md:block divide-y">
             {results.map((p) => {
               const img = safeImage(p.imagenes?.[0]);
 
               return (
-                <div key={p.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div key={p.id} className="p-4 flex items-center justify-between cursor-default transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="relative w-16 h-16 border rounded-lg overflow-hidden bg-gray-100">
                       <Image src={img} alt={p.nombre} fill className="object-cover" unoptimized />
                     </div>
 
-                    <div>
-                      <p className="font-bold text-gray-900">{p.nombre}</p>
-                      <p className="text-sm text-gray-600">
+                    <div className="">
+                      <p className="font-bold text-danashop-textPrimary">{p.nombre}</p>
+                      <p className="text-sm text-green-500">
                         {p.precio.toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}
                       </p>
                       <p className={`text-xs font-semibold ${p.stock > 5 ? "text-green-600" : "text-red-500"}`}>
@@ -334,22 +334,22 @@ export default function ProductsTable() {
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 w-2/6">
                     <Link
                       href={`/studio/products/${p.slug}/edit`}
-                      className="flex items-center gap-2 px-4 py-2 text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-black text-danashop-textDark hover:text-danashop-textPrimary bg-danashop-brandSoft rounded-xl hover:bg-danashop-brandHover hoverEffect transition-colors"
                     >
                       <Pencil className="w-4 h-4" />
-                      Editar
+                      EDITAR
                     </Link>
 
                     <button
                       onClick={() => handleDelete(p.id, p.nombre)}
                       disabled={deleting === p.id}
-                      className="flex items-center gap-2 px-4 py-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-black text-danashop-error bg-danashop-error/10 border border-danashop-error/20 rounded-xl hoverEffect hover:bg-danashop-error hover:text-white transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
-                      Eliminar
+                      ELIMINAR
                     </button>
                   </div>
                 </div>
@@ -358,23 +358,29 @@ export default function ProductsTable() {
           </div>
 
           {/* MOBILE */}
-          <div className="md:hidden divide-y">
+          <div className="md:hidden divide-y grid gap-4">
             {results.map((p) => {
               const img = safeImage(p.imagenes?.[0]);
 
               return (
-                <div key={p.id} className="p-4">
-                  <div className="flex gap-3 mb-3">
-                    <div className="relative w-20 h-20 border rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                <div key={p.id} 
+                  className="bg-danashop-colorMain/50 border border-danashop-brandSoft rounded-lg p-4 hover:border-danashop-brandSoft/50 transition-all">
+                  <div className="flex gap-3 mb-3 ">
+                    <div className="relative w-20 h-20 border rounded-lg overflow-hidden  shrink-0">
                       <Image src={img} alt={p.nombre} fill className="object-cover" unoptimized />
                     </div>
 
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 line-clamp-2">{p.nombre}</p>
-                      <p className="text-sm text-gray-600">
+                    <div className="flex flex-col justify-between flex-1 min-w-0 h-full">
+                    
+                      <p className="text-lg font-semibold text-danashop-textPrimary line-clamp-2">
+                        {p.nombre}
+                      </p>
+                      
+                      <p className="text-base text-danashop-textSecondary">
                         {p.precio.toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}
                       </p>
-                      <p className={`text-xs font-bold ${p.stock > 5 ? "text-green-600" : "text-red-500"}`}>
+                      
+                      <p className={`text-base font-bold ${p.stock > 5 ? "text-green-600" : "text-red-500"}`}>
                         {p.stock} en stock
                       </p>
                     </div>
@@ -383,19 +389,19 @@ export default function ProductsTable() {
                   <div className="flex gap-2">
                     <Link
                       href={`/studio/products/${p.slug}/edit`}
-                      className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-black text-danashop-textDark hover:text-danashop-textPrimary bg-danashop-brandSoft rounded-xl hover:bg-danashop-brandHover hoverEffect transition-colors"
                     >
                       <Pencil className="w-4 h-4" />
-                      Editar
+                      EDITAR
                     </Link>
 
                     <button
                       onClick={() => handleDelete(p.id, p.nombre)}
                       disabled={deleting === p.id}
-                      className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-black text-danashop-error bg-danashop-error/10 border border-danashop-error/20 rounded-xl hoverEffect hover:bg-danashop-error hover:text-white transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
-                      {deleting === p.id ? "..." : "Eliminar"}
+                      {deleting === p.id ? "..." : "ELIMINAR"}
                     </button>
                   </div>
                 </div>
@@ -407,10 +413,10 @@ export default function ProductsTable() {
 
       {/* SIN RESULTADOS */}
       {!loading && results.length === 0 && (
-        <div className="bg-white rounded-lg border shadow-sm p-12 text-center">
-          <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500 mb-2">Busca productos por nombre o categoría</p>
-          <p className="text-sm text-gray-400">Los resultados aparecerán aquí</p>
+        <div className="bg-danashop-disabled rounded-lg border shadow-sm p-12 text-center">
+          <Search className="w-16 h-16 text-danashop-textPrimary mx-auto mb-4" />
+          <p className="text-danashop-textPrimary mb-2">Busca productos por nombre o categoría</p>
+          <p className="text-sm text-danashop-textSecondary">Los resultados aparecerán aquí</p>
         </div>
       )}
     </div>

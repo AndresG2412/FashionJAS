@@ -19,7 +19,7 @@ export default async function StudioDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
 
         {/* productos */}
-        <div className="bg-danashop-brandSoft/30 shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
+        <div className="bg-danashop-bgColorCard shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
@@ -32,7 +32,7 @@ export default async function StudioDashboard() {
         </div>
 
         {/* Ordenes */}
-        <div className="bg-danashop-brandSoft/30 shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
+        <div className="bg-danashop-bgColorCard shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
@@ -73,7 +73,7 @@ export default async function StudioDashboard() {
         </div> */}
 
         {/* Categorias */}
-        <div className="bg-danashop-brandSoft/30 shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
+        <div className="bg-danashop-bgColorCard shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
           <div className="flex items-center justify-between">
             <div>
               <div className='flex gap-2 items-center'> 
@@ -87,7 +87,7 @@ export default async function StudioDashboard() {
       </div>
 
       {/* Acciones Rápidas */}
-        <div className="bg-danashop-brandSoft/30 shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
+        <div className="bg-danashop-bgColorCard shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
         <h2 className="text-xl font-bold mb-4 text-danashop-textPrimary">Acciones Rápidas</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link 
