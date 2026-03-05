@@ -3,7 +3,6 @@ export const headerData = [
   { title: "Tienda", href: "/tienda" },
   { title: "Categorias", href: "/categoria" },
   { title: "Pedidos", href: "/pedidos" },
-  // { title: "Contact", href: "/contact" },
 ];
 export const quickLinksData = [
   { title: "Sobre nosotros", href: "/about" },
