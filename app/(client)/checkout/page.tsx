@@ -11,7 +11,7 @@ const CheckoutPage = async () => {
   const { userId } = await auth();
 
   return (
-    <div className="bg-gray-50 min-h-screen py-10">
+    <div className="bg-background min-h-screen py-10">
       {userId ? (
         <CheckoutForm />
       ) : (

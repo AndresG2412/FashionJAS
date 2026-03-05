@@ -29,7 +29,7 @@ export default function ProductView({ product }: Props) {
             <div className="max-w-6xl mx-auto p-6 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
                 {/* SECCIÓN IZQUIERDA: GALERIA */}
                 <div className="space-y-4">
-                    <div className="aspect-square relative bg-gray-100 rounded-xl overflow-hidden shadow-sm">
+                    <div className="aspect-square relative bg-danashop-disabled rounded-xl overflow-hidden shadow-sm">
                         {mainImage && (
                             <Image src={mainImage} alt={product.nombre} fill className="object-cover" priority />
                         )}
@@ -53,7 +53,7 @@ export default function ProductView({ product }: Props) {
 
                 {/* INFO */}
                 <div className="flex flex-col gap-4">
-                    <h1 className="text-3xl font-bold">{product.nombre}</h1>
+                    <h1 className="text-3xl font-bold text-danashop-textPrimary">{product.nombre}</h1>
 
                     <div className="flex items-center gap-4">
                         <p className="text-2xl font-bold text-blue-600">
@@ -66,7 +66,7 @@ export default function ProductView({ product }: Props) {
                         {stockInfo.label}
                     </p>
 
-                    <p className="text-gray-600 pb-2 border-b-2 hidden md:block">
+                    <p className="text-danashop-textSecondary pb-2 border-b-2 hidden md:block">
                         Descripción: {product.descripcion}
                     </p>
 
@@ -77,7 +77,7 @@ export default function ProductView({ product }: Props) {
 
                     <ProductTags/>
 
-                    <p className="text-gray-600 mt-4 pb-2 border-b-2 block md:hidden">
+                    <p className="text-danashop-textSecondary mt-4 pb-2 border-b-2 block md:hidden">
                         Descripción: {product.descripcion}
                     </p>
                     <SimilarProducts currentProduct={product} maxProducts={4} />

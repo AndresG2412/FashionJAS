@@ -58,7 +58,7 @@ const AddToFav = ({ product, iconOnly = false }: Props) => {
       >
         <Heart
           className={`w-5 h-5 transition-colors ${
-            isInFavorites ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'
+            isInFavorites ? 'fill-red-500 text-red-500' : 'text-danashop-textDark hover:text-red-500'
           }`}
         />
       </motion.button>
@@ -71,7 +71,7 @@ const AddToFav = ({ product, iconOnly = false }: Props) => {
       className={`w-full py-2 px-4 border-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
         isInFavorites
           ? 'border-red-500 text-red-500 bg-red-50'
-          : 'border-gray-300 text-gray-600 hover:border-red-500 hover:text-red-500'
+          : 'border-gray-300 text-danashop-textPrimary hover:border-red-500 hover:text-red-500'
       }`}
     >
       <Heart

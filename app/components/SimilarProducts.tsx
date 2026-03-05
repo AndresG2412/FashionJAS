@@ -87,20 +87,20 @@ export default function SimilarProducts({ currentProduct, maxProducts = 6 }: Pro
             <Link
               key={product.id}
               href={`/product/${product.slug}`}
-              className="group block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-blue-200"
+              className="group block bg-bgForms/30 rounded-xl overflow-hidden hover:shadow-lg hoverEffect shadow-md shadow-danashop-brandSoft/40"
             >
               {/* Imagen */}
-              <div className="relative aspect-square bg-gray-100 overflow-hidden">
+              <div className="relative aspect-square bg-danashop-disabled overflow-hidden">
                 <Image
                   src={product.imagenes?.[0] || "/placeholder.png"}
                   alt={product.nombre}
                   fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  className="object-cover group-hover:scale-110 hoverEffect"
                   unoptimized
                 />
                 {/* Badge de stock bajo (opcional) */}
                 {product.stock <= 2 && product.stock > 0 && (
-                  <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  <div className="absolute top-2 right-2 bg-red-500 text-danashop-textPrimary text-xs font-bold px-2 py-1 rounded-full">
                     ¡Últimas!
                   </div>
                 )}
@@ -113,7 +113,7 @@ export default function SimilarProducts({ currentProduct, maxProducts = 6 }: Pro
 
               {/* Nombre */}
               <div className="p-3">
-                <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-sm font-semibold text-danashop-textPrimary line-clamp-2 group-hover:text-blue-600 transition-colors">
                   {product.nombre}
                 </h3>
               </div>
