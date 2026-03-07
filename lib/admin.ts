@@ -1,6 +1,7 @@
 // Lista de emails de administradores
 const ADMIN_EMAILS = [
   'cgaviria930@gmail.com',
+  "hincapiestefania110@gmail.com"
   // Agrega más emails aquí si necesitas
 ];
 
