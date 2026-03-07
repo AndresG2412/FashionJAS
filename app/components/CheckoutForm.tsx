@@ -90,22 +90,26 @@ const CheckoutForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validaciones
     if (!formData.telefono || !formData.direccion) {
       toast.error("Por favor completa todos los campos obligatorios");
       return;
     }
+
     if (cartItems.length === 0) {
       toast.error("Tu carrito está vacío");
       return;
     }
+
     if (total < 1000) {
-      toast.error("El monto mínimo para comprar es $1,000 COP");
+      toast.error("El monto mínimo para comprar es $1,500 COP");
       return;
     }
 
     setLoading(true);
 
     try {
+      // 🔥 PREPARAR DATOS DEL PEDIDO
       const shipping = {
         address: formData.direccion,
         city: formData.ciudad,
@@ -114,7 +118,7 @@ const CheckoutForm = () => {
         cost: envio,
       };
 
-      const items = cartItems.map((item) => ({
+      const items = cartItems.map(item => ({
         productId: item.id,
         name: item.nombre,
         price: item.precio,
@@ -122,23 +126,30 @@ const CheckoutForm = () => {
         image: item.imagenes[0],
       }));
 
-      localStorage.setItem(
-        "pendingOrder",
-        JSON.stringify({
-          shipping,
-          items,
-          subtotal,
-          customer: {
-            name: `${formData.nombre} ${formData.apellido}`,
-            email: formData.email,
-            phone: formData.telefono,
-          },
-        })
-      );
+      // 🔥 GUARDAR EN LOCALSTORAGE ANTES DE IR A WOMPI
+      localStorage.setItem("pendingOrder", JSON.stringify({
+        shipping,
+        items,
+        subtotal,
+        customer: {
+          name: `${formData.nombre} ${formData.apellido}`,
+          email: formData.email,
+          phone: formData.telefono,
+        },
+      }));
 
+      console.log("💾 Datos guardados en localStorage:", {
+        shipping,
+        items,
+        subtotal,
+      });
+
+      // Crear la transacción en Wompi
       const response = await fetch("/api/create-payment", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           amount: total,
           customer: {
@@ -156,6 +167,7 @@ const CheckoutForm = () => {
       const data = await response.json();
 
       if (data.success && data.paymentUrl) {
+        // Redirigir a Wompi
         window.location.href = data.paymentUrl;
       } else {
         toast.error(data.error || "Error al procesar el pago");
@@ -167,6 +179,7 @@ const CheckoutForm = () => {
       setLoading(false);
     }
   };
+
 
   if (cartItems.length === 0) {
     return (
