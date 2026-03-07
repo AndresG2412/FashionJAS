@@ -9,10 +9,35 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select"
 import { ArrowLeft, Loader2, Package, MapPin, Mail, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTE DE CIUDADES DISPONIBLES
+// Para añadir una nueva ciudad en el futuro, solo agrega un objeto aquí:
+// { nombre: "Bogotá", departamento: "Cundinamarca", codigoPostal: "110111" }
+// ─────────────────────────────────────────────────────────────────────────────
+const CIUDADES = [
+  { nombre: "Cali", departamento: "Valle del Cauca", codigoPostal: "760001" },
+  // { nombre: "Bogotá", departamento: "Cundinamarca", codigoPostal: "110111" },
+  // { nombre: "Medellín", departamento: "Antioquia", codigoPostal: "050001" },
+] as const;
+
+type CiudadNombre = (typeof CIUDADES)[number]["nombre"];
+
+const getCiudadInfo = (nombre: CiudadNombre) =>
+  CIUDADES.find((c) => c.nombre === nombre)!;
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 const CheckoutForm = () => {
   const { user } = useUser();
@@ -20,15 +45,17 @@ const CheckoutForm = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
+  const ciudadDefault = CIUDADES[0];
+
   const [formData, setFormData] = useState({
     nombre: user?.firstName || "",
     apellido: user?.lastName || "",
     email: user?.emailAddresses[0]?.emailAddress || "",
     telefono: "",
     direccion: "",
-    ciudad: "Cali",
-    departamento: "Valle del Cauca",
-    codigoPostal: "760001",
+    ciudad: ciudadDefault.nombre,
+    departamento: ciudadDefault.departamento,
+    codigoPostal: ciudadDefault.codigoPostal,
     notas: "",
   });
 
@@ -37,10 +64,27 @@ const CheckoutForm = () => {
   const total = subtotal + envio;
 
   const formatCOP = (value: number) =>
-    value.toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 });
+    value.toLocaleString("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 0,
+    });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Al elegir ciudad, auto-completa departamento y código postal
+  const handleCiudadChange = (value: string) => {
+    const info = getCiudadInfo(value as CiudadNombre);
+    setFormData((prev) => ({
+      ...prev,
+      ciudad: info.nombre,
+      departamento: info.departamento,
+      codigoPostal: info.codigoPostal,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,7 +114,7 @@ const CheckoutForm = () => {
         cost: envio,
       };
 
-      const items = cartItems.map(item => ({
+      const items = cartItems.map((item) => ({
         productId: item.id,
         name: item.nombre,
         price: item.precio,
@@ -78,16 +122,19 @@ const CheckoutForm = () => {
         image: item.imagenes[0],
       }));
 
-      localStorage.setItem("pendingOrder", JSON.stringify({
-        shipping,
-        items,
-        subtotal,
-        customer: {
-          name: `${formData.nombre} ${formData.apellido}`,
-          email: formData.email,
-          phone: formData.telefono,
-        },
-      }));
+      localStorage.setItem(
+        "pendingOrder",
+        JSON.stringify({
+          shipping,
+          items,
+          subtotal,
+          customer: {
+            name: `${formData.nombre} ${formData.apellido}`,
+            email: formData.email,
+            phone: formData.telefono,
+          },
+        })
+      );
 
       const response = await fetch("/api/create-payment", {
         method: "POST",
@@ -130,8 +177,12 @@ const CheckoutForm = () => {
             <Package className="h-16 w-16 text-danashop-borderColor" strokeWidth={1} />
           </div>
           <div className="max-w-xs space-y-1.5">
-            <h2 className="text-xl font-bold text-danashop-textPrimary">Tu carrito está vacío</h2>
-            <p className="text-danashop-textSecondary text-sm">Agrega productos antes de continuar</p>
+            <h2 className="text-xl font-bold text-danashop-textPrimary">
+              Tu carrito está vacío
+            </h2>
+            <p className="text-danashop-textSecondary text-sm">
+              Agrega productos antes de continuar
+            </p>
           </div>
           <Link
             href="/tienda"
@@ -144,10 +195,12 @@ const CheckoutForm = () => {
     );
   }
 
-  /* Clases reutilizables para inputs con el esquema oscuro */
   const inputClass =
     "bg-danashop-colorMain border-danashop-textSecondary/50 text-danashop-textPrimary placeholder:text-danashop-textMuted focus:border-danashop-focus focus:ring-danashop-focus/20 rounded-lg";
-  const labelClass = "text-danashop-textSecondary text-xs font-semibold uppercase tracking-wider pb-1.5 block";
+  const inputReadonlyClass =
+    "bg-danashop-colorMain/50 border-danashop-textSecondary/30 text-danashop-textMuted rounded-lg cursor-not-allowed select-none";
+  const labelClass =
+    "text-danashop-textSecondary text-xs font-semibold uppercase tracking-wider pb-1.5 block";
 
   return (
     <Container className="py-8">
@@ -160,14 +213,14 @@ const CheckoutForm = () => {
           Volver al carrito
         </Link>
 
-        <h1 className="text-2xl font-bold mb-6 text-danashop-textPrimary">Finalizar Compra</h1>
+        <h1 className="text-2xl font-bold mb-6 text-danashop-textPrimary">
+          Finalizar Compra
+        </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
           {/* ── Formulario ── */}
           <div className="lg:col-span-2 space-y-4">
             <form onSubmit={handleSubmit} className="space-y-4">
-
               {/* Información Personal */}
               <div className="bg-danashop-bgColorCard rounded-xl border border-danashop-textSecondary/50 p-5">
                 <h2 className="text-sm font-bold mb-4 flex items-center gap-2 text-danashop-textPrimary uppercase tracking-wider">
@@ -176,20 +229,62 @@ const CheckoutForm = () => {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="nombre" className={labelClass}>Nombre *</Label>
-                    <Input id="nombre" name="nombre" value={formData.nombre} onChange={handleChange} required placeholder="Juan" className={inputClass} />
+                    <Label htmlFor="nombre" className={labelClass}>
+                      Nombre *
+                    </Label>
+                    <Input
+                      id="nombre"
+                      name="nombre"
+                      value={formData.nombre}
+                      onChange={handleChange}
+                      required
+                      placeholder="Juan"
+                      className={inputClass}
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="apellido" className={labelClass}>Apellido *</Label>
-                    <Input id="apellido" name="apellido" value={formData.apellido} onChange={handleChange} required placeholder="Pérez" className={inputClass} />
+                    <Label htmlFor="apellido" className={labelClass}>
+                      Apellido *
+                    </Label>
+                    <Input
+                      id="apellido"
+                      name="apellido"
+                      value={formData.apellido}
+                      onChange={handleChange}
+                      required
+                      placeholder="Pérez"
+                      className={inputClass}
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="email" className={labelClass}>Email *</Label>
-                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required placeholder="correo@ejemplo.com" className={inputClass} />
+                    <Label htmlFor="email" className={labelClass}>
+                      Email *
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      placeholder="correo@ejemplo.com"
+                      className={inputClass}
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="telefono" className={labelClass}>Teléfono *</Label>
-                    <Input id="telefono" name="telefono" type="tel" value={formData.telefono} onChange={handleChange} required placeholder="3001234567" className={inputClass} />
+                    <Label htmlFor="telefono" className={labelClass}>
+                      Teléfono *
+                    </Label>
+                    <Input
+                      id="telefono"
+                      name="telefono"
+                      type="tel"
+                      value={formData.telefono}
+                      onChange={handleChange}
+                      required
+                      placeholder="3001234567"
+                      className={inputClass}
+                    />
                   </div>
                 </div>
               </div>
@@ -202,25 +297,80 @@ const CheckoutForm = () => {
                 </h2>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="direccion" className={labelClass}>Dirección Completa *</Label>
-                    <Input id="direccion" name="direccion" value={formData.direccion} onChange={handleChange} required placeholder="Calle 5 # 38-25, Apto 401" className={inputClass} />
+                    <Label htmlFor="direccion" className={labelClass}>
+                      Dirección Completa *
+                    </Label>
+                    <Input
+                      id="direccion"
+                      name="direccion"
+                      value={formData.direccion}
+                      onChange={handleChange}
+                      required
+                      placeholder="Calle 5 # 38-25, Apto 401"
+                      className={inputClass}
+                    />
                   </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* ── Select de Ciudad ── */}
                     <div>
-                      <Label htmlFor="ciudad" className={labelClass}>Ciudad *</Label>
-                      <Input id="ciudad" name="ciudad" value={formData.ciudad} onChange={handleChange} required placeholder="Cali" className={inputClass} />
+                      <Label className={labelClass}>Ciudad *</Label>
+                      <Select
+                        value={formData.ciudad}
+                        onValueChange={handleCiudadChange}
+                      >
+                        <SelectTrigger
+                          className={`${inputClass} w-full`}
+                        >
+                          <SelectValue placeholder="Selecciona ciudad" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-danashop-bgColorCard border-danashop-textSecondary/50">
+                          {CIUDADES.map((ciudad) => (
+                            <SelectItem
+                              key={ciudad.nombre}
+                              value={ciudad.nombre}
+                              className="text-danashop-textPrimary focus:bg-danashop-brandMain/20 focus:text-danashop-brandSoft cursor-pointer"
+                            >
+                              {ciudad.nombre}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
+
+                    {/* ── Departamento (auto, readonly) ── */}
                     <div>
-                      <Label htmlFor="departamento" className={labelClass}>Departamento *</Label>
-                      <Input id="departamento" name="departamento" value={formData.departamento} onChange={handleChange} required placeholder="Valle del Cauca" className={inputClass} />
+                      <Label className={labelClass}>
+                        Departamento
+                        <span className="ml-1 normal-case text-danashop-textMuted font-normal">(auto)</span>
+                      </Label>
+                      <Input
+                        value={formData.departamento}
+                        readOnly
+                        tabIndex={-1}
+                        className={`${inputReadonlyClass} text-white`}
+                      />
                     </div>
+
+                    {/* ── Código Postal (auto, readonly) ── */}
                     <div>
-                      <Label htmlFor="codigoPostal" className={labelClass}>Código Postal</Label>
-                      <Input id="codigoPostal" name="codigoPostal" value={formData.codigoPostal} onChange={handleChange} placeholder="760001" className={inputClass} />
+                      <Label className={labelClass}>
+                        Código Postal
+                        <span className="ml-1 normal-case text-danashop-textMuted font-normal">(auto)</span>
+                      </Label>
+                      <Input
+                        value={formData.codigoPostal}
+                        readOnly
+                        tabIndex={-1}
+                        className={`${inputReadonlyClass} text-white`}
+                      />
                     </div>
                   </div>
+
                   <div>
-                    <Label htmlFor="notas" className={labelClass}>Notas del Pedido (Opcional)</Label>
+                    <Label htmlFor="notas" className={labelClass}>
+                      Notas del Pedido (Opcional)
+                    </Label>
                     <Textarea
                       id="notas"
                       name="notas"
@@ -228,7 +378,7 @@ const CheckoutForm = () => {
                       onChange={handleChange}
                       placeholder="Ej: Entregar en la portería, tocar el timbre 2 veces..."
                       rows={3}
-                      className={inputClass}
+                      className={`${inputReadonlyClass} text-white placeholder:text-danashop-textSecondary`}
                     />
                   </div>
                 </div>
@@ -242,9 +392,13 @@ const CheckoutForm = () => {
                   className="w-full py-3 rounded-xl font-bold text-danashop-textDark bg-danashop-accentAction hover:brightness-110 hoverEffect flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {loading ? (
-                    <><Loader2 className="w-5 h-5 animate-spin" /> Procesando...</>
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" /> Procesando...
+                    </>
                   ) : (
-                    <>Proceder al Pago <ArrowRight size={18} /></>
+                    <>
+                      Proceder al Pago <ArrowRight size={18} />
+                    </>
                   )}
                 </button>
               </div>
@@ -258,46 +412,61 @@ const CheckoutForm = () => {
                 Resumen del Pedido
               </h2>
 
-              {/* Lista de productos */}
               <div className="space-y-3 mb-4 max-h-56 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-danashop-borderColor">
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex gap-3 items-center">
                     <div className="relative w-12 h-12 shrink-0 rounded-lg overflow-hidden border border-danashop-borderColor">
-                      <Image src={item.imagenes[0]} alt={item.nombre} fill className="object-cover" />
+                      <Image
+                        src={item.imagenes[0]}
+                        alt={item.nombre}
+                        fill
+                        className="object-cover"
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-danashop-textPrimary line-clamp-1">{item.nombre}</p>
+                      <p className="text-xs font-semibold text-danashop-textPrimary line-clamp-1">
+                        {item.nombre}
+                      </p>
                       <p className="text-xs text-danashop-textMuted mt-0.5">
-                        {item.quantity} × <span className="text-danashop-inCart font-bold">{formatCOP(item.precio)}</span>
+                        {item.quantity} ×{" "}
+                        <span className="text-danashop-inCart font-bold">
+                          {formatCOP(item.precio)}
+                        </span>
                       </p>
                     </div>
-                    <span className="text-xs font-black text-danashop-brandSoft shrink-0">{formatCOP(item.precio * item.quantity)}</span>
+                    <span className="text-xs font-black text-danashop-brandSoft shrink-0">
+                      {formatCOP(item.precio * item.quantity)}
+                    </span>
                   </div>
                 ))}
               </div>
 
-              {/* Totales */}
               <div className="space-y-2 py-3 border-t border-danashop-textSecondary/50">
                 <div className="flex justify-between text-sm">
                   <span className="text-danashop-textSecondary">Subtotal</span>
-                  <span className="font-semibold text-danashop-textPrimary">{formatCOP(subtotal)}</span>
+                  <span className="font-semibold text-danashop-textPrimary">
+                    {formatCOP(subtotal)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-danashop-textSecondary">Envío</span>
                   <span className="font-semibold">
-                    {envio === 0
-                      ? <span className="text-danashop-success font-bold">GRATIS</span>
-                      : <span className="text-danashop-textPrimary">{formatCOP(envio)}</span>}
+                    {envio === 0 ? (
+                      <span className="text-danashop-success font-bold">GRATIS</span>
+                    ) : (
+                      <span className="text-danashop-textPrimary">{formatCOP(envio)}</span>
+                    )}
                   </span>
                 </div>
               </div>
 
               <div className="flex justify-between items-center py-3 border-t border-danashop-textSecondary/50">
                 <span className="text-base font-bold text-danashop-textPrimary">Total</span>
-                <span className="text-xl font-black text-danashop-accentAction">{formatCOP(total)}</span>
+                <span className="text-xl font-black text-danashop-accentAction">
+                  {formatCOP(total)}
+                </span>
               </div>
 
-              {/* Botón Submit desktop */}
               <div className="hidden lg:block mt-1">
                 <button
                   type="submit"
@@ -306,9 +475,13 @@ const CheckoutForm = () => {
                   className="w-full py-3 rounded-xl font-bold text-danashop-textDark bg-danashop-accentAction hover:brightness-110 hoverEffect flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {loading ? (
-                    <><Loader2 className="w-5 h-5 animate-spin" /> Procesando...</>
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" /> Procesando...
+                    </>
                   ) : (
-                    <>Proceder al Pago <ArrowRight size={18} /></>
+                    <>
+                      Proceder al Pago <ArrowRight size={18} />
+                    </>
                   )}
                 </button>
               </div>
