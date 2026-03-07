@@ -3,7 +3,7 @@ import NoAccess from "@/app/components/NoAccess";
 import { auth } from "@clerk/nextjs/server";
 
 export const metadata = {
-  title: "Checkout - GaboShop",
+  title: "Checkout - DannaTienda",
   description: "Finaliza tu compra",
 };
 
