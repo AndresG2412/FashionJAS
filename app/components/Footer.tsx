@@ -95,7 +95,7 @@ const Footer = ({ className, spanDesing }: { className?: string; spanDesing?: st
             {categoriesData?.map((item) => (
               <li key={item?.title}>
                 <Link
-                  href={`/category/${item?.href}`}
+                  href="/info"
                   className="hover:text-danashop-brandSoft text-danashop-textPrimary hoverEffect font-medium"
                 >
                   {item?.title}

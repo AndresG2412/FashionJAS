@@ -5,11 +5,11 @@ export const headerData = [
   { title: "Pedidos", href: "/pedidos" },
 ];
 export const quickLinksData = [
-  { title: "Sobre nosotros", href: "/about" },
-  { title: "Contáctanos", href: "/contact" },
-  { title: "Términos y condiciones", href: "/terms" },
-  { title: "Política de privacidad", href: "/privacy" },
-  { title: "Preguntas frecuentes", href: "/faqs" },
+  { title: "Sobre nosotros", href: "/info" },
+  { title: "Contáctanos", href: "/info" },
+  { title: "Términos y condiciones", href: "/info" },
+  { title: "Política de privacidad", href: "/info" },
+  { title: "Preguntas frecuentes", href: "/info" },
   { title: "Ayuda", href: "/help" },
 ];
 
