@@ -77,9 +77,8 @@ const Shop = ({ categories }: Props) => {
   };
 
   return (
-    <div className="">
       <Container className="">
-        <div className="flex flex-col md:flex-row gap-5 border-t-0">
+        <div className="flex flex-col md:flex-row gap-1 md:gap-5 border-t-0">
           {/* Sidebar de filtros */}
           <div className="border-b mt-5 md:border-b-0 border-white md:mt-4 md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 scrollbar-hide space-y-4">
             <CategoryList
@@ -94,8 +93,8 @@ const Shop = ({ categories }: Props) => {
           </div>
 
           {/* Grid de productos */}
-          <div className="flex-1 pt-5 md:border-l border-l-gray-300/50 pl-5">
-            <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide">
+          <div className="flex-1 pt-5 md:border-l border-l-gray-300/50 md:pl-5">
+            <div className="h-[calc(100vh-160px)] overflow-y-auto md:pr-2 scrollbar-hide">
               {/* Indicador de búsqueda activa */}
               {searchText && (
                 <div className="mb-4 p-3 bg-danashop-brandHover/30 border-danashop-brandSoft border-2 rounded-lg flex items-center justify-between">
@@ -124,7 +123,7 @@ const Shop = ({ categories }: Props) => {
                     <SearchBar onSearch={handleSearch} isSearching={loading} />
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-2.5">
                     {products?.map((product) => (
                       <motion.div
                         key={product.id}
@@ -166,7 +165,6 @@ const Shop = ({ categories }: Props) => {
           </div>
         </div>
       </Container>
-    </div>
   );
 };
 

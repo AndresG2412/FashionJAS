@@ -14,19 +14,18 @@ export const quickLinksData = [
 ];
 
 export const categoriesData = [
-  { title: "Celulares", href: "smartphones" },
-  { title: "Tablets", href: "mobiles" },
-  { title: "Electrodomésticos", href: "appliances" },
-  { title: "Aires acondicionados", href: "air-conditioners" },
-  { title: "Lavadoras", href: "washing-machine" },
-  { title: "Electrodomésticos de cocina", href: "kitchen-appliances" },
-  { title: "Accesorios", href: "gadget-accessories" },
+  { title: "Planchas y Secadoras", href: "Planchas-y-secadores" },
+  { title: "Peluches", href: "Peluches" },
+  { title: "Relojes", href: "Relojes" },
+  { title: "Maquillaje", href: "Maquillaje" },
+  { title: "Cobijas", href: "Cobijas" },
+  { title: "Pijamas", href: "Pijamas" },
 ];
 export const productType = [
-  { title: "Celulares", value: "Celulares" },
-  { title: "Perfumes", value: "Perfumes" },
-  { title: "Neveras", value: "Neveras" },
-  { title: "Portatiles", value: "Portatiles" },
+  { title: "Peluches", value: "Peluches" },
+  { title: "Planchas y Secadoras", value: "Planchas-y-secadores" },
+  { title: "Relojes", value: "Relojes" },
+  { title: "Maquillaje", value: "Maquillaje" },
 ];
 export const headerDataAdmin = [
   { title: "Panel Principal", href: "/studio" },

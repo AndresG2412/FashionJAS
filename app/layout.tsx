@@ -6,8 +6,8 @@ import { Toaster } from 'react-hot-toast';
 import useStore from '@/store';
 
 export const metadata: Metadata = {
-  title: "GaboShop - E-commerce",
-  description: "Your favorite online shop",
+  title: "Tiendanna - Tienda Virtual",
+  description: "Tu mejor opcion de tienda virtual en Cali",
 };
 
 import AuthSync from './components/AuthSync';

@@ -58,7 +58,7 @@ const HomeBanner = () => {
         {/* BOTON */}
         <Link
           href={"/shop"}
-          className="hidden md:in-line bg-danashop-textDark text-danashop-textPrimary/90 px-6 py-2 rounded-md text-sm font-bold tracking-wider hover:bg-danashop-brandHover hover:text-white hover:bg-shop_dark_green transition"
+          className="hidden md:block bg-danashop-textDark text-danashop-textPrimary/90 px-6 py-2 rounded-md text-sm font-bold tracking-wider hover:bg-danashop-brandHover hover:text-white hover:bg-shop_dark_green transition"
         >
           Comprar Ahora
         </Link>
@@ -94,7 +94,7 @@ const HomeBanner = () => {
         />
       </div>
 
-      <div className="md:hidden flex gap-x-6 items-center justify-center w-full h-36 sm:h-40">
+      <div className="md:hidden flex gap-x-6 items-center justify-center w-full h-24">
 
         {/* texto */}
         <Title
