@@ -361,12 +361,46 @@ export async function deleteProduct(productId: string): Promise<void> {
 
 // ==================== CATEGORÍAS ====================
 
+// ─── Helpers de sanitización ─────────────────────────────────────────────────
+
+/**
+ * Limpia el título: elimina espacios al inicio/final, caracteres especiales
+ * (puntos, comas, signos, etc.) y normaliza espacios internos.
+ */
+const sanitizeTitulo = (titulo: string): string =>
+  titulo
+    .trim()                          // Espacios al inicio y final
+    .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')  // Solo letras, acentos y espacios
+    .replace(/\s+/g, ' ')            // Espacios múltiples → uno solo
+    .trim();                         // Por si quedaron espacios tras el replace
+
+/**
+ * Genera un slug limpio desde un string:
+ * - Minúsculas
+ * - Sin acentos
+ * - Solo letras, números y guiones
+ * - Sin guiones al inicio/final ni guiones dobles
+ */
+const sanitizeSlug = (slug: string): string =>
+  slug
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+    .replace(/[^a-z0-9\s-]/g, '')   // Solo letras, números, espacios y guiones
+    .replace(/\s+/g, '-')            // Espacios → guiones
+    .replace(/-+/g, '-')             // Guiones múltiples → uno solo
+    .replace(/(^-|-$)/g, '');        // Sin guiones al inicio o final
+
+
+// ─── CRUD ─────────────────────────────────────────────────────────────────────
+
 export async function getAllCategoriesAdmin(): Promise<Category[]> {
   try {
     const categoriesRef = collection(db, 'categorias');
     const q = query(categoriesRef, orderBy('titulo', 'asc'));
     const snapshot = await getDocs(q);
-    
+
     return snapshot.docs.map(doc => ({
       id: doc.id,
       titulo: doc.data().titulo,
@@ -379,28 +413,35 @@ export async function getAllCategoriesAdmin(): Promise<Category[]> {
   }
 }
 
-// Crear categoría con ID personalizado (igual al título capitalizado)
 export async function createCategory(categoryData: Omit<Category, 'id'>): Promise<string> {
   try {
-    // Capitalizar primera letra del título para usar como ID
-    const capitalizedTitle = categoryData.titulo.charAt(0).toUpperCase() + categoryData.titulo.slice(1).toLowerCase();
-    
-    const categoryRef = doc(db, 'categorias', capitalizedTitle);
-    
+    // Sanitizar antes de cualquier operación
+    const tituloLimpio = sanitizeTitulo(categoryData.titulo);
+    const slugLimpio   = sanitizeSlug(categoryData.slug || categoryData.titulo);
+
+    if (!tituloLimpio) {
+      throw new Error('El título de la categoría no puede estar vacío o contener solo caracteres especiales');
+    }
+
+    // Capitalizar solo la primera letra
+    const tituloFinal = tituloLimpio.charAt(0).toUpperCase() + tituloLimpio.slice(1).toLowerCase();
+
+    const categoryRef = doc(db, 'categorias', tituloFinal);
+
     // Verificar si ya existe
     const existingDoc = await getDoc(categoryRef);
     if (existingDoc.exists()) {
-      throw new Error(`La categoría "${capitalizedTitle}" ya existe`);
+      throw new Error(`La categoría "${tituloFinal}" ya existe`);
     }
-    
+
     await setDoc(categoryRef, {
-      id: capitalizedTitle,
-      titulo: capitalizedTitle,
-      slug: categoryData.slug,
-      descripcion: categoryData.descripcion || '',
+      id:          tituloFinal,
+      titulo:      tituloFinal,
+      slug:        slugLimpio,
+      descripcion: categoryData.descripcion?.trim() || '',
     });
-    
-    return capitalizedTitle;
+
+    return tituloFinal;
   } catch (error) {
     console.error("Error creating category:", error);
     throw error;
@@ -410,12 +451,17 @@ export async function createCategory(categoryData: Omit<Category, 'id'>): Promis
 export async function updateCategory(categoryId: string, categoryData: Partial<Category>): Promise<void> {
   try {
     const categoryRef = doc(db, 'categorias', categoryId);
-    
+
     const updateData: any = {};
-    if (categoryData.slug) updateData.slug = categoryData.slug;
-    if (categoryData.descripcion !== undefined) updateData.descripcion = categoryData.descripcion;
-    // No actualizamos titulo ni id para mantener consistencia
-    
+
+    if (categoryData.slug !== undefined) {
+      updateData.slug = sanitizeSlug(categoryData.slug);
+    }
+    if (categoryData.descripcion !== undefined) {
+      updateData.descripcion = categoryData.descripcion.trim();
+    }
+    // titulo e id no se actualizan para mantener consistencia con el ID del doc
+
     await updateDoc(categoryRef, updateData);
   } catch (error) {
     console.error("Error updating category:", error);
@@ -432,7 +478,6 @@ export async function deleteCategory(categoryId: string): Promise<void> {
     throw error;
   }
 }
-
 
 // ==================== ESTADÍSTICAS ====================
 
