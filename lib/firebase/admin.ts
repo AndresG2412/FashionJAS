@@ -292,7 +292,7 @@ export async function lowStockProductsAdmin(): Promise<Productos[]> {
 export async function getAllProductsAdmin(): Promise<Productos[]> {
   try {
     const productsRef = collection(db, 'productos');
-    const q = query(productsRef, orderBy('nombre', 'asc'));
+    const q = query(productsRef, orderBy('subido', 'desc'), limit(50));
     const snapshot = await getDocs(q);
     
     return snapshot.docs.map(doc => ({

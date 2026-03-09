@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Loader2, Search, AlertTriangle, Pencil, Trash2, AlertCircle } from "lucide-react";
-import { deleteProduct, searchProductsAdmin, lowStockProductsAdmin, getAllCategoriesAdmin } from "@/lib/firebase/admin";
+import { deleteProduct, searchProductsAdmin, lowStockProductsAdmin, getAllCategoriesAdmin, getAllProductsAdmin } from "@/lib/firebase/admin";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import type { Productos } from "@/lib/firebase/products";
@@ -72,6 +72,20 @@ export default function ProductsTable() {
     } catch (error) {
       console.error("Error buscando:", error);
       toast.error("Error buscando productos");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Agrega junto a los otros handlers
+  const handleShowAll = async () => {
+    setLoading(true);
+    try {
+      const data = await getAllProductsAdmin();
+      setResults(data);
+      toast.success(`${data.length} productos (más recientes primero)`, { icon: "📦" });
+    } catch {
+      toast.error("Error cargando productos");
     } finally {
       setLoading(false);
     }
@@ -243,7 +257,7 @@ export default function ProductsTable() {
                 className="px-6 py-2 bg-danashop-brandSoft text-danashop-textDark rounded-lg hover:bg-danashop-brandHover hover:text-danashop-textPrimary transition-colors flex items-center gap-2 disabled:opacity-50"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4 " />}
-                Buscar
+                <p className="hidden md:block">Buscar</p>
               </button>
             </div>
             <p className="text-xs text-danashop-textSecondary mt-1">
@@ -287,6 +301,18 @@ export default function ProductsTable() {
             )}
           </div>
         )}
+
+        {/* Botón ver todos — añadir ANTES del botón de stock bajo */}
+        <div className="pt-4 border-t">
+          <button
+            onClick={handleShowAll}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 border-2 border-danashop-brandSoft bg-danashop-brandHover/20 text-danashop-textPrimary font-semibold tracking-wide rounded-lg hover:bg-danashop-brandHover transition-colors disabled:opacity-50"
+          >
+            <Search className="w-4 h-4" />
+            Ver todos los productos
+          </button>
+        </div>
 
         {/* Botón stock bajo */}
         <div className="pt-4 border-t">

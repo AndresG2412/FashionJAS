@@ -13,6 +13,7 @@ export interface Productos {
   categorias: string[];
   stock: number;
   subido: Date; // Antes era createdAt
+  tallas?: string[];
 }
 
 // Helper para mapear los datos de Firestore al tipo Productos
