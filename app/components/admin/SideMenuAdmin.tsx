@@ -1,5 +1,5 @@
-"use client"; // Asegúrate de tenerlo si usas hooks
-import React, { FC, useEffect, useState } from 'react'
+"use client";
+import React, { FC } from 'react'
 import Link from 'next/link'
 import { X } from 'lucide-react'
 import { usePathname } from 'next/navigation';
@@ -11,19 +11,9 @@ interface SideBarProps {
     onClose: () => void;
 }
 
-const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
+const SideMenuAdmin: FC<SideBarProps> = ({ isOpen, onClose }) => {
     const pathname = usePathname();
-    
-    // Aplicamos el ref que ya tenías definido para cerrar al hacer clic afuera
     const sidebarRef = useOutsideClick<HTMLDivElement>(onClose);
-    
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    if (!isMounted) return null;
 
     return (
         <div 
@@ -33,7 +23,7 @@ const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
             }`}
         >
             <div 
-                ref={sidebarRef} // Añadimos el ref aquí para el hook useOutsideClick
+                ref={sidebarRef}
                 onClick={(e) => e.stopPropagation()} 
                 className='min-w-72 max-w-96 bg-danashop-textDark h-screen p-10 border-r border-danashop-brandSoft flex flex-col gap-6'
             >
@@ -48,8 +38,7 @@ const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
                     {headerDataAdmin.map((item) => (
                         <Link 
                             href={item?.href} 
-                            key={item?.title} 
-                            // CLAVE: Al hacer clic en el link, ejecutamos onClose
+                            key={item?.title}
                             onClick={onClose} 
                             className={`hover:text-shop_light_green hoverEffect ${
                                 pathname === item?.href ? 'text-white' : ''
@@ -64,4 +53,4 @@ const SideMenu: FC<SideBarProps> = ({ isOpen, onClose }) => {
     )
 }
 
-export default SideMenu;
+export default SideMenuAdmin;
