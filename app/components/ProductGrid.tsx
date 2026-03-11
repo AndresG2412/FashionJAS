@@ -6,24 +6,26 @@ import { motion, AnimatePresence } from "motion/react";
 import { getProductsByCategory } from "@/lib/firebase/products";
 import type { Productos } from "@/lib/firebase/products";
 import NoProductAvailable from "./NoProductAvailable";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import Container from "./Container";
 import HomeTabbar from "./HomeTabBar";
 import { productType } from "../constants/data";
+
+const PRODUCTS_PER_PAGE = 10;
 
 const ProductGrid = () => {
   const [products, setProducts] = useState<Productos[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(productType[0]?.value || "");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // CAMBIO: Llamamos a la función de categoría
-        // Pasamos selectedTab tal cual (ej: "Celulares")
         const data = await getProductsByCategory(selectedTab);
         setProducts(data);
+        setCurrentPage(1); // Resetear a página 1 al cambiar categoría
       } catch (error) {
         console.log("Product fetching Error", error);
       } finally {
@@ -32,6 +34,15 @@ const ProductGrid = () => {
     };
     fetchData();
   }, [selectedTab]);
+
+  const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const paginatedProducts = products.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <Container className="flex flex-col lg:px-0 my-10">
@@ -44,20 +55,89 @@ const ProductGrid = () => {
           </motion.div>
         </div>
       ) : products?.length ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 mt-10">
-          {products?.map((product) => (
-            <AnimatePresence key={product?.id}>
-              <motion.div
-                layout
-                initial={{ opacity: 0.2 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+        <>
+          {/* Contador de productos */}
+          <div className="mt-10 mb-2 text-sm text-gray-500">
+            Mostrando {startIndex + 1}–{Math.min(startIndex + PRODUCTS_PER_PAGE, products.length)} de {products.length} productos
+          </div>
+
+          {/* Grid de productos */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5">
+            {paginatedProducts.map((product) => (
+              <AnimatePresence key={product?.id}>
+                <motion.div
+                  layout
+                  initial={{ opacity: 0.2 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              </AnimatePresence>
+            ))}
+          </div>
+
+          {/* Paginación */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-10">
+              {/* Botón anterior */}
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg border border-gray-200 hover:bg-purple-50 hover:border-purple-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                <ProductCard product={product} />
-              </motion.div>
-            </AnimatePresence>
-          ))}
-        </div>
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              {/* Números de página */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((page) => {
+                  // Mostrar: primera, última, y páginas cercanas a la actual
+                  return (
+                    page === 1 ||
+                    page === totalPages ||
+                    Math.abs(page - currentPage) <= 1
+                  );
+                })
+                .reduce<(number | "...")[]>((acc, page, idx, arr) => {
+                  // Agregar "..." cuando hay saltos
+                  if (idx > 0 && page - (arr[idx - 1] as number) > 1) {
+                    acc.push("...");
+                  }
+                  acc.push(page);
+                  return acc;
+                }, [])
+                .map((item, idx) =>
+                  item === "..." ? (
+                    <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      key={item}
+                      onClick={() => handlePageChange(item as number)}
+                      className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
+                        currentPage === item
+                          ? "bg-purple-600 text-white"
+                          : "border border-gray-200 hover:bg-purple-50 hover:border-purple-300 text-gray-700"
+                      }`}
+                    >
+                      {item}
+                    </button>
+                  )
+                )}
+
+              {/* Botón siguiente */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg border border-gray-200 hover:bg-purple-50 hover:border-purple-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <NoProductAvailable selectedTab={selectedTab} />
       )}
