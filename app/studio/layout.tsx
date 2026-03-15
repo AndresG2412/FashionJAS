@@ -2,9 +2,10 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import HeaderAdmin from '../components/admin/HeaderAdmin';
 
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? 'cgaviria930@gmail.com,hincapiestefania110@gmail.com')
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '')
   .split(',')
-  .map(e => e.trim().toLowerCase());
+  .map(e => e.trim().toLowerCase())
+  .filter(Boolean); // elimina strings vacíos si la variable no está definida
 
 export default async function StudioLayout({
   children,

@@ -1,9 +1,12 @@
 import React from 'react'
-import Container from './Container'
-import Logo from './Logo'
+import Container from '../../Container'
+import Logo from '../../Logo'
 import HeaderMenu from './HeaderMenu'
-import CartIcon from './CartIcon'
+
+import CartButton from './CartButton'
+import OrdersButton from './OrdersButton'
 import FavoriteButton from './FavoriteButton'
+
 import MobileMenu from './MobileMenu'
 import SingIn from './SingIn'
 import { ClerkLoaded, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
@@ -18,7 +21,8 @@ const Header = () => {
                 </div>
                 <HeaderMenu/>
                 <div className='flex w-auto md:w-1/3 items-center justify-end gap-5'>
-                    <CartIcon/>
+                    <OrdersButton/>
+                    <CartButton/>
                     <FavoriteButton/>
                     <ClerkLoaded>
                         <SignedIn>

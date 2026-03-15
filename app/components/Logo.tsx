@@ -6,8 +6,8 @@ export default function Logo({className, spanDesing }: {className?: string, span
     return (
         <Link
             href={'/'}>
-                <h2 className={cn("hoverEffect group font-sans text-2xl text-danashop-brandMain font-extrabold tracking-wider hover:text-danashop-focus",className)}>
-                    <span className={cn("text-danashop-focus group-hover:text-danashop-brandMain hoverEffect", spanDesing)}>DANNA</span>SHOP
+                <h2 className={cn("hoverEffect group font-sans text-2xl text-eshop-textPrimary font-extrabold tracking-wider hover:text-eshop-buttonBase",className)}>
+                    <span className={cn("text-eshop-buttonBase group-hover:text-eshop-textPrimary hoverEffect", spanDesing)}>FASHION</span>JAS
                 </h2>
         </Link>
     )
