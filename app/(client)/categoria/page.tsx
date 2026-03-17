@@ -34,32 +34,31 @@ export default async function CategoriasPage({ searchParams }: Props) {
   };
 
   return (
-    <Container>
+    <Container className="bg-eshop-bgMain min-h-screen">
       {/* Header */}
-      <div className="mt-5 mb-10">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-danashop-brandSoft/10 border-2 border-danashop-brandMain/30 rounded-xl flex items-center justify-center">
-            <Tag className="w-6 h-6 text-danashop-brandMain" />
+      <div className="mt-8 mb-10">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-14 h-14 bg-eshop-bgWhite border border-eshop-borderEmphasis rounded-2xl flex items-center justify-center shadow-sm">
+            <Tag className="w-7 h-7 text-eshop-accent" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-danashop-textPrimary">
+            <h1 className="text-3xl md:text-4xl font-bold text-eshop-textPrimary tracking-tight">
               Todas las Categorías
             </h1>
-            <p className="text-danashop-textSecondary mt-1">
+            <p className="text-eshop-textSecondary font-medium mt-1">
               {categories.length} {categories.length === 1 ? 'categoría disponible' : 'categorías disponibles'}
             </p>
           </div>
         </div>
-        <p className="text-lg text-danashop-textSecondary max-w-2xl">
-          Explora nuestro catálogo organizado por categorías. Encuentra exactamente lo que buscas.
+        <p className="text-lg text-eshop-textSecondary max-w-2xl leading-relaxed">
+          Explora nuestro catálogo organizado por categorías. Encuentra piezas exclusivas seleccionadas para ti.
         </p>
       </div>
 
       {/* Grid de categorías */}
       {categories.length > 0 ? (
         <>
-          {/* Contador */}
-          <p className="text-sm text-danashop-textSecondary mb-4">
+          <p className="text-sm text-eshop-textSecondary mb-6 font-medium">
             Mostrando {startIndex + 1}–{Math.min(startIndex + CATEGORIES_PER_PAGE, categories.length)} de {categories.length} categorías
           </p>
 
@@ -68,52 +67,57 @@ export default async function CategoriasPage({ searchParams }: Props) {
               <Link
                 key={category.id}
                 href={`/categoria/${category.slug}`}
-                className="group border-2 border-danashop-brandSoft bg-danashop-bgColorCard rounded-2xl shadow-sm hover:shadow-xl hover:shadow-danashop-brandMain/10 hover:border-danashop-brandSoft/50 hoverEffect overflow-hidden h-full flex flex-col"
+                className="group border border-eshop-borderSubtle bg-eshop-bgWhite rounded-2xl shadow-sm hover:shadow-md hover:border-eshop-borderEmphasis transition-all duration-300 overflow-hidden h-full flex flex-col"
               >
-                <div className="bg-linear-to-br flex gap-x-2 items-center from-danashop-hover to-danashop-bgColorCard px-4 py-3 border-b border-danashop-borderColor min-h-20">
-                  <div className="w-10 h-10 bg-danashop-colorMain rounded-lg flex shadow-sm items-center justify-center group-hover:scale-105 transition-transform duration-300 border border-danashop-borderColor">
-                    <Tag className="w-5 h-5 text-danashop-brandMain" />
+                {/* Header de la Card */}
+                <div className="bg-eshop-bgCard flex gap-x-3 items-center px-5 py-4 border-b border-eshop-borderSubtle min-h-[80px]">
+                  <div className="w-10 h-10 bg-eshop-bgWhite rounded-lg flex shadow-sm items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-eshop-borderSubtle">
+                    <Tag className="w-5 h-5 text-eshop-accent" />
                   </div>
-                  <div className="text-lg font-semibold text-danashop-textPrimary group-hover:text-danashop-brandSoft hoverEffect leading-tight">
+                  <div className="text-lg font-bold text-eshop-textPrimary group-hover:text-eshop-textHover transition-colors leading-tight">
                     {category.titulo}
                   </div>
                 </div>
-                <div className="p-4 flex flex-col gap-y-3 flex-1">
-                  <p className="text-danashop-textPrimary/60 text-sm line-clamp-2 min-h-10">
-                    {category.descripcion || 'Explora nuestra selección de productos'}
+                
+                {/* Cuerpo de la Card */}
+                <div className="p-5 flex flex-col gap-y-4 flex-1 bg-eshop-bgWhite">
+                  <p className="text-eshop-textSecondary text-sm line-clamp-2 min-h-[40px] leading-relaxed">
+                    {category.descripcion || 'Explora nuestra selección de productos exclusivos en esta categoría.'}
                   </p>
-                  <div className="flex items-center justify-between text-danashop-brandSoft font-medium text-sm mt-auto">
-                    <span className="group-hover:translate-x-1 transition-transform">Ver productos</span>
+                  <div className="flex items-center justify-between text-eshop-accent font-bold text-sm mt-auto pt-2">
+                    <span className="group-hover:mr-2 transition-all">Ver productos</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-                <div className="h-1 bg-linear-to-r from-danashop-brandMain to-danashop-focus transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                
+                {/* Línea decorativa inferior */}
+                <div className="h-1 bg-eshop-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
               </Link>
             ))}
           </div>
 
           {/* Paginación */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-10">
+            <div className="flex items-center justify-center gap-3 mt-12">
               <Link
                 href={`/categoria?page=${currentPage - 1}`}
                 aria-disabled={currentPage === 1}
-                className={`p-2 rounded-lg border border-danashop-borderColor hover:bg-danashop-hover hover:border-danashop-brandMain/30 transition-colors ${currentPage === 1 ? 'pointer-events-none opacity-40' : ''}`}
+                className={`p-2.5 rounded-xl border border-eshop-borderSubtle bg-eshop-bgWhite hover:bg-eshop-bgCard hover:border-eshop-borderEmphasis transition-all ${currentPage === 1 ? 'pointer-events-none opacity-30' : ''}`}
               >
-                <ChevronLeft className="w-4 h-4 text-danashop-textPrimary" />
+                <ChevronLeft className="w-5 h-5 text-eshop-textPrimary" />
               </Link>
 
               {getPageNumbers().map((item, idx) =>
                 item === '...' ? (
-                  <span key={`ellipsis-${idx}`} className="px-2 text-danashop-textSecondary">...</span>
+                  <span key={`ellipsis-${idx}`} className="px-2 text-eshop-textDisabled font-bold">...</span>
                 ) : (
                   <Link
                     key={item}
                     href={`/categoria?page=${item}`}
-                    className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors flex items-center justify-center ${
+                    className={`w-10 h-10 rounded-xl text-sm font-bold transition-all flex items-center justify-center border ${
                       currentPage === item
-                        ? 'bg-danashop-brandMain text-white'
-                        : 'border border-danashop-borderColor hover:bg-danashop-hover hover:border-danashop-brandMain/30 text-danashop-textPrimary'
+                        ? 'bg-eshop-buttonBase border-eshop-buttonBase text-eshop-textDark shadow-md scale-105'
+                        : 'bg-eshop-bgWhite border-eshop-borderSubtle text-eshop-textSecondary hover:border-eshop-accent hover:text-eshop-accent'
                     }`}
                   >
                     {item}
@@ -124,33 +128,37 @@ export default async function CategoriasPage({ searchParams }: Props) {
               <Link
                 href={`/categoria?page=${currentPage + 1}`}
                 aria-disabled={currentPage === totalPages}
-                className={`p-2 rounded-lg border border-danashop-borderColor hover:bg-danashop-hover hover:border-danashop-brandMain/30 transition-colors ${currentPage === totalPages ? 'pointer-events-none opacity-40' : ''}`}
+                className={`p-2.5 rounded-xl border border-eshop-borderSubtle bg-eshop-bgWhite hover:bg-eshop-bgCard hover:border-eshop-borderEmphasis transition-all ${currentPage === totalPages ? 'pointer-events-none opacity-30' : ''}`}
               >
-                <ChevronRight className="w-4 h-4 text-danashop-textPrimary" />
+                <ChevronRight className="w-5 h-5 text-eshop-textPrimary" />
               </Link>
             </div>
           )}
         </>
       ) : (
-        <div className="bg-danashop-bgColorCard rounded-2xl border border-danashop-borderColor p-12 text-center">
-          <Package className="w-16 h-16 text-danashop-textMuted mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-danashop-textPrimary mb-2">No hay categorías disponibles</h2>
-          <p className="text-danashop-textSecondary mb-6">Pronto agregaremos categorías para organizar mejor nuestros productos</p>
-          <Link href="/tienda" className="inline-block px-6 py-3 bg-danashop-brandMain text-white font-medium rounded-lg hover:bg-danashop-brandHover transition-colors">
-            Ver todos los productos
+        /* Empty State */
+        <div className="bg-eshop-bgCard rounded-3xl border border-eshop-borderSubtle p-16 text-center shadow-inner">
+          <Package className="w-20 h-20 text-eshop-textDisabled mx-auto mb-6" />
+          <h2 className="text-2xl font-bold text-eshop-textPrimary mb-3">No hay categorías todavía</h2>
+          <p className="text-eshop-textSecondary mb-8 max-w-md mx-auto">Estamos preparando una selección especial para ti. Vuelve pronto para descubrir nuestras novedades.</p>
+          <Link href="/tienda" className="inline-block px-8 py-3.5 bg-eshop-buttonBase text-eshop-textDark font-bold rounded-xl hover:bg-eshop-buttonHover transition-all shadow-md">
+            Ir a la tienda principal
           </Link>
         </div>
       )}
 
-      {/* CTA */}
-      <div className="my-12 bg-linear-to-r from-danashop-brandMain to-danashop-brandHover rounded-2xl p-4 pb-6 text-center text-white shadow-lg shadow-danashop-brandMain/20">
-        <h2 className="text-2xl font-bold mb-3">¿No encuentras lo que buscas?</h2>
-        <p className="text-white/80 mb-6 max-w-3xl mx-auto">
-          Explora todos nuestros productos o contáctanos para ayudarte a encontrar exactamente lo que necesitas
+      {/* CTA de Ayuda Personalizada */}
+      <div className="my-10 bg-eshop-bgCard border border-eshop-borderEmphasis rounded-3xl p-8 text-center relative overflow-hidden">
+        {/* Adorno decorativo de fondo */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-eshop-accent opacity-5 rounded-full -mr-16 -mt-16" />
+        
+        <h2 className="text-2xl font-bold text-eshop-textPrimary mb-4">¿Buscas algo específico?</h2>
+        <p className="text-eshop-textSecondary mb-8 max-w-2xl mx-auto font-medium leading-relaxed">
+          Si no encuentras lo que necesitas, nuestro equipo puede ayudarte a localizar el producto ideal.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/tienda" className="inline-block px-6 py-3 bg-white text-danashop-brandMain font-bold rounded-lg hover:bg-gray-100 transition-colors">
-            Ver todos los productos
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/tienda" className="px-6 py-3 bg-eshop-buttonBase text-eshop-textDark font-bold rounded-xl hover:bg-eshop-buttonHover transition-all shadow-lg active:scale-95">
+            Explorar Catálogo Completo
           </Link>
         </div>
       </div>
