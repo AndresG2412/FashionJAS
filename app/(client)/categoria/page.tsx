@@ -67,10 +67,10 @@ export default async function CategoriasPage({ searchParams }: Props) {
               <Link
                 key={category.id}
                 href={`/categoria/${category.slug}`}
-                className="group border border-eshop-borderSubtle bg-eshop-bgWhite rounded-2xl shadow-sm hover:shadow-md hover:border-eshop-borderEmphasis transition-all duration-300 overflow-hidden h-full flex flex-col"
+                className="group border border-eshop-goldDeep bg-eshop-bgWhite rounded-2xl shadow-sm hover:shadow-md hover:border-eshop-borderEmphasis transition-all duration-300 overflow-hidden h-full flex flex-col"
               >
                 {/* Header de la Card */}
-                <div className="bg-eshop-bgCard flex gap-x-3 items-center px-5 py-4 border-b border-eshop-borderSubtle min-h-[80px]">
+                <div className="bg-eshop-bgCard flex gap-x-3 items-center px-5 py-4 border-b border-eshop-borderSubtle min-h-20">
                   <div className="w-10 h-10 bg-eshop-bgWhite rounded-lg flex shadow-sm items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-eshop-borderSubtle">
                     <Tag className="w-5 h-5 text-eshop-accent" />
                   </div>
@@ -81,7 +81,7 @@ export default async function CategoriasPage({ searchParams }: Props) {
                 
                 {/* Cuerpo de la Card */}
                 <div className="p-5 flex flex-col gap-y-4 flex-1 bg-eshop-bgWhite">
-                  <p className="text-eshop-textSecondary text-sm line-clamp-2 min-h-[40px] leading-relaxed">
+                  <p className="text-eshop-textSecondary text-sm line-clamp-2 min-h-10 leading-relaxed">
                     {category.descripcion || 'Explora nuestra selección de productos exclusivos en esta categoría.'}
                   </p>
                   <div className="flex items-center justify-between text-eshop-accent font-bold text-sm mt-auto pt-2">
