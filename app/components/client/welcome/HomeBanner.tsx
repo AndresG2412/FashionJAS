@@ -91,10 +91,10 @@ const HomeBanner = () => {
               Comprar Ahora
             </Link>
             <Link
-              href="/tienda"
+              href="/categoria"
               className="text-eshop-textSecondary text-sm font-semibold hover:text-eshop-accent hoverEffect tracking-wide"
             >
-              Ver colección →
+              Ver colecciones →
             </Link>
           </div>
 

@@ -37,9 +37,9 @@ const FooterTop = () => {
       {data?.map((item, index) => (
         <div
           key={index}
-          className="flex justify-center items-start gap-2 bg-eshop-inCart shadow-lg rounded-lg group hover:bg-eshop-formsBackground p-2 md:p-4 hoverEffect min-w-0"
+          className="flex justify-center items-start gap-2 bg-eshop-inCart shadow-lg rounded-lg hover:bg-eshop-formsBackground p-2 md:p-4 hoverEffect min-w-0"
         >
-          <div className="flex flex-col min-w-0 group-hover:scale-105 hoverEffect">
+          <div className="flex flex-col min-w-0 hoverEffect">
             <div className="flex gap-2 justify-center items-center">
               <div>{item?.icon}</div>
               <h3 className="font-semibold text-eshop-textPrimary tracking-wide">
