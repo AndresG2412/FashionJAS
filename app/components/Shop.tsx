@@ -6,7 +6,7 @@ import CategoryList from "./shop/CategoryList";
 import PriceList from "./shop/PriceList";
 import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
-import ProductCard from "./ProductCard";
+import ProductCard from "./client/welcome/ProductCard";
 import { getFilteredProducts, getAllProducts, searchProductsAdmin } from "@/lib/firebase/products";
 import type { Productos } from "@/lib/firebase/products";
 import type { Category } from "@/lib/firebase/categories";

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import useStore from "@/store";
 import Header from "../components/client/header/Header";
-import Footer from "../components/Footer";
+import Footer from "../components/client/footer/Footer";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoaded } = useUser();

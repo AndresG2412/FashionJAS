@@ -1,6 +1,6 @@
 import { getProductsByCategory, getCategoryBySlug } from '@/lib/firebase/admin';
 import Container from '@/app/components/Container';
-import ProductCard from '@/app/components/ProductCard';
+import ProductCard from '@/app/components/client/welcome/ProductCard';
 import { notFound } from 'next/navigation';
 import { Tag, Package, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';

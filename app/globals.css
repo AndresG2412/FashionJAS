@@ -6,38 +6,43 @@
 
 @theme {
 
-  /* nuevos colores para el tema */
-  --color-danashop-colorMain: #161821;        /* Fondo principal profundo */
-  --color-danashop-bgColorCard: #1C182D;      /* Fondo de tarjetas y secciones */
-  --color-danashop-borderColor: #2D2845;      /* Bordes y separadores sutiles */
+  /* ─── FONDOS ─────────────────────────────────── */
+--color-eshop-bgWhite:         #FFFFFF;   /* blanco puro para cards sobre beige */
+--color-eshop-bgMain:          #FAF7F2;   /* fondo raíz — crema perla */
+--color-eshop-bgCard:          #F4EFE6;   /* cards y contenedores */
+--color-eshop-formsBackground: #EDE8DC;   /* inputs, textareas, selects */
+--color-eshop-bannerHome:      #F2ECDF;
 
-  --color-danashop-brandHover: #7C3AED;       /* Morado más oscuro para hover en botones */
-  --color-danashop-brandMain: #8B5CF6;        /* Morado vibrante para botones y logos */
-  --color-danashop-brandSoft: #A78BFA;        /* Morado suave para estados hover o iconos */
-  
-  --color-danashop-accentAction: #D9F99D;     /* Verde Lima para el botón de "Comprar" */
-  --color-danashop-accentHighlight: #FBBF24;  /* Ámbar para ofertas o ratings */
+/* ─── BORDES ─────────────────────────────────── */
+--color-eshop-borderSubtle:    #E8E0CC;   /* separadores sutiles */
+--color-eshop-borderEmphasis:  #D4C49A;   /* borde de card activa / foco */
 
-  --color-danashop-textPrimary: #F3F4F6;      /* Blanco grisáceo para lectura cómoda */
-  --color-danashop-textSecondary: #9CA3AF;    /* Gris claro para subtítulos o info menos importante */
-  --color-danashop-textMuted: #6B7280;        /* Gris medio para descripciones o info secundaria */
-  --color-danashop-textDisabled: #4B5563;     /* Gris oscuro para texto deshabilitado */
-  --color-danashop-textDark: #111827;         /* Gris muy oscuro para texto sobre fondos claros */
-  
-  --color-danashop-error: #EF4444;            /* Rojo para errores críticos (pago fallido) */
-  --color-danashop-warning: #F59E0B;          /* Naranja para "Pocas unidades" o "Stock bajo" */
-  --color-danashop-disabled: #374151;         /* Gris oscuro para botones o artículos no disponibles */
+/* ─── TIPOGRAFÍA ─────────────────────────────── */
+--color-eshop-textPrimary:     #1A1209;   /* café muy oscuro, más cálido que negro */
+--color-eshop-textSecondary:   #6B5B3E;   /* café medio */
+--color-eshop-textDisabled:    #C8BAA0;   /* beige apagado */
+--color-eshop-textDark:        #FAF7F2;   /* texto claro sobre fondos dorados sólidos */
+--color-eshop-textHover:       #C8972A;   /* dorado acento — hover de links */
+--color-eshop-textError:       #C0392B;
+--color-eshop-textWarning:     #B45309;   /* ámbar oscuro, legible sobre claro */
 
-  --color-danashop-success: #10B981;          /* Verde para "Pago completado" o "Cupón aplicado" */
-  --color-danashop-inCart: #06B6D4;           /* Cian/Azul brillante para el badge de "En el carrito" */
+/* ─── ACENTO DORADO (escala) ─────────────────── */
+--color-eshop-goldDeep:        #8A6A2A;   /* sombras, hover muy profundo */
+--color-eshop-accent:          #C8972A;   /* acento principal */
+--color-eshop-goldLight:       #E8C96A;   /* highlights, iconos decorativos */
+--color-eshop-inCart:          #F3EDE0;   /* tint suave dorado — faltante */
 
-  --color-danashop-favorite: #F43F5E;         /* Rosa/Rojo para el corazón de favoritos */
-  --color-danashop-hover: #1E1B33;            /* Un morado casi negro para fondos al pasar el mouse */
-  
-  --color-danashop-focus: #C084FC;            /* Morado neón para el borde de los inputs al escribir */
+/* ─── BOTONES ────────────────────────────────── */
+--color-eshop-buttonBase:      #C8972A;
+--color-eshop-buttonHover:     #8A6A2A;
 
-  --color-bgForms: #60519b;
-}
+/* ─── ESTADOS ────────────────────────────────── */
+--color-eshop-success:         #2D7A4A;   /* verde bosque, elegante sobre claro */
+--color-eshop-cart:            #0E9C49;
+--color-eshop-cartHover:       #226E3D;
+--color-eshop-cancelCart:      #D90404;
+--color-eshop-cancelCartHover: #B00909;
+} 
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -96,7 +101,7 @@
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: #e7000b;
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -116,7 +121,7 @@
 }
 
 .dark {
-  --background: #161821;
+  --background: #FAF7F2;
 }
 
 @layer base {

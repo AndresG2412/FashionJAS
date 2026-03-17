@@ -5,11 +5,11 @@ import ProductCard from "./ProductCard";
 import { motion, AnimatePresence } from "motion/react";
 import { getProductsByCategory } from "@/lib/firebase/products";
 import type { Productos } from "@/lib/firebase/products";
-import NoProductAvailable from "./NoProductAvailable";
+import NoProductAvailable from "../../NoProductAvailable";
 import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
-import Container from "./Container";
+import Container from "../../Container";
 import HomeTabbar from "./HomeTabBar";
-import { productType } from "../constants/data";
+import { productType } from "../../../constants/data";
 
 const PRODUCTS_PER_PAGE = 10;
 

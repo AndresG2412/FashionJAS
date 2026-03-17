@@ -2,8 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Productos } from '@/lib/firebase/products';
-import AddToFav from './AddToFav';
-import AddToCar from './AddToCar';
+import AddToFav from '../../AddToFav';
+import AddToCar from '../../AddToCar';
 
 interface ProductCardProps {
   product: Productos;
@@ -12,13 +12,13 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link href={`/${product.slug}`}>
-      <div className="group relative bg-danashop-bgColorCard rounded-lg shadow-sm shadow-danashop-brandHover hover:shadow-md transition-shadow duration-300 overflow-hidden h-full flex flex-col">
+      <div className="group relative bg-eshop-bannerHome rounded-lg shadow-sm shadow-eshop-buttonHover hover:shadow-md transition-shadow duration-300 overflow-hidden h-full flex flex-col">
         {/* Botón de favorito (ícono flotante) */}
         <AddToFav product={product} iconOnly />
         
         {/* Link a la página del producto (solo en imagen y nombre) */}
           {/* Imagen del producto */}
-          <div className="aspect-square overflow-hidden bg-danashop-brandSoft relative">
+          <div className="aspect-square overflow-hidden bg-eshop-textSecondary relative">
             {product?.imagenes && product.imagenes[0] && (
               <Image 
                 src={product.imagenes[0]}
@@ -33,7 +33,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Información del producto */}
         <div className="p-4 flex flex-col grow">
           {/* Nombre con altura fija de 2 líneas */}
-            <h3 className="text-sm font-medium text-danashop-textPrimary line-clamp-2 mb-2 min-h-10 hover:text-shop_light_green transition-colors">
+            <h3 className="text-sm font-medium text-eshop-textPrimary line-clamp-2 mb-2 min-h-10">
               {product.nombre}
             </h3>
           
@@ -43,10 +43,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {/* Precio y Stock */}
           <div className="md:flex items-center block md:justify-between mb-3">
             <div className='flex gap-1 items-baseline'>
-              <p className="text-lg font-bold text-blue-600">
+              <p className="text-lg font-bold text-eshop-accent">
                 ${product.precio.toLocaleString('es-CO')}
               </p>
-              <p className='text-sm font-semibold text-gray-500'>COL</p>
+              
+              {/* <p className='text-sm font-semibold text-gray-500'>COL</p> */}
             </div>
             
             {/* Badge de stock */}

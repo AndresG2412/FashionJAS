@@ -1,7 +1,7 @@
 import React from 'react'
 import Container from '../components/Container'
-import HomeBanner from '../components/HomeBanner'
-import ProductGrid from '../components/ProductGrid'
+import HomeBanner from '../components/client/welcome/HomeBanner'
+import ProductGrid from '../components/client/welcome/ProductGrid'
 
 function page() {
     return (
