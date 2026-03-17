@@ -3,7 +3,7 @@ import { getAllCategories } from "@/lib/firebase/categories";
 import Container from "@/app/components/Container";
 
 export const metadata = {
-  title: "Tienda - Tiendanna",
+  title: "Tienda - FashionJAS",
   description: "Explora todos nuestros productos",
 };
 

@@ -5,7 +5,7 @@ import ProductGrid from '../components/client/welcome/ProductGrid'
 
 function page() {
     return (
-        <Container className="text-danashop-textPrimary md:p-5">
+        <Container className=" md:p-5">
             <HomeBanner/>
             <ProductGrid/>
         </Container>

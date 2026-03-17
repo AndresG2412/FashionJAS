@@ -32,22 +32,22 @@ export default function SearchBar({ onSearch, isSearching = false }: Props) {
 
   return (
     <div className="px-4">
-      <p className="text-base font-semibold uppercase text-danashop-textPrimary tracking-wider mb-2">
+      <p className="text-base font-serif font-semibold uppercase text-danashop-textPrimary tracking-wider mb-2">
         Buscar Producto
       </p>
 
       {!isOpen ? (
         <button
           onClick={() => setIsOpen(true)}
-          className="w-full flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:border-shop_light_green transition-colors text-gray-600"
+          className="w-full flex items-center gap-2 px-3 py-2 border bg-eshop-goldLight/20 border-eshop-goldDeep rounded-lg hover:border-shop_light_green transition-colors text-gray-600"
         >
           <Search className="w-4 h-4" />
-          <span className="text-base text-danashop-textPrimary">Buscar por nombre...</span>
+          <span className="text-base text-eshop-textPrimary">Buscar por nombre...</span>
         </button>
       ) : (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <div className="flex-1 flex bg-danashop-brandHover/30 items-center gap-2 px-3 py-2 border border-shop_light_green rounded-lg">
+            <div className="flex-1 flex bg-eshop-goldLight/20 items-center gap-2 px-3 py-2 border border-eshop-goldDeep rounded-lg">
               <Search className="w-4 h-4 text-gray-400 shrink-0" />
               <input
                 type="text"
@@ -56,23 +56,23 @@ export default function SearchBar({ onSearch, isSearching = false }: Props) {
                 onKeyPress={handleKeyPress}
                 placeholder="Ej: iPhone, Laptop..."
                 autoFocus
-                className="flex-1 outline-none text-danashop-textPrimary text-base"
+                className="flex-1 outline-none text-eshop-textPrimary text-base"
               />
               {searchText && (
                 <button
                   onClick={() => setSearchText("")}
-                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-1 hover:bg-eshop-textError rounded-full hoverEffect group"
                 >
-                  <X className="w-4 h-4 text-gray-400" />
+                  <X className="w-4 h-4 text-eshop-textSecondary group-hover:text-eshop-textDark hoverEffect" />
                 </button>
               )}
             </div>
             <button
               onClick={handleSearch}
               disabled={searchText.length < 2 || isSearching}
-              className="px-4 py-2 bg-danashop-brandMain rounded-lg hover:bg-shop_dark_green transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+              className="px-4 py-2 bg-eshop-goldLight rounded-lg hover:bg-eshop-accent hoverEffect disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
             >
-              <Search className="w-4 h-4 text-white font-bold" />
+              <Search className="w-4 h-4 text-eshop-textPrimary font-bold" />
             </button>
           </div>
 

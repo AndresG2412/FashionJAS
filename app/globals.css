@@ -8,7 +8,7 @@
 
   /* ─── FONDOS ─────────────────────────────────── */
 --color-eshop-bgWhite:         #FFFFFF;   /* blanco puro para cards sobre beige */
---color-eshop-bgMain:          #FAF7F2;   /* fondo raíz — crema perla */
+--color-eshop-bgMain:          #FCF6EB;   /* fondo raíz — crema perla */
 --color-eshop-bgCard:          #F4EFE6;   /* cards y contenedores */
 --color-eshop-formsBackground: #EDE8DC;   /* inputs, textareas, selects */
 --color-eshop-bannerHome:      #F2ECDF;
@@ -121,7 +121,7 @@
 }
 
 .dark {
-  --background: #FAF7F2;
+  --background: #FCF6EB;
 }
 
 @layer base {

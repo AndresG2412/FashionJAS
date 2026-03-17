@@ -28,14 +28,14 @@ const PriceList = ({ selectedPrice, setSelectedPrice }: Props) => {
   };
 
   return (
-    <div className="w-full bg-danashop-brandHover/30 rounded-lg shadow-sm border-danashop-brandSoft border-2 overflow-hidden">
+    <div className="w-full bg-eshop-bgCard rounded-lg shadow-sm border-eshop-goldLight border-2 overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-2.5 hover:bg-danashop-brandHover transition-colors"
+        className="w-full flex items-center justify-between p-2.5 hover:bg-eshop-formsBackground hoverEffect"
       >
-        <Title className="text-base font-black text-danashop-textPrimary tracking-wider mb-0">Precio</Title>
+        <Title className="text-base font-black text-eshop-accent/90 tracking-wider mb-0 font-serif">Precio</Title>
         <ChevronDown 
-          className={`w-5 h-5 hoverEffect duration-300 text-white ${isOpen ? "rotate-180" : ""}`} 
+          className={`w-5 h-5 hoverEffect text-eshop-textPrimary ${isOpen ? "rotate-180" : ""}`} 
         />
       </button>
 
@@ -58,14 +58,14 @@ const PriceList = ({ selectedPrice, setSelectedPrice }: Props) => {
                     <RadioGroupItem
                       value={price?.value}
                       id={`price-${index}`}
-                      className="rounded-sm color-white text-white peer-data-[state=checked]:bg-danashop-brand text-sm hoverEffect group-hover:bg-danashop-brandHover/50"
+                      className="rounded-sm color-white border border-eshop-textSecondary/40 text-eshop-textPrimary peer-data-[state=checked]:bg-eshop-accent text-sm hoverEffect group-hover:bg-eshop-accent/50"
                     />
                     <Label
                       htmlFor={`price-${index}`}
                       className={`cursor-pointer flex-1 ${
                         selectedPrice === price?.value
-                          ? "font-semibold text-danashop-textPrimary"
-                          : "font-normal text-danashop-textPrimary/60"
+                          ? "font-semibold text-eshop-textPrimary"
+                          : "font-normal text-eshop-textSecondary"
                       }`}
                     >
                       {price?.title}
@@ -80,7 +80,7 @@ const PriceList = ({ selectedPrice, setSelectedPrice }: Props) => {
                     e.stopPropagation();
                     setSelectedPrice(null);
                   }}
-                  className="text-sm font-medium mt-4 underline underline-offset-2 decoration-1 cursor-pointer hoverEffect text-red-600 hover:text-red-400 text-left block"
+                  className="font-serif text-sm font-medium mt-4 underline underline-offset-2 decoration-1 cursor-pointer hoverEffect text-red-600 hover:text-red-400 text-left block"
                 >
                   Limpiar selección
                 </button>
