@@ -48,8 +48,8 @@ const ProductGrid = () => {
     <Container className="flex flex-col lg:px-0 my-10">
       <HomeTabbar selectedTab={selectedTab} onTabSelect={setSelectedTab} />
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-danashop-bgColorCard rounded-lg w-full mt-10">
-          <motion.div className="flex items-center space-x-2 text-purple-600">
+        <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-eshop-bgCard rounded-lg w-full mt-10">
+          <motion.div className="flex items-center space-x-2 text-eshop-goldDeep">
             <Loader2 className="w-5 h-5 animate-spin" />
             <span>Cargando Productos...</span>
           </motion.div>
@@ -57,7 +57,7 @@ const ProductGrid = () => {
       ) : products?.length ? (
         <>
           {/* Contador de productos */}
-          <div className="mt-10 mb-2 text-sm text-gray-500">
+          <div className="mt-10 mb-2 text-sm text-eshop-textSecondary">
             Mostrando {startIndex + 1}–{Math.min(startIndex + PRODUCTS_PER_PAGE, products.length)} de {products.length} productos
           </div>
 
@@ -84,7 +84,7 @@ const ProductGrid = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-gray-200 hover:bg-purple-50 hover:border-purple-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg border border-eshop-goldLight hover:bg-eshop-borderEmphasis hover:border-eshop-goldDeep disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -109,7 +109,7 @@ const ProductGrid = () => {
                 }, [])
                 .map((item, idx) =>
                   item === "..." ? (
-                    <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">
+                    <span key={`ellipsis-${idx}`} className="px-2 text-eshop-textSecondary">
                       ...
                     </span>
                   ) : (
@@ -118,8 +118,8 @@ const ProductGrid = () => {
                       onClick={() => handlePageChange(item as number)}
                       className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
                         currentPage === item
-                          ? "bg-purple-600 text-white"
-                          : "border border-gray-200 hover:bg-purple-50 hover:border-purple-300 text-gray-700"
+                          ? "bg-eshop-goldDeep text-eshop-textPrimary"
+                          : "border border-eshop-borderEmphasis hover:bg-eshop-goldLight hover:border-eshop-accent text-eshop-textSecondary"
                       }`}
                     >
                       {item}
@@ -131,7 +131,7 @@ const ProductGrid = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-lg border border-gray-200 hover:bg-purple-50 hover:border-purple-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg border border-eshop-borderEmphasis hover:bg-eshop-goldLight hover:border-eshop-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>

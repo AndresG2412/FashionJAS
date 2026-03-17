@@ -34,12 +34,12 @@ const AddToFav = ({ product, iconOnly = false }: Props) => {
       // hasn't been populated yet by AuthSync
       await addToFavorite(product, user?.id);
       if (isInFavorites) {
-        toast.success('Eliminado', {
+        toast.success('Eliminado de Favoritos', {
           position: "top-center",
           duration: 1200,
         });
       } else {
-        toast.success('¡Añadido!', {
+        toast.success('¡Añadido a Favoritos!', {
           position: "top-center",
           duration: 1200,
         });
