@@ -1,9 +1,8 @@
-// Lista de emails de administradores
-const ADMIN_EMAILS = [
-  'cgaviria930@gmail.com',
-  "hincapiestefania110@gmail.com"
-  // Agrega más emails aquí si necesitas
-];
+// Obtenemos la cadena del .env y la dividimos por comas
+// Usamos el operador de coalescencia nula (?? '') para evitar errores si la variable no existe
+const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? '')
+  .split(',')
+  .map(email => email.trim().toLowerCase());
 
 export function isAdmin(email: string | null | undefined): boolean {
   if (!email) return false;

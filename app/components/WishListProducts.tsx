@@ -10,12 +10,11 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import type { Productos } from "@/lib/firebase/products";
 import AddToCar from "./AddToCar";
-import { useUser } from '@clerk/nextjs';
 
+// ✅ Ya no se necesita useUser — el Server Action obtiene el userId internamente
 const WishListProducts = () => {
   const [visibleProducts, setVisibleProducts] = useState(10);
   const { favoriteItems, removeFromFavorite } = useStore();
-  const { user } = useUser();
 
   const loadMore = () => {
     setVisibleProducts((prev) => Math.min(prev + 5, favoriteItems.length));
@@ -36,8 +35,9 @@ const WishListProducts = () => {
           </button>
           <button
             onClick={async () => {
+              // ✅ sin user?.id — cada removeFromFavorite llama el Server Action internamente
               for (const product of favoriteItems) {
-                await removeFromFavorite(product.id, user?.id);
+                await removeFromFavorite(product.id);
               }
               toast.dismiss(t.id);
               toast.success("Lista de favoritos vaciada");
@@ -61,7 +61,7 @@ const WishListProducts = () => {
   };
 
   const handleRemove = async (id: string) => {
-    await removeFromFavorite(id, user?.id);
+    await removeFromFavorite(id); // ✅ sin user?.id
     toast.success("Producto eliminado de favoritos");
   };
 
@@ -90,7 +90,6 @@ const WishListProducts = () => {
 
           {/* ── VISTA PC (TABLA) ── */}
           <div className="hidden md:block overflow-hidden rounded-xl border border-eshop-borderSubtle bg-eshop-bgWhite shadow-sm">
-            {/* Cabecera */}
             <div className="grid grid-cols-[2fr_1fr_0.6fr_0.9fr_1.4fr] gap-4 px-4 py-2.5 border-b border-eshop-borderSubtle bg-eshop-bgCard/30">
               <span className="text-xs font-bold uppercase tracking-wider text-eshop-textSecondary">Producto</span>
               <span className="text-xs font-bold uppercase tracking-wider text-eshop-textSecondary">Categorías</span>
@@ -99,62 +98,40 @@ const WishListProducts = () => {
               <span className="text-xs font-bold uppercase tracking-wider text-eshop-textSecondary text-center">Acciones</span>
             </div>
 
-            {/* Filas */}
             <div className="divide-y divide-eshop-borderSubtle">
               {favoriteItems.slice(0, visibleProducts).map((product: Productos) => (
-                <div
-                  key={product?.id}
-                  className="grid grid-cols-[2fr_1fr_0.6fr_0.9fr_1.4fr] gap-4 items-center px-4 py-3 hover:bg-eshop-bgCard/20 transition-colors"
-                >
-                  {/* Col 1: Imagen + Nombre */}
+                <div key={product?.id} className="grid grid-cols-[2fr_1fr_0.6fr_0.9fr_1.4fr] gap-4 items-center px-4 py-3 hover:bg-eshop-bgCard/20 transition-colors">
                   <div className="flex items-center gap-3 min-w-0">
                     <Link href={`/${product.slug}`} className="relative h-14 w-14 shrink-0 rounded-lg overflow-hidden border border-eshop-borderSubtle group">
-                      <Image
-                        src={product.imagenes[0]}
-                        alt={product.nombre}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
+                      <Image src={product.imagenes[0]} alt={product.nombre} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
                     </Link>
-                    <Link
-                      href={`/${product.slug}`}
-                      className="text-sm font-bold text-eshop-textPrimary hover:text-eshop-accent transition-colors line-clamp-2 leading-snug"
-                    >
+                    <Link href={`/${product.slug}`} className="text-sm font-bold text-eshop-textPrimary hover:text-eshop-accent transition-colors line-clamp-2 leading-snug">
                       {product?.nombre}
                     </Link>
                   </div>
 
-                  {/* Col 2: Categorías */}
                   <div className="flex flex-wrap gap-1">
                     {product.categorias?.slice(0, 2).map((cat, idx) => (
-                      <span key={idx} className="text-[10px] uppercase tracking-wider font-bold bg-eshop-bgCard text-eshop-goldDeep px-1.5 py-0.5 rounded border border-eshop-borderSubtle">
-                        {cat}
-                      </span>
+                      <span key={idx} className="text-[10px] uppercase tracking-wider font-bold bg-eshop-bgCard text-eshop-goldDeep px-1.5 py-0.5 rounded border border-eshop-borderSubtle">{cat}</span>
                     ))}
                   </div>
 
-                  {/* Col 3: Estado */}
                   <div>
                     <span className={`text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap ${product?.stock > 0 ? 'bg-eshop-accent/10 text-eshop-accent' : 'bg-eshop-textError/10 text-eshop-textError'}`}>
                       {product?.stock > 0 ? 'En Stock' : 'Agotado'}
                     </span>
                   </div>
 
-                  {/* Col 4: Precio */}
                   <div className="flex items-center justify-start gap-x-1">
                     <span className="text-sm font-bold text-eshop-success">{formatCOP(product?.precio)}</span>
                     <span className="text-[10px] text-eshop-textDisabled font-bold uppercase">COP</span>
                   </div>
 
-                  {/* Col 5: Acciones */}
                   <div className="flex items-center justify-center gap-2 min-w-0">
                     <div className="min-w-30 flex-1">
                       <AddToCar product={product} className="py-2 w-full bg-eshop-buttonBase hover:bg-eshop-buttonHover text-eshop-textDark font-bold rounded-lg transition-all" />
                     </div>
-                    <button
-                      onClick={() => handleRemove(product.id)}
-                      className="shrink-0 flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-bold text-eshop-textError bg-eshop-textError/5 border border-eshop-textError/20 hover:bg-eshop-textError hover:text-white rounded-lg transition-all"
-                    >
+                    <button onClick={() => handleRemove(product.id)} className="shrink-0 flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-bold text-eshop-textError bg-eshop-textError/5 border border-eshop-textError/20 hover:bg-eshop-textError hover:text-white rounded-lg transition-all">
                       <Trash2 size={15} />
                       <span>Eliminar</span>
                     </button>
@@ -167,54 +144,34 @@ const WishListProducts = () => {
           {/* ── VISTA MÓVIL (CARDS) ── */}
           <div className="md:hidden flex flex-col gap-2.5">
             {favoriteItems.slice(0, visibleProducts).map((product: Productos) => (
-              <div
-                key={product?.id}
-                className="bg-eshop-bgWhite rounded-xl border border-eshop-borderSubtle overflow-hidden shadow-sm"
-              >
-                {/* Fila superior: imagen + info */}
+              <div key={product?.id} className="bg-eshop-bgWhite rounded-xl border border-eshop-borderSubtle overflow-hidden shadow-sm">
                 <div className="flex gap-3 p-3">
                   <Link href={`/${product.slug}`} className="relative h-16 w-16 shrink-0 rounded-lg overflow-hidden border border-eshop-borderSubtle group">
-                    <Image
-                      src={product.imagenes[0]}
-                      alt={product.nombre}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
+                    <Image src={product.imagenes[0]} alt={product.nombre} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
                   </Link>
-
                   <div className="flex flex-col justify-between flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <Link
-                        href={`/${product.slug}`}
-                        className="text-sm font-bold text-eshop-textPrimary line-clamp-2 leading-snug hover:text-eshop-accent transition-colors"
-                      >
+                      <Link href={`/${product.slug}`} className="text-sm font-bold text-eshop-textPrimary line-clamp-2 leading-snug hover:text-eshop-accent transition-colors">
                         {product?.nombre}
                       </Link>
                       <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${product?.stock > 0 ? 'bg-eshop-accent/10 text-eshop-accent' : 'bg-eshop-textError/10 text-eshop-textError'}`}>
                         {product?.stock > 0 ? 'En Stock' : 'Agotado'}
                       </span>
                     </div>
-
                     <div className="flex items-center justify-between mt-1">
                       <span className="text-base font-black text-eshop-cart">{formatCOP(product?.precio)}</span>
                       {product.categorias?.slice(0, 1).map((cat, idx) => (
-                        <span key={idx} className="text-[10px] uppercase tracking-wider font-bold bg-eshop-bgCard text-eshop-goldDeep px-1.5 py-0.5 rounded">
-                          {cat}
-                        </span>
+                        <span key={idx} className="text-[10px] uppercase tracking-wider font-bold bg-eshop-bgCard text-eshop-goldDeep px-1.5 py-0.5 rounded">{cat}</span>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                {/* Fila inferior: acciones */}
                 <div className="flex items-center gap-2 px-3 py-2.5 border-t border-eshop-borderSubtle bg-eshop-bgCard/10">
                   <div className="flex-1 min-w-0">
                     <AddToCar product={product} className="w-full py-2 text-sm bg-eshop-buttonBase text-eshop-textDark font-bold rounded-lg" />
                   </div>
-                  <button
-                    onClick={() => handleRemove(product.id)}
-                    className="shrink-0 flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-bold text-eshop-textError bg-eshop-textError/5 border border-eshop-textError/20 hover:bg-eshop-textError hover:text-white rounded-lg"
-                  >
+                  <button onClick={() => handleRemove(product.id)} className="shrink-0 flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-bold text-eshop-textError bg-eshop-textError/5 border border-eshop-textError/20 hover:bg-eshop-textError hover:text-white rounded-lg">
                     <Trash2 size={15} />
                     <span>Eliminar</span>
                   </button>
@@ -223,30 +180,20 @@ const WishListProducts = () => {
             ))}
           </div>
 
-          {/* Botones de paginación */}
           <div className="flex items-center justify-center gap-3 mt-8">
             {visibleProducts < favoriteItems?.length && (
-              <Button 
-                variant="outline" 
-                onClick={loadMore} 
-                className="rounded-full px-8 border-eshop-borderEmphasis text-eshop-textPrimary hover:bg-eshop-bgCard font-bold"
-              >
+              <Button variant="outline" onClick={loadMore} className="rounded-full px-8 border-eshop-borderEmphasis text-eshop-textPrimary hover:bg-eshop-bgCard font-bold">
                 Cargar más productos
               </Button>
             )}
             {visibleProducts > 10 && (
-              <Button 
-                onClick={() => setVisibleProducts(10)} 
-                variant="ghost" 
-                className="text-eshop-textDisabled font-bold hover:text-eshop-textPrimary"
-              >
+              <Button onClick={() => setVisibleProducts(10)} variant="ghost" className="text-eshop-textDisabled font-bold hover:text-eshop-textPrimary">
                 Ver menos
               </Button>
             )}
           </div>
         </>
       ) : (
-        /* Estado vacío */
         <div className="flex min-h-100 flex-col items-center justify-center space-y-5 px-4 py-16 text-center bg-eshop-bgWhite rounded-2xl border border-dashed border-eshop-borderEmphasis">
           <div className="relative">
             <div className="absolute -top-1 -right-1 h-4 w-4 animate-ping rounded-full bg-red-200" />
@@ -256,10 +203,7 @@ const WishListProducts = () => {
             <h2 className="text-xl font-bold text-eshop-textPrimary">Tu lista está vacía</h2>
             <p className="text-eshop-textSecondary text-sm font-medium">¡Explora nuestra tienda y guarda los productos que más te gusten!</p>
           </div>
-          <Link
-            href="/tienda"
-            className="rounded-xl px-8 py-2.5 text-eshop-textDark text-sm font-bold bg-eshop-buttonBase hover:bg-eshop-buttonHover hoverEffect"
-          >
+          <Link href="/tienda" className="rounded-xl px-8 py-2.5 text-eshop-textDark text-sm font-bold bg-eshop-buttonBase hover:bg-eshop-buttonHover hoverEffect">
             Ir a la Tienda
           </Link>
         </div>

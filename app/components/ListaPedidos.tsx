@@ -7,10 +7,11 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import { useUser } from "@clerk/nextjs";
-import { getOrdersByUser, type Order } from "@/lib/firebase/order";
+import type { Order } from "@/lib/firebase/order";
 
-// Estilos de estado adaptados a Cream & Gold
+// ✅ Server Action en lugar de llamada directa a Firebase desde el cliente
+import { getOrders } from "@/app/actions/orderActions";
+
 const statusStyles: Record<string, string> = {
   pendiente: "bg-eshop-bgCard text-eshop-goldDeep border border-eshop-borderEmphasis/30",
   "en-envio": "bg-eshop-accent/10 text-eshop-accent border border-eshop-accent/20",
@@ -35,15 +36,15 @@ const safeImageUrl = (url?: string) => {
 };
 
 const ListaPedidos = () => {
-  const { user } = useUser();
+  // ✅ Ya no se necesita useUser — el Server Action obtiene el userId desde Clerk
   const [orders, setOrders] = useState<Order[]>([]);
   const [visibleOrders, setVisibleOrders] = useState(5);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
-    if (!user?.id) return;
-    getOrdersByUser(user.id).then(setOrders);
-  }, [user?.id]);
+    // ✅ Sin user?.id — el Server Action verifica internamente con Clerk
+    getOrders().then(setOrders).catch(console.error);
+  }, []);
 
   const loadMore = () => {
     setVisibleOrders((prev) => Math.min(prev + 3, orders.length));
@@ -56,22 +57,10 @@ const ListaPedidos = () => {
           Cancelar este pedido puede generar un costo por cancelación.
         </p>
         <div className="flex gap-2">
-          <Button
-            size="sm"
-            className="bg-eshop-textError text-white hover:opacity-90"
-            onClick={() => {
-              toast.dismiss(t.id);
-              showCancelOptions(order);
-            }}
-          >
+          <Button size="sm" className="bg-eshop-textError text-white hover:opacity-90" onClick={() => { toast.dismiss(t.id); showCancelOptions(order); }}>
             Continuar
           </Button>
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="border-eshop-borderSubtle text-eshop-textSecondary"
-            onClick={() => toast.dismiss(t.id)}
-          >
+          <Button size="sm" variant="outline" className="border-eshop-borderSubtle text-eshop-textSecondary" onClick={() => toast.dismiss(t.id)}>
             Volver
           </Button>
         </div>
@@ -81,25 +70,14 @@ const ListaPedidos = () => {
 
   const showCancelOptions = (order: Order) => {
     const message = encodeURIComponent(`Hola, deseo cancelar el pedido ${order.reference}.\nProductos: ${order.items.map((i) => i.name).join(", ")}`);
-
     toast((t) => (
       <div className="space-y-3">
         <p className="font-semibold text-eshop-textPrimary">¿Cómo deseas solicitar la cancelación?</p>
         <div className="flex flex-col gap-2">
-          <Link
-            href={`https://wa.me/573157870130?text=${message}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button className="w-full bg-[#25D366] hover:opacity-90 text-white border-none">
-              WhatsApp
-            </Button>
+          <Link href={`https://wa.me/573157870130?text=${message}`} target="_blank" rel="noopener noreferrer">
+            <Button className="w-full bg-[#25D366] hover:opacity-90 text-white border-none">WhatsApp</Button>
           </Link>
-          <Button 
-            variant="outline" 
-            className="border-eshop-borderSubtle text-eshop-textSecondary"
-            onClick={() => toast.dismiss(t.id)}
-          >
+          <Button variant="outline" className="border-eshop-borderSubtle text-eshop-textSecondary" onClick={() => toast.dismiss(t.id)}>
             Cerrar
           </Button>
         </div>
@@ -131,78 +109,41 @@ const ListaPedidos = () => {
                     <th className="p-4 text-center text-xs font-bold uppercase tracking-wider text-eshop-textSecondary">Acciones</th>
                   </tr>
                 </thead>
-
                 <tbody className="divide-y divide-eshop-borderSubtle">
                   {orders.slice(0, visibleOrders).map((order) => (
-                    <tr
-                      key={order.id}
-                      className="cursor-pointer hover:bg-eshop-bgCard/20 transition-colors"
-                      onClick={() => setSelectedOrder(order)}
-                    >
+                    <tr key={order.id} className="cursor-pointer hover:bg-eshop-bgCard/20 transition-colors" onClick={() => setSelectedOrder(order)}>
                       <td className="p-4">
                         <p className="font-bold text-eshop-textPrimary">{order.reference}</p>
                         <p className="text-xs text-eshop-textDisabled font-medium">
-                          {order.createdAt
-                            ? new Date(order.createdAt).toLocaleDateString("es-CO", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              })
-                            : "-"}
+                          {order.createdAt ? new Date(order.createdAt).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" }) : "-"}
                         </p>
                       </td>
-
                       <td className="p-4">
                         <div className="flex gap-2">
                           {order.items?.slice(0, 3).map((item, i) => (
-                            <div
-                              key={i}
-                              className="relative w-10 h-10 border border-eshop-borderSubtle rounded-lg overflow-hidden bg-eshop-bgCard"
-                            >
-                              <Image
-                                src={safeImageUrl(item?.image)}
-                                alt={item?.name || "Producto"}
-                                fill
-                                className="object-cover"
-                                unoptimized
-                              />
+                            <div key={i} className="relative w-10 h-10 border border-eshop-borderSubtle rounded-lg overflow-hidden bg-eshop-bgCard">
+                              <Image src={safeImageUrl(item?.image)} alt={item?.name || "Producto"} fill className="object-cover" unoptimized />
                             </div>
                           ))}
                           {order.items?.length > 3 && (
                             <div className="w-10 h-10 border border-eshop-borderSubtle rounded-lg bg-eshop-bgWhite flex items-center justify-center">
-                              <span className="text-xs font-bold text-eshop-goldDeep">
-                                +{order.items.length - 3}
-                              </span>
+                              <span className="text-xs font-bold text-eshop-goldDeep">+{order.items.length - 3}</span>
                             </div>
                           )}
                         </div>
                       </td>
-
                       <td className="p-4">
                         <span className={`text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full ${statusStyles[order.status]}`}>
                           {statusLabels[order.status] || order.status}
                         </span>
                       </td>
-
                       <td className="p-4 font-bold text-eshop-textPrimary">
-                        {order.total?.toLocaleString("es-CO", {
-                          style: "currency",
-                          currency: "COP",
-                          minimumFractionDigits: 0,
-                        })}
+                        {order.total?.toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}
                       </td>
-
                       <td className="p-4 text-center">
                         {order.status !== "entregado" && order.status !== "cancelado" && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-eshop-textError border-eshop-textError/30 hover:bg-eshop-textError hover:text-white transition-all text-xs font-bold"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCancelRequest(order);
-                            }}
-                          >
+                          <Button variant="outline" size="sm" className="text-eshop-textError border-eshop-textError/30 hover:bg-eshop-textError hover:text-white transition-all text-xs font-bold"
+                            onClick={(e) => { e.stopPropagation(); handleCancelRequest(order); }}>
                             Cancelar
                           </Button>
                         )}
@@ -216,11 +157,7 @@ const ListaPedidos = () => {
             {/* ================= MOBILE ================= */}
             <div className="md:hidden grid gap-4">
               {orders.slice(0, visibleOrders).map((order) => (
-                <div
-                  key={order.id}
-                  className="bg-eshop-bgWhite p-5 rounded-2xl border border-eshop-borderSubtle shadow-sm space-y-4 cursor-pointer hover:border-eshop-borderEmphasis transition-all"
-                  onClick={() => setSelectedOrder(order)}
-                >
+                <div key={order.id} className="bg-eshop-bgWhite p-5 rounded-2xl border border-eshop-borderSubtle shadow-sm space-y-4 cursor-pointer hover:border-eshop-borderEmphasis transition-all" onClick={() => setSelectedOrder(order)}>
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-bold text-eshop-textPrimary">{order.reference}</p>
@@ -232,7 +169,6 @@ const ListaPedidos = () => {
                       {statusLabels[order.status] || order.status}
                     </span>
                   </div>
-
                   <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                     {order.items?.map((item, i) => (
                       <div key={i} className="relative w-14 h-14 shrink-0 border border-eshop-borderSubtle rounded-xl overflow-hidden bg-eshop-bgCard">
@@ -240,18 +176,13 @@ const ListaPedidos = () => {
                       </div>
                     ))}
                   </div>
-
                   <div className="flex justify-between items-center pt-2">
                     <p className="font-bold text-eshop-textPrimary text-lg">
                       {order.total?.toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}
                     </p>
                     {order.status !== "entregado" && order.status !== "cancelado" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-eshop-textError border-eshop-textError/20 font-bold"
-                        onClick={(e) => { e.stopPropagation(); handleCancelRequest(order); }}
-                      >
+                      <Button variant="outline" size="sm" className="text-eshop-textError border-eshop-textError/20 font-bold"
+                        onClick={(e) => { e.stopPropagation(); handleCancelRequest(order); }}>
                         Cancelar
                       </Button>
                     )}
@@ -260,21 +191,15 @@ const ListaPedidos = () => {
               ))}
             </div>
 
-            {/* LOAD MORE */}
             {visibleOrders < orders.length && (
               <div className="flex justify-center mt-10">
-                <Button 
-                  variant="outline" 
-                  className="border-eshop-borderEmphasis text-eshop-textPrimary hover:bg-eshop-bgCard font-bold rounded-full px-8"
-                  onClick={loadMore}
-                >
+                <Button variant="outline" className="border-eshop-borderEmphasis text-eshop-textPrimary hover:bg-eshop-bgCard font-bold rounded-full px-8" onClick={loadMore}>
                   Cargar más ({orders.length - visibleOrders})
                 </Button>
               </div>
             )}
           </>
         ) : (
-          /* Estado vacío */
           <div className="flex min-h-100 flex-col items-center justify-center space-y-6 px-4 text-center bg-eshop-bgWhite rounded-3xl border border-dashed border-eshop-borderEmphasis py-16">
             <div className="relative">
               <div className="absolute -top-1 -right-1 h-4 w-4 animate-ping rounded-full bg-eshop-accent/20" />
@@ -284,12 +209,9 @@ const ListaPedidos = () => {
             <p className="text-eshop-textSecondary max-w-md font-medium">
               ¡Explora nuestra tienda y encuentra productos increíbles para empezar tu primera orden!
             </p>
-            <Link
-              href="/tienda"
-                className="rounded-xl px-8 py-2.5 text-eshop-textDark text-sm font-bold bg-eshop-buttonBase hover:bg-eshop-buttonHover hoverEffect"
-              >
+            <Link href="/tienda" className="rounded-xl px-8 py-2.5 text-eshop-textDark text-sm font-bold bg-eshop-buttonBase hover:bg-eshop-buttonHover hoverEffect">
               Ir a la Tienda
-          </Link>
+            </Link>
           </div>
         )}
       </Container>
@@ -298,21 +220,16 @@ const ListaPedidos = () => {
       {selectedOrder && (
         <div className="fixed inset-0 bg-eshop-textDark/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-eshop-bgWhite rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-eshop-borderSubtle">
-            {/* Header del Modal */}
             <div className="flex justify-between items-center p-6 border-b border-eshop-borderSubtle bg-eshop-bgCard/30">
               <div>
                 <h2 className="text-2xl font-bold text-eshop-textPrimary">Detalle del pedido</h2>
                 <p className="text-sm text-eshop-goldDeep mt-1 font-mono font-bold">{selectedOrder.reference}</p>
               </div>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="p-2 hover:bg-eshop-bgCard text-eshop-textSecondary rounded-lg transition-colors"
-              >
+              <button onClick={() => setSelectedOrder(null)} className="p-2 hover:bg-eshop-bgCard text-eshop-textSecondary rounded-lg transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            {/* Contenido del Modal */}
             <div className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
               <div className="flex justify-between items-center flex-wrap gap-4 p-4 bg-eshop-bgCard/20 rounded-xl border border-eshop-borderSubtle">
                 <div>
@@ -329,7 +246,6 @@ const ListaPedidos = () => {
                 </div>
               </div>
 
-              {/* Productos */}
               <div>
                 <h3 className="font-bold text-eshop-textPrimary mb-3 flex items-center gap-2">
                   <div className="w-1.5 h-4 bg-eshop-buttonBase rounded-full" />
@@ -343,9 +259,7 @@ const ListaPedidos = () => {
                       </div>
                       <div className="flex-1">
                         <p className="font-bold text-eshop-textPrimary">{item?.name || "Sin nombre"}</p>
-                        <p className="text-sm text-eshop-textSecondary mt-1 font-medium">
-                          Cantidad: <span className="text-eshop-goldDeep font-bold">{item?.quantity || 0}</span>
-                        </p>
+                        <p className="text-sm text-eshop-textSecondary mt-1 font-medium">Cantidad: <span className="text-eshop-goldDeep font-bold">{item?.quantity || 0}</span></p>
                         <p className="text-sm font-bold text-eshop-textPrimary mt-1">
                           {((item?.price || 0) * (item?.quantity || 0)).toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}
                         </p>
@@ -355,7 +269,6 @@ const ListaPedidos = () => {
                 </div>
               </div>
 
-              {/* Dirección */}
               {selectedOrder.shipping && (
                 <div className="p-4 bg-eshop-bgCard/30 border border-eshop-borderSubtle rounded-xl">
                   <h3 className="font-bold text-eshop-textPrimary mb-2 text-xs uppercase tracking-wider">Dirección de envío</h3>
@@ -364,7 +277,6 @@ const ListaPedidos = () => {
                 </div>
               )}
 
-              {/* Totales */}
               <div className="bg-eshop-bgCard/10 p-5 rounded-xl border border-eshop-borderSubtle space-y-3">
                 <div className="flex justify-between text-eshop-textSecondary text-sm font-medium">
                   <span>Subtotal:</span>
