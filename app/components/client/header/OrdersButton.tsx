@@ -9,7 +9,7 @@ const OrdersButton = () => {
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   
   return (
-    <Link href="/cart" className="group relative">
+    <Link href="/pedidos" className="group relative">
       <Send className="w-5 h-5 hover:text-eshop-textHover hoverEffect" />
     </Link>
   );

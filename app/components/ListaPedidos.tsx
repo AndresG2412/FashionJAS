@@ -10,12 +10,12 @@ import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { getOrdersByUser, type Order } from "@/lib/firebase/order";
 
-// Estilos de estado adaptados al modo oscuro
+// Estilos de estado adaptados a Cream & Gold
 const statusStyles: Record<string, string> = {
-  pendiente: "bg-danashop-warning/10 text-danashop-warning border border-danashop-warning/30",
-  "en-envio": "bg-danashop-inCart/10 text-danashop-inCart border border-danashop-inCart/30",
-  entregado: "bg-danashop-success/10 text-danashop-success border border-danashop-success/30",
-  cancelado: "bg-danashop-error/10 text-danashop-error border border-danashop-error/30",
+  pendiente: "bg-eshop-bgCard text-eshop-goldDeep border border-eshop-borderEmphasis/30",
+  "en-envio": "bg-eshop-accent/10 text-eshop-accent border border-eshop-accent/20",
+  entregado: "bg-green-50 text-green-700 border border-green-200",
+  cancelado: "bg-eshop-textError/5 text-eshop-textError border border-eshop-textError/10",
 };
 
 const statusLabels: Record<string, string> = {
@@ -52,13 +52,13 @@ const ListaPedidos = () => {
   const handleCancelRequest = (order: Order) => {
     toast((t) => (
       <div className="space-y-3">
-        <p className="font-semibold text-danashop-textPrimary">
+        <p className="font-semibold text-eshop-textPrimary">
           Cancelar este pedido puede generar un costo por cancelación.
         </p>
         <div className="flex gap-2">
           <Button
             size="sm"
-            className="bg-danashop-error text-white hover:bg-red-700"
+            className="bg-eshop-textError text-white hover:opacity-90"
             onClick={() => {
               toast.dismiss(t.id);
               showCancelOptions(order);
@@ -69,14 +69,14 @@ const ListaPedidos = () => {
           <Button 
             size="sm" 
             variant="outline" 
-            className="border-danashop-borderColor text-danashop-textSecondary"
+            className="border-eshop-borderSubtle text-eshop-textSecondary"
             onClick={() => toast.dismiss(t.id)}
           >
             Volver
           </Button>
         </div>
       </div>
-    ), { style: { background: '#1C182D', color: '#F3F4F6', border: '1px solid #2D2845' } });
+    ), { style: { background: '#FFFFFF', color: '#1A1A1A', border: '1px solid #E2D1B3' } });
   };
 
   const showCancelOptions = (order: Order) => {
@@ -84,65 +84,64 @@ const ListaPedidos = () => {
 
     toast((t) => (
       <div className="space-y-3">
-        <p className="font-semibold text-danashop-textPrimary">¿Cómo deseas solicitar la cancelación?</p>
+        <p className="font-semibold text-eshop-textPrimary">¿Cómo deseas solicitar la cancelación?</p>
         <div className="flex flex-col gap-2">
           <Link
             href={`https://wa.me/573157870130?text=${message}`}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button className="w-full bg-danashop-success hover:bg-green-600 text-white">
+            <Button className="w-full bg-[#25D366] hover:opacity-90 text-white border-none">
               WhatsApp
             </Button>
           </Link>
           <Button 
             variant="outline" 
-            className="border-danashop-borderColor text-danashop-textSecondary"
+            className="border-eshop-borderSubtle text-eshop-textSecondary"
             onClick={() => toast.dismiss(t.id)}
           >
             Cerrar
           </Button>
         </div>
       </div>
-    ), { style: { background: '#1C182D', color: '#F3F4F6', border: '1px solid #2D2845' } });
+    ), { style: { background: '#FFFFFF', color: '#1A1A1A', border: '1px solid #E2D1B3' } });
   };
 
   return (
     <>
-      <Container className="py-10">
+      <Container className="py-10 bg-eshop-bgMain">
         {orders?.length > 0 ? (
           <>
-            {/* HEADER */}
             <div className="mb-8">
-              <h1 className="text-3xl text-danashop-textPrimary font-bold tracking-tight">Mis pedidos</h1>
-              <p className="text-danashop-textSecondary mt-2">
+              <h1 className="text-3xl text-eshop-textPrimary font-bold tracking-tight">Mis pedidos</h1>
+              <p className="text-eshop-textSecondary mt-2 font-medium">
                 Tienes {orders.length} {orders.length === 1 ? "pedido" : "pedidos"} registrados
               </p>
             </div>
 
             {/* ================= DESKTOP ================= */}
-            <div className="hidden md:block overflow-hidden bg-danashop-bgColorCard rounded-xl border border-danashop-borderColor shadow-xl">
+            <div className="hidden md:block overflow-hidden bg-eshop-bgWhite rounded-xl border border-eshop-borderSubtle shadow-sm">
               <table className="w-full">
-                <thead className="bg-danashop-colorMain/80 border-b border-danashop-borderColor">
+                <thead className="bg-eshop-bgCard/50 border-b border-eshop-borderSubtle">
                   <tr>
-                    <th className="p-4 text-left text-sm font-bold text-danashop-textPrimary">Pedido</th>
-                    <th className="p-4 text-left text-sm font-bold text-danashop-textPrimary">Productos</th>
-                    <th className="p-4 text-left text-sm font-bold text-danashop-textPrimary">Estado</th>
-                    <th className="p-4 text-left text-sm font-bold text-danashop-textPrimary">Total</th>
-                    <th className="p-4 text-center text-sm font-bold text-danashop-textPrimary">Acciones</th>
+                    <th className="p-4 text-left text-xs font-bold uppercase tracking-wider text-eshop-textSecondary">Pedido</th>
+                    <th className="p-4 text-left text-xs font-bold uppercase tracking-wider text-eshop-textSecondary">Productos</th>
+                    <th className="p-4 text-left text-xs font-bold uppercase tracking-wider text-eshop-textSecondary">Estado</th>
+                    <th className="p-4 text-left text-xs font-bold uppercase tracking-wider text-eshop-textSecondary">Total</th>
+                    <th className="p-4 text-center text-xs font-bold uppercase tracking-wider text-eshop-textSecondary">Acciones</th>
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody className="divide-y divide-eshop-borderSubtle">
                   {orders.slice(0, visibleOrders).map((order) => (
                     <tr
                       key={order.id}
-                      className="border-b border-danashop-borderColor cursor-pointer hover:bg-danashop-hover transition-colors"
+                      className="cursor-pointer hover:bg-eshop-bgCard/20 transition-colors"
                       onClick={() => setSelectedOrder(order)}
                     >
                       <td className="p-4">
-                        <p className="font-bold text-danashop-brandSoft">{order.reference}</p>
-                        <p className="text-xs text-danashop-textMuted">
+                        <p className="font-bold text-eshop-textPrimary">{order.reference}</p>
+                        <p className="text-xs text-eshop-textDisabled font-medium">
                           {order.createdAt
                             ? new Date(order.createdAt).toLocaleDateString("es-CO", {
                                 day: "2-digit",
@@ -158,7 +157,7 @@ const ListaPedidos = () => {
                           {order.items?.slice(0, 3).map((item, i) => (
                             <div
                               key={i}
-                              className="relative w-10 h-10 border border-danashop-borderColor rounded-lg overflow-hidden bg-danashop-colorMain"
+                              className="relative w-10 h-10 border border-eshop-borderSubtle rounded-lg overflow-hidden bg-eshop-bgCard"
                             >
                               <Image
                                 src={safeImageUrl(item?.image)}
@@ -170,8 +169,8 @@ const ListaPedidos = () => {
                             </div>
                           ))}
                           {order.items?.length > 3 && (
-                            <div className="w-10 h-10 border border-danashop-borderColor rounded-lg bg-danashop-colorMain flex items-center justify-center">
-                              <span className="text-xs font-bold text-danashop-brandMain">
+                            <div className="w-10 h-10 border border-eshop-borderSubtle rounded-lg bg-eshop-bgWhite flex items-center justify-center">
+                              <span className="text-xs font-bold text-eshop-goldDeep">
                                 +{order.items.length - 3}
                               </span>
                             </div>
@@ -180,12 +179,12 @@ const ListaPedidos = () => {
                       </td>
 
                       <td className="p-4">
-                        <span className={`text-[10px] uppercase tracking-widest font-black px-3 py-1 rounded-full ${statusStyles[order.status]}`}>
+                        <span className={`text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full ${statusStyles[order.status]}`}>
                           {statusLabels[order.status] || order.status}
                         </span>
                       </td>
 
-                      <td className="p-4 font-bold text-danashop-textPrimary">
+                      <td className="p-4 font-bold text-eshop-textPrimary">
                         {order.total?.toLocaleString("es-CO", {
                           style: "currency",
                           currency: "COP",
@@ -198,7 +197,7 @@ const ListaPedidos = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="text-danashop-error border-danashop-error/30 hover:bg-danashop-error hover:text-white transition-all"
+                            className="text-eshop-textError border-eshop-textError/30 hover:bg-eshop-textError hover:text-white transition-all text-xs font-bold"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleCancelRequest(order);
@@ -219,38 +218,38 @@ const ListaPedidos = () => {
               {orders.slice(0, visibleOrders).map((order) => (
                 <div
                   key={order.id}
-                  className="bg-danashop-bgColorCard p-5 rounded-2xl border border-danashop-borderColor shadow-lg space-y-4 cursor-pointer hover:border-danashop-brandSoft/50 transition-all"
+                  className="bg-eshop-bgWhite p-5 rounded-2xl border border-eshop-borderSubtle shadow-sm space-y-4 cursor-pointer hover:border-eshop-borderEmphasis transition-all"
                   onClick={() => setSelectedOrder(order)}
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-bold text-danashop-brandSoft">{order.reference}</p>
-                      <p className="text-xs text-danashop-textSecondary mt-1">
+                      <p className="font-bold text-eshop-textPrimary">{order.reference}</p>
+                      <p className="text-xs text-eshop-textDisabled mt-1 font-medium">
                         {order.createdAt ? new Date(order.createdAt).toLocaleDateString("es-CO") : "-"}
                       </p>
                     </div>
-                    <span className={`text-[10px] uppercase tracking-widest font-black px-2 py-1 rounded-full ${statusStyles[order.status]}`}>
+                    <span className={`text-[10px] uppercase tracking-widest font-bold px-2 py-1 rounded-full ${statusStyles[order.status]}`}>
                       {statusLabels[order.status] || order.status}
                     </span>
                   </div>
 
                   <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                     {order.items?.map((item, i) => (
-                      <div key={i} className="relative w-14 h-14 shrink-0 border border-danashop-borderColor rounded-xl overflow-hidden bg-danashop-colorMain">
+                      <div key={i} className="relative w-14 h-14 shrink-0 border border-eshop-borderSubtle rounded-xl overflow-hidden bg-eshop-bgCard">
                         <Image src={safeImageUrl(item?.image)} alt="item" fill className="object-cover" unoptimized />
                       </div>
                     ))}
                   </div>
 
                   <div className="flex justify-between items-center pt-2">
-                    <p className="font-black text-danashop-accentAction text-lg">
+                    <p className="font-bold text-eshop-textPrimary text-lg">
                       {order.total?.toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}
                     </p>
                     {order.status !== "entregado" && order.status !== "cancelado" && (
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-danashop-error border-danashop-error/20"
+                        className="text-eshop-textError border-eshop-textError/20 font-bold"
                         onClick={(e) => { e.stopPropagation(); handleCancelRequest(order); }}
                       >
                         Cancelar
@@ -266,7 +265,7 @@ const ListaPedidos = () => {
               <div className="flex justify-center mt-10">
                 <Button 
                   variant="outline" 
-                  className="border-danashop-borderColor text-danashop-brandSoft hover:bg-danashop-brandMain hover:text-white"
+                  className="border-eshop-borderEmphasis text-eshop-textPrimary hover:bg-eshop-bgCard font-bold rounded-full px-8"
                   onClick={loadMore}
                 >
                   Cargar más ({orders.length - visibleOrders})
@@ -275,34 +274,39 @@ const ListaPedidos = () => {
             )}
           </>
         ) : (
-          <div className="flex min-h-100 flex-col items-center justify-center space-y-6 px-4 text-center bg-danashop-bgColorCard rounded-3xl border border-dashed border-danashop-borderColor py-12">
-            <div className="p-6 bg-danashop-colorMain rounded-full">
-                <Store className="h-16 w-16 text-danashop-brandSoft" strokeWidth={1} />
+          /* Estado vacío */
+          <div className="flex min-h-100 flex-col items-center justify-center space-y-6 px-4 text-center bg-eshop-bgWhite rounded-3xl border border-dashed border-eshop-borderEmphasis py-16">
+            <div className="relative">
+              <div className="absolute -top-1 -right-1 h-4 w-4 animate-ping rounded-full bg-eshop-accent/20" />
+              <Store className="h-16 w-16 text-eshop-borderSubtle" strokeWidth={1} />
             </div>
-            <h2 className="text-2xl font-bold text-danashop-textPrimary">Tu lista está vacía</h2>
-            <p className="text-danashop-textSecondary max-w-md">
-              Aún no has realizado ningún pedido. ¡Explora nuestra tienda y encuentra productos increíbles!
+            <h2 className="text-2xl font-bold text-eshop-textPrimary">No tienes pedidos aún</h2>
+            <p className="text-eshop-textSecondary max-w-md font-medium">
+              ¡Explora nuestra tienda y encuentra productos increíbles para empezar tu primera orden!
             </p>
-            <Button asChild size="lg" className="bg-danashop-brandMain hover:bg-danashop-brandHover text-white rounded-full px-10">
-              <Link href="/tienda">Ir a la tienda</Link>
-            </Button>
+            <Link
+              href="/tienda"
+                className="rounded-xl px-8 py-2.5 text-eshop-textDark text-sm font-bold bg-eshop-buttonBase hover:bg-eshop-buttonHover hoverEffect"
+              >
+              Ir a la Tienda
+          </Link>
           </div>
         )}
       </Container>
 
       {/* ================= MODAL DETALLE ================= */}
       {selectedOrder && (
-        <div className="fixed inset-0 bg-danashop-colorMain/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-danashop-bgColorCard rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-danashop-borderColor">
+        <div className="fixed inset-0 bg-eshop-textDark/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-eshop-bgWhite rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-eshop-borderSubtle">
             {/* Header del Modal */}
-            <div className="flex justify-between items-center p-6 border-b border-danashop-borderColor bg-danashop-colorMain/80">
-              <div className="">
-                <h2 className="text-2xl font-bold text-danashop-textPrimary">Detalle del pedido</h2>
-                <p className="text-sm text-danashop-brandSoft mt-1 font-mono tracking-tighter">{selectedOrder.reference}</p>
+            <div className="flex justify-between items-center p-6 border-b border-eshop-borderSubtle bg-eshop-bgCard/30">
+              <div>
+                <h2 className="text-2xl font-bold text-eshop-textPrimary">Detalle del pedido</h2>
+                <p className="text-sm text-eshop-goldDeep mt-1 font-mono font-bold">{selectedOrder.reference}</p>
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="p-2 hover:bg-danashop-hover text-danashop-textSecondary rounded-lg transition-colors"
+                className="p-2 hover:bg-eshop-bgCard text-eshop-textSecondary rounded-lg transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -310,16 +314,16 @@ const ListaPedidos = () => {
 
             {/* Contenido del Modal */}
             <div className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
-              <div className="flex justify-between items-center flex-wrap gap-4 p-4 bg-danashop-colorMain rounded-xl border border-danashop-borderColor">
+              <div className="flex justify-between items-center flex-wrap gap-4 p-4 bg-eshop-bgCard/20 rounded-xl border border-eshop-borderSubtle">
                 <div>
-                  <p className="text-xs text-danashop-textMuted uppercase font-bold mb-1">Estado</p>
-                  <span className={`text-xs font-black px-3 py-1 rounded-full ${statusStyles[selectedOrder.status]}`}>
+                  <p className="text-[10px] text-eshop-textDisabled uppercase font-black mb-1">Estado</p>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${statusStyles[selectedOrder.status]}`}>
                     {statusLabels[selectedOrder.status] || selectedOrder.status}
                   </span>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-danashop-textMuted uppercase font-bold mb-1">Fecha</p>
-                  <p className="font-semibold text-danashop-textPrimary">
+                  <p className="text-[10px] text-eshop-textDisabled uppercase font-black mb-1">Fecha</p>
+                  <p className="font-bold text-eshop-textPrimary">
                     {selectedOrder.createdAt ? new Date(selectedOrder.createdAt).toLocaleDateString("es-CO", { day: "2-digit", month: "long", year: "numeric" }) : "-"}
                   </p>
                 </div>
@@ -327,22 +331,22 @@ const ListaPedidos = () => {
 
               {/* Productos */}
               <div>
-                <h3 className="font-bold text-danashop-textPrimary mb-3 flex items-center gap-2">
-                  <div className="w-1 h-4 bg-danashop-brandMain rounded-full" />
+                <h3 className="font-bold text-eshop-textPrimary mb-3 flex items-center gap-2">
+                  <div className="w-1.5 h-4 bg-eshop-buttonBase rounded-full" />
                   Productos ({selectedOrder.items?.length || 0})
                 </h3>
                 <div className="grid gap-3">
                   {selectedOrder.items?.map((item, i) => (
-                    <div key={i} className="flex gap-4 p-3 border border-danashop-borderColor rounded-xl bg-danashop-colorMain/50">
-                      <div className="relative w-20 h-20 shrink-0 border border-danashop-borderColor rounded-lg overflow-hidden bg-danashop-colorMain">
+                    <div key={i} className="flex gap-4 p-3 border border-eshop-borderSubtle rounded-xl bg-eshop-bgWhite">
+                      <div className="relative w-20 h-20 shrink-0 border border-eshop-borderSubtle rounded-lg overflow-hidden bg-eshop-bgCard">
                         <Image src={safeImageUrl(item?.image)} alt="item" fill className="object-cover" unoptimized />
                       </div>
                       <div className="flex-1">
-                        <p className="font-bold text-danashop-textPrimary">{item?.name || "Sin nombre"}</p>
-                        <p className="text-sm text-danashop-textSecondary mt-1">
-                          Cantidad: <span className="text-danashop-brandSoft font-bold">{item?.quantity || 0}</span>
+                        <p className="font-bold text-eshop-textPrimary">{item?.name || "Sin nombre"}</p>
+                        <p className="text-sm text-eshop-textSecondary mt-1 font-medium">
+                          Cantidad: <span className="text-eshop-goldDeep font-bold">{item?.quantity || 0}</span>
                         </p>
-                        <p className="text-sm font-black text-danashop-accentAction mt-1">
+                        <p className="text-sm font-bold text-eshop-textPrimary mt-1">
                           {((item?.price || 0) * (item?.quantity || 0)).toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}
                         </p>
                       </div>
@@ -353,32 +357,32 @@ const ListaPedidos = () => {
 
               {/* Dirección */}
               {selectedOrder.shipping && (
-                <div className="p-4 bg-danashop-colorMain border border-danashop-borderColor rounded-xl">
-                  <h3 className="font-bold text-danashop-textPrimary mb-2 text-sm uppercase tracking-wider">Dirección de envío</h3>
-                  <p className="text-danashop-textSecondary">{selectedOrder.shipping.address}</p>
-                  <p className="text-danashop-textMuted text-sm">{selectedOrder.shipping.city}, {selectedOrder.shipping.state}</p>
+                <div className="p-4 bg-eshop-bgCard/30 border border-eshop-borderSubtle rounded-xl">
+                  <h3 className="font-bold text-eshop-textPrimary mb-2 text-xs uppercase tracking-wider">Dirección de envío</h3>
+                  <p className="text-eshop-textSecondary font-medium">{selectedOrder.shipping.address}</p>
+                  <p className="text-eshop-textDisabled text-sm font-medium">{selectedOrder.shipping.city}, {selectedOrder.shipping.state}</p>
                 </div>
               )}
 
               {/* Totales */}
-              <div className="bg-danashop-colorMain p-5 rounded-xl border border-danashop-borderColor space-y-3">
-                <div className="flex justify-between text-danashop-textSecondary text-sm">
+              <div className="bg-eshop-bgCard/10 p-5 rounded-xl border border-eshop-borderSubtle space-y-3">
+                <div className="flex justify-between text-eshop-textSecondary text-sm font-medium">
                   <span>Subtotal:</span>
-                  <span className="font-bold">{(selectedOrder.subtotal || 0).toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}</span>
+                  <span className="text-eshop-textPrimary font-bold">{(selectedOrder.subtotal || 0).toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}</span>
                 </div>
-                <div className="flex justify-between text-danashop-textSecondary text-sm">
+                <div className="flex justify-between text-eshop-textSecondary text-sm font-medium">
                   <span>Envío:</span>
-                  <span className="text-danashop-success font-bold">{(selectedOrder.shippingCost || 0) === 0 ? "GRATIS" : (selectedOrder.shippingCost || 0).toLocaleString("es-CO", { style: "currency", currency: "COP" })}</span>
+                  <span className="text-eshop-accent font-bold">{(selectedOrder.shippingCost || 0) === 0 ? "GRATIS" : (selectedOrder.shippingCost || 0).toLocaleString("es-CO", { style: "currency", currency: "COP" })}</span>
                 </div>
-                <div className="flex justify-between text-xl font-black text-danashop-textPrimary pt-3 border-t border-danashop-borderColor">
+                <div className="flex justify-between text-xl font-bold text-eshop-textPrimary pt-3 border-t border-eshop-borderSubtle">
                   <span>Total:</span>
-                  <span className="text-danashop-accentAction">{(selectedOrder.total || 0).toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}</span>
+                  <span>{(selectedOrder.total || 0).toLocaleString("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 })}</span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 border-t border-danashop-borderColor bg-danashop-colorMain">
-              <Button onClick={() => setSelectedOrder(null)} className="w-full bg-danashop-brandMain hover:bg-danashop-brandHover text-white py-6 text-lg font-bold rounded-xl transition-all">
+            <div className="p-6 border-t border-eshop-borderSubtle bg-eshop-bgWhite">
+              <Button onClick={() => setSelectedOrder(null)} className="w-full bg-eshop-buttonBase hover:bg-eshop-buttonHover text-eshop-textDark py-6 text-lg font-bold rounded-xl border-none transition-all">
                 Cerrar Detalle
               </Button>
             </div>

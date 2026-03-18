@@ -17,7 +17,7 @@ const Header = () => {
             <Container className='flex items-center justify-between text-danashop-textPrimary'> 
                 <div className='flex w-auto md:w-1/3 items-center justify-start gap-2.5 md:gap-0'>
                     <MobileMenu/>
-                    <Logo/>
+                    <Logo className='hidden md:block'/>
                 </div>
                 <HeaderMenu/>
                 <div className='flex w-auto md:w-1/3 items-center justify-end gap-5'>

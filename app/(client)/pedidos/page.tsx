@@ -19,7 +19,7 @@ const page = async () => {
                 <ListaPedidos />
             ) : (
                 <NoAccess 
-                details="Inicia sesión para ver tus pedidos. ¡No piedas esta oportunidad!" 
+                    details="Inicia sesión para ver tus pedidos. ¡No piedas esta oportunidad!" 
                 />
             )}
         </Container>

@@ -16,23 +16,25 @@ const NoAccess = ({ details }: Props) => {
       </div>
       
       <div className="space-y-2">
-        <h2 className="text-2xl font-semibold tracking-tight text-danashop-textPrimary">
+        <h2 className="text-2xl font-semibold tracking-tight text-eshop-textPrimary">
           Acceso Restringido
         </h2>
-        <p className="text-sm text-danashop-textPrimary/60 max-w-md">
+        <p className="text-sm text-eshop-textSecondary max-w-md">
           {details}
         </p>
       </div>
 
       <div className="flex gap-3">
         <SignInButton mode='modal'>
-          <button className="bg-danashop-brandHover cursor-pointer px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-danashop-brandHover/60 transition-colors">
+          <button className="bg-eshop-buttonBase cursor-pointer px-4 py-2 rounded-md text-sm font-medium text-eshop-textDark hover:bg-eshop-buttonHover hoverEffect">
             <p>Iniciar Sesión</p>
           </button>
         </SignInButton>
-        <Button asChild variant="outline">
-          <Link href="/tienda" className="text-danashop-textPrimary">Ir a la Tienda</Link>
-        </Button>
+        <Link href="/tienda">
+          <button className="border cursor-pointer text-eshop-textPrimary border-eshop-goldDeep px-4 py-2 rounded-md text-sm font-medium hover:bg-eshop-formsBackground hoverEffect">
+            Ir a la Tienda
+          </button>
+        </Link>
       </div>
     </div>
   );
