@@ -2,6 +2,7 @@
 
 import { auth } from '@clerk/nextjs/server';
 import { adminDb } from '@/lib/firebase/adminConfig';
+import { getProductsByIds } from '@/lib/firebase/products';
 
 // ── Obtener carrito ──────────────────────────────
 export async function getCart() {
@@ -10,7 +11,21 @@ export async function getCart() {
 
   const snap = await adminDb.collection('userCart').doc(userId).get();
   if (!snap.exists) return [];
-  return snap.data()?.items || [];
+
+  const items = snap.data()?.items || [];
+  if (items.length === 0) return [];
+
+  const productIds = items.map((i: any) => i.productId);
+  const products = await getProductsByIds(productIds);
+
+  return items
+    .map((item: any) => ({
+      ...item,
+      // ✅ Convierte Timestamp a string serializable
+      addedAt: item.addedAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
+      product: products.find((p) => p.id === item.productId),
+    }))
+    .filter((item: any) => item.product);
 }
 
 // ── Agregar al carrito ───────────────────────────
@@ -76,3 +91,4 @@ export async function clearCart() {
 
   await adminDb.collection('userCart').doc(userId).delete();
 }
+
