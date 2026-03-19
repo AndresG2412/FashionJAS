@@ -139,7 +139,19 @@
   }
 }
 
-/* Al final del archivo */
+/* Difuminado cuadrado fuerte para imágenes verticales */
+.fade-edges-strong {
+  -webkit-mask-image: 
+    linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+    
+  -webkit-mask-composite: destination-in;
+  mask-image: 
+    linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+    
+  mask-composite: intersect;
+}
 
 /* Ocultar scrollbar pero mantener funcionalidad */
 .scrollbar-hide {

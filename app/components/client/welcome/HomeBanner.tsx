@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const banners = [
   {
     image: banner_1,
-    tag: "Nueva colección",
+    tag: "Nuevos productos",
     title: <>Conoce nuestros <br /> productos exclusivos</>,
     subtitle: "Y enamórate de ellos",
   },
@@ -23,8 +23,8 @@ const banners = [
   },
   {
     image: banner_3,
-    tag: "Envíos a todo Colombia",
-    title: <>Envíos rápidos <br /> desde Mocoa</>,
+    tag: "Envios seguros",
+    title: <>Envíos rápidos <br /> a todo Mocoa</>,
     subtitle: "Con envío gratuito incluido",
   },
 ];
@@ -50,15 +50,13 @@ const HomeBanner = () => {
   const fadeClass = fading ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0";
 
   return (
-    <div className="mt-6 md:mt-0 bg-eshop-bannerHome border border-eshop-borderSubtle rounded-2xl overflow-hidden">
+    <div className="mt-6 md:mt-0 bg-eshop-bannerHome border border-eshop-goldDeep/40 rounded-2xl overflow-hidden shadow-xl shadow-eshop-goldDeep/20">
 
       {/* ── Desktop ── */}
-      <div className="hidden md:flex items-center justify-between px-14 py-10 gap-8">
+      <div className="hidden md:flex items-center justify-between px-24 py-0 gap-4 ">
 
         {/* Texto */}
         <div className="flex flex-col gap-5 max-w-sm">
-
-          {/* Tag */}
           <span className={cn(
             "self-start text-xs font-semibold tracking-widest uppercase px-3 py-1 rounded-full border border-eshop-borderEmphasis text-eshop-textSecondary transition-all duration-400",
             fadeClass
@@ -66,7 +64,6 @@ const HomeBanner = () => {
             {tag}
           </span>
 
-          {/* Título */}
           <Title className={cn(
             "text-eshop-textPrimary leading-tight transition-all duration-400",
             fadeClass
@@ -74,7 +71,6 @@ const HomeBanner = () => {
             {title}
           </Title>
 
-          {/* Subtítulo */}
           <p className={cn(
             "text-eshop-textSecondary text-sm tracking-wide transition-all duration-400",
             fadeClass
@@ -82,7 +78,6 @@ const HomeBanner = () => {
             {subtitle}
           </p>
 
-          {/* Acciones */}
           <div className="flex items-center gap-4">
             <Link
               href="/tienda"
@@ -98,7 +93,6 @@ const HomeBanner = () => {
             </Link>
           </div>
 
-          {/* Indicadores */}
           <div className="flex gap-2 mt-1">
             {banners.map((_, i) => (
               <button
@@ -108,25 +102,46 @@ const HomeBanner = () => {
                   "h-1.5 rounded-full transition-all duration-300",
                   i === current
                     ? "bg-eshop-accent w-6"
-                    : "bg-eshop-borderEmphasis w-2 hover:bg-eshop-textDisabled"
+                    : "bg-eshop-borderEmphasis w-2"
                 )}
               />
             ))}
           </div>
-
         </div>
 
-        {/* Imagen */}
-        <div className={cn(
-          "transition-all duration-400 flex justify-center items-end",
-          fadeClass
-        )}>
-          <Image
-            src={image}
-            alt={`banner_${current + 1}`}
-            className="w-64 md:w-80 object-contain drop-shadow-sm"
-            priority
-          />
+        {/* 🎯 Carrusel tipo coverflow */}
+        <div className="relative w-105 h-88 flex items-center justify-center">
+
+          {banners.map((item, i) => {
+            const position =
+              i === current
+                ? "center"
+                : i === (current - 1 + banners.length) % banners.length
+                ? "left"
+                : "right";
+
+            return (
+              <div
+                key={i}
+                className={cn(
+                  "absolute transition-all duration-700 ease-in-out",
+                  position === "center" && "z-20 scale-100 opacity-100 translate-x-0",
+                  position === "left" && "z-10 scale-75 opacity-40 -translate-x-32 blur-sm",
+                  position === "right" && "z-10 scale-75 opacity-40 translate-x-32 blur-sm"
+                )}
+              >
+                <div className="w-40 md:w-52 aspect-[695/917] relative">
+                  <Image
+                    src={item.image}
+                    alt={`banner_${i}`}
+                    fill
+                    className="object-contain fade-edges-ultra rounded-lg"
+                  />
+                </div>
+              </div>
+            );
+          })}
+
         </div>
 
       </div>
@@ -135,7 +150,7 @@ const HomeBanner = () => {
       <div className="md:hidden flex flex-col">
 
         {/* Franja superior: imagen + texto */}
-        <div className="flex items-center gap-4 px-5 pt-6 pb-4">
+        <div className="flex items-center gap-4 px-5 pt-6 pb-4 mx-auto">
 
           <div className={cn(
             "transition-all duration-400 shrink-0",
@@ -144,7 +159,7 @@ const HomeBanner = () => {
             <Image
               src={image}
               alt={`banner_${current + 1}`}
-              className="h-28 w-auto object-contain"
+              className="h-44 w-auto object-contain  rounded-lg"
               priority
             />
           </div>
