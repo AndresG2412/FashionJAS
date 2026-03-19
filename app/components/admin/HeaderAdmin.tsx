@@ -1,20 +1,17 @@
 import React from 'react'
 import Container from '../Container'
 import { ClerkLoaded, SignedIn, UserButton } from '@clerk/nextjs'
-
 import HeaderMenuAdmin from './HeaderMenuAdmin'
 import MobileMenuAdmin from './MobileMenuAdmin'
-import Link from 'next/link'
-
 import ShopButton from './ShopButton'
 
 const HeaderAdmin = () => {
     return (
-        <header className="sticky top-0 z-50 py-5 bg-danashop-colorMain/70 backdrop-blur-xl shadow-sm border-b border-danashop-textPrimary/50">
-            <Container className='flex items-center justify-between text-lightColor'> 
+        <header className="sticky top-0 z-50 py-5 bg-eshop-bgMain backdrop-blur-xl shadow-sm/50 shadow-eshop-accent">
+            <Container className='flex items-center justify-between'> 
                 <div className='flex w-auto md:w-1/3 items-center justify-start gap-2.5 md:gap-0'>
                     <MobileMenuAdmin/>
-                    <p className='font-extrabold tracking-wider text-2xl text-danashop-textPrimary'>DANNASHOP</p>
+                    <p className='font-serif font-bold tracking-wider text-2xl text-eshop-textPrimary'>FASHIONJAS</p>
                 </div>
                 <HeaderMenuAdmin/>
                 <div className='flex w-auto md:w-1/3 items-center justify-end gap-5'>

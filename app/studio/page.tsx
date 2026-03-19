@@ -1,117 +1,120 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { getAdminStats } from '@/lib/firebase/admin';
 import Link from 'next/link';
-import { Package, ShoppingCart, DollarSign, Tag, Clock } from 'lucide-react';
+import { Package, ShoppingCart, Tag, Clock, ArrowRight } from 'lucide-react';
 import Container from '../components/Container';
+import { getAdminStatsServer } from '@/app/actions/adminStats';
 
 export default async function StudioDashboard() {
   const user = await currentUser();
-  const stats = await getAdminStats();
+  const stats = await getAdminStatsServer();
   
+  // Clases reutilizables para las tarjetas de estadísticas
+  const statCardClass = "bg-eshop-bgWhite shadow-sm border border-eshop-borderSubtle p-6 rounded-2xl border-l-4 border-l-eshop-accent hoverEffect hover:shadow-md";
+  const iconClass = "w-6 h-6 text-eshop-accent";
+  const labelClass = "text-eshop-textSecondary text-xs font-bold uppercase tracking-widest";
+  const valueClass = "text-3xl font-medium text-eshop-textPrimary mt-2";
+
   return (
-    <Container>
-      <h1 className="text-3xl font-bold mb-8 text-center md:text-start text-danashop-textPrimary">
-        Bienvenido, {user?.firstName}!
-      </h1>
+    <Container className="py-10">
+      <div className="mb-10 text-center md:text-start">
+        <h1 className="text-3xl font-semibold text-eshop-textPrimary tracking-wide">
+          Bienvenido, {user?.firstName}!
+        </h1>
+      </div>
 
-      {/* Estadísticas */}
+      {/* ── Sección de Estadísticas ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
-
-        {/* productos */}
-        <div className="bg-danashop-bgColorCard shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
+        {/* Productos */}
+        <div className={statCardClass}>
           <div className="flex items-center justify-between">
             <div>
-              <div className='flex gap-2 items-center'> 
-                <Package className="w-6 h-6 text-red-500" />
-                <h3 className="text-danashop-textPrimary text-base font-medium tracking-wider">Productos</h3>
+              <div className='flex gap-2.5 items-center mb-1'> 
+                <Package className={iconClass} />
+                <h3 className={labelClass}>Productos</h3>
               </div>
-              <p className="text-3xl font-bold text-danashop-textPrimary mt-2">{stats.totalProducts}</p>
+              <p className={valueClass}>{stats.totalProducts}</p>
             </div>
           </div>
         </div>
 
         {/* Ordenes */}
-        <div className="bg-danashop-bgColorCard shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
+        <div className={statCardClass}>
           <div className="flex items-center justify-between">
             <div>
-              <div className='flex gap-2 items-center'> 
-                <ShoppingCart className="w-6 h-6 text-blue-500" />
-                <h3 className="text-danashop-textPrimary text-base font-medium tracking-wider">Órdenes</h3>
+              <div className='flex gap-2.5 items-center mb-1'> 
+                <ShoppingCart className={iconClass} />
+                <h3 className={labelClass}>Órdenes</h3>
               </div>
-              <div className='flex gap-3 items-center'>
-                <p className="text-3xl font-bold mt-2 text-danashop-textPrimary">{stats.totalOrders}</p>
+              <div className='flex gap-3 items-end'>
+                <p className={valueClass}>{stats.totalOrders}</p>
                 {stats.pendingOrders > 0 && (
-                  <p className="text-xs text-orange-600 mt-1 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {stats.pendingOrders} pendientes
-                  </p>
+                  <div className="mb-1.5 px-2 py-0.5 bg-eshop-accent/10 rounded-full flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-eshop-accent" />
+                    <span className="text-[10px] font-bold text-eshop-accent uppercase tracking-tighter">
+                      {stats.pendingOrders} pendientes
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Ventas Dinero - Coordinar*/}
-
-        {/* <div className="bg-white shadow-2xl border-2 p-6 rounded-lg shadow border-l-4 border-purple-500">
+        {/* Categorías */}
+        <div className={statCardClass}>
           <div className="flex items-center justify-between">
             <div>
-              <div className='flex gap-2 items-center'> 
-                <DollarSign className="w-6 h-6 text-green-500 opacity-20" />
-                <h3 className="text-gray-500 text-sm font-medium">Ventas Totales</h3>
+              <div className='flex gap-2.5 items-center mb-1'> 
+                <Tag className={iconClass} />
+                <h3 className={labelClass}>Categorías</h3>
               </div>
-              <p className="text-3xl font-bold mt-2">
-                {stats.totalSales.toLocaleString('es-CO', {
-                  style: 'currency',
-                  currency: 'COP',
-                  minimumFractionDigits: 0,
-                })}
-              </p>
-            </div>
-          </div>
-        </div> */}
-
-        {/* Categorias */}
-        <div className="bg-danashop-bgColorCard shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className='flex gap-2 items-center'> 
-                <Tag className="w-6 h-6 text-yellow-500" />
-                <h3 className="text-danashop-textPrimary text-sm font-medium">Categorías</h3>
-              </div>
-              <p className="text-3xl text-danashop-textPrimary font-bold mt-2">{stats.totalCategories}</p>
+              <p className={valueClass}>{stats.totalCategories}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Acciones Rápidas */}
-        <div className="bg-danashop-bgColorCard shadow-lg/60 shadow-danashop-brandSoft border-2 p-6 rounded-lg border-l-4 border-danashop-brandHover">
-        <h2 className="text-xl font-bold mb-4 text-danashop-textPrimary">Acciones Rápidas</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── Acciones Rápidas ── */}
+      <div className="bg-eshop-bgWhite rounded-2xl border border-eshop-borderSubtle p-8 shadow-sm">
+        <h2 className="text-sm font-semibold mb-6 text-eshop-textPrimary uppercase tracking-widest flex items-center gap-2">
+           <span className="w-8 h-0.5 bg-eshop-accent inline-block"></span>
+           Acciones Rápidas
+           <span className="w-auto h-0.5 bg-eshop-accent inline-block"></span>
+        </h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link 
             href="/studio/products" 
-            className="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-700"
+            className="flex items-center justify-between group px-5 py-4 rounded-xl bg-eshop-buttonBase hover:bg-eshop-buttonHover text-eshop-textDark hoverEffect border border-eshop-borderSubtle"
           >
-            <Package className="w-5 h-5" />
-            <span className="font-medium">Ver Productos</span>
+            <div className="flex items-center gap-3">
+              <Package className="w-5 h-5" />
+              <span className="font-medium text-base">Gestionar Productos</span>
+            </div>
+            <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 hoverEffect -translate-x-2 group-hover:translate-x-0" />
           </Link>
           
           <Link 
             href="/studio/categories" 
-            className="flex items-center gap-3 px-4 py-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors border border-green-700"
+            className="flex items-center justify-between group px-5 py-4 rounded-xl bg-eshop-buttonBase hover:bg-eshop-buttonHover text-eshop-textDark hoverEffect border border-eshop-borderSubtle"
           >
-            <Tag className="w-5 h-5" />
-            <span className="font-medium">Ver Categorías</span>
+            <div className="flex items-center gap-3">
+              <Tag className="w-5 h-5" />
+              <span className="font-medium text-base">Gestionar Categorías</span>
+            </div>
+            <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 hoverEffect -translate-x-2 group-hover:translate-x-0" />
           </Link>
           
           <Link 
             href="/studio/orders" 
-            className="flex items-center gap-3 px-4 py-3 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors border border-purple-700"
+            className="flex items-center justify-between group px-5 py-4 rounded-xl bg-eshop-buttonBase hover:bg-eshop-buttonHover text-eshop-textDark hoverEffect border border-eshop-borderSubtle"
           >
-            <ShoppingCart className="w-5 h-5" />
-            <span className="font-medium">Ver Órdenes</span>
+            <div className="flex items-center gap-3">
+              <ShoppingCart className="w-5 h-5" />
+              <span className="font-medium text-base">Revisar Órdenes</span>
+            </div>
+            <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 hoverEffect -translate-x-2 group-hover:translate-x-0" />
           </Link>
         </div>
       </div>

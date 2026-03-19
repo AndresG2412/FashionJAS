@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
-import { Button } from '../ui/button';
 import { createCategory, updateCategory } from '@/lib/firebase/admin';
 import type { Category } from '@/lib/firebase/categories';
 import toast from 'react-hot-toast';
@@ -47,7 +46,6 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validaciones
     if (!formData.titulo.trim()) {
       toast.error('El título es obligatorio');
       return;
@@ -61,16 +59,14 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
 
     try {
       if (isEditing && category) {
-        // Al editar, solo actualizamos slug y descripción
         await updateCategory(category.id, {
           id: category.id,
-          titulo: category.titulo, // No se cambia
+          titulo: category.titulo,
           slug: formData.slug,
           descripcion: formData.descripcion,
         });
         toast.success('Categoría actualizada correctamente');
       } else {
-        // Al crear, el título se capitaliza automáticamente
         await createCategory({
           titulo: formData.titulo,
           slug: formData.slug,
@@ -92,8 +88,8 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
     <form onSubmit={handleSubmit} className="rounded-lg mx-auto p-6 space-y-6 max-w-2xl">
       {/* Título */}
       <div>
-        <Label htmlFor="titulo" className='pb-2 text-danashop-textPrimary'>
-          Título <span className="text-red-500">*</span>
+        <Label htmlFor="titulo" className='pb-2 text-eshop-textPrimary'>
+          Título <span className="text-eshop-textError">*</span>
         </Label>
         <Input
           id="titulo"
@@ -102,16 +98,16 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
           onChange={handleChange}
           placeholder="Ej: Celulares"
           required
-          disabled={isEditing} // No se puede cambiar al editar
-          className='text-danashop-textPrimary'
+          disabled={isEditing}
+          className='text-eshop-textPrimary border-eshop-textSecondary focus:border-eshop-goldDeep bg-transparent'
         />
         {isEditing && (
-          <p className="text-xs text-danashop-textSecondary mt-1">
+          <p className="text-xs text-eshop-textSecondary mt-1 font-serif italic">
             El título no se puede modificar una vez creada la categoría
           </p>
         )}
         {!isEditing && (
-          <p className="text-xs text-danashop-textSecondary mt-1">
+          <p className="text-xs text-eshop-textSecondary mt-1 font-serif italic">
             Se guardará con la primera letra en mayúscula
           </p>
         )}
@@ -119,26 +115,29 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
 
       {/* Slug */}
       <div>
-        <Label htmlFor="slug" className='pb-2 text-danashop-textPrimary'>
-          Slug (URL) <span className="text-red-500">*</span>
+        <Label htmlFor="slug" className='pb-2 text-eshop-textPrimary'>
+          Slug (URL) <span className="text-eshop-textError">*</span>
         </Label>
         <Input
-          className='text-danashop-textPrimary'
+          className='text-eshop-textPrimary border-eshop-textSecondary bg-eshop-formsBackground/20 cursor-not-allowed'
           id="slug"
           name="slug"
           value={formData.slug}
           onChange={handleChange}
-          placeholder="celulares"
+          placeholder="Se generará automáticamente..."
+          readOnly // 🔹 Evita que el usuario escriba pero permite ver el valor
           required
         />
-        <p className="text-xs text-danashop-textSecondary mt-1">
-          Usado en las URLs y filtros (solo letras minúsculas y guiones)
-        </p>
+        <div className="mt-2 space-y-1">
+          <p className="text-[10px] text-eshop-textSecondary uppercase tracking-tight">
+            Solo lectura: Basado en el título ingresado
+          </p>
+        </div>
       </div>
 
       {/* Descripción */}
       <div>
-        <Label htmlFor="descripcion" className='pb-2 text-danashop-textPrimary'>
+        <Label htmlFor="descripcion" className='pb-2 text-eshop-textPrimary'>
           Descripción (Opcional)
         </Label>
         <Textarea
@@ -146,33 +145,33 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
           name="descripcion"
           value={formData.descripcion}
           onChange={handleChange}
-          placeholder="celulares de cualquier gama y precio"
+          placeholder="Añade una descipcion para los clientes"
           rows={3}
-          className='placeholder:text-danashop-textSecondary text-danashop-textPrimary'
+          className='placeholder:text-eshop-textSecondary text-eshop-textPrimary border-eshop-textSecondary focus:border-eshop-goldDeep bg-transparent'
         />
       </div>
 
       {/* Botones */}
-      <div className="flex gap-4 py-3 border-t items-center justify-center">
+      <div className="flex gap-4 py-3 border-t border-eshop-textSecondary items-center justify-center">
         <button
           type="button" 
           onClick={() => router.back()}
           disabled={loading}
-          className='border-2 font-semibold hoverEffect hover:scale-110 bg-red-300 hover:bg-danashop-error tracking-wide border-danashop-error rounded-lg px-4 py-2 w-full md:w-2/4 hover:text-danashop-textPrimary'
+          className='font-bold hoverEffect hover:scale-105 bg-eshop-cancelCart/80 hover:bg-eshop-cancelCartHover text-eshop-textDark tracking-wide rounded-xl px-4 py-3 w-full md:w-2/4'
         >
-          Cancelar
+          CANCELAR
         </button>
         <button 
           type="submit" 
           disabled={loading}
-          className='border-2 font-semibold hover:scale-110 tracking-wide border-danashop-brandHover bg-danashop-brandSoft/90 hover:bg-danashop-brandHover hoverEffect text-danashop-textDark hover:text-danashop-textPrimary rounded-lg px-4 py-2 w-full md:w-2/4'>
+          className='font-bold hover:scale-105 tracking-wide bg-eshop-buttonBase hover:bg-eshop-buttonHover hoverEffect text-eshop-textDark rounded-xl px-4 py-3 w-full md:w-2/4 flex items-center justify-center'>
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              {isEditing ? 'Guardando...' : 'Creando...'}
+              {isEditing ? 'GUARDANDO...' : 'CREANDO...'}
             </>
           ) : (
-            <>{isEditing ? 'Guardar Cambios' : 'Crear Categoría'}</>
+            <>{isEditing ? 'GUARDAR CAMBIOS' : 'CREAR CATEGORÍA'}</>
           )}
         </button>
       </div>

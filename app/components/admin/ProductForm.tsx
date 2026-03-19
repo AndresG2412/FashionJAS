@@ -223,16 +223,16 @@ export default function ProductForm({ categories, product, isEditing = false }: 
 
   // ────────────────────────────────────────────────────────────────────────
   return (
-    <form onSubmit={handleSubmit} onKeyPress={handleKeyPress} className="px-6 pb-6 pt-2 space-y-6">
+    <form onSubmit={handleSubmit} onKeyPress={handleKeyPress} className="px-6 pb-6 pt-2 space-y-6 bg-eshop-bgMain">
 
       {/* ── Información básica ─────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <div>
-          <Label className="pb-3 text-base text-danashop-textPrimary" htmlFor="nombre">
-            Nombre del Producto <span className="text-red-500">*</span>
+          <Label className="pb-3 text-base text-eshop-textPrimary font-semibold" htmlFor="nombre">
+            Nombre del Producto <span className="text-eshop-textError">*</span>
           </Label>
           <Input
-            className="text-danashop-textPrimary placeholder:text-danashop-textSecondary tracking-wide"
+            className="bg-eshop-formsBackground border-eshop-textSecondary text-eshop-textPrimary placeholder:text-eshop-textSecondary/60 tracking-wide focus:border-eshop-goldLight"
             id="nombre" name="nombre"
             value={formData.nombre} onChange={handleChange}
             placeholder="Ej: iPhone 15 Pro 128gb" required
@@ -240,11 +240,11 @@ export default function ProductForm({ categories, product, isEditing = false }: 
         </div>
 
         <div>
-          <Label className="pb-3 text-base text-danashop-textPrimary" htmlFor="slug">
-            Slug (URL) <span className="text-red-500">*</span>
+          <Label className="pb-3 text-base text-eshop-textPrimary font-semibold" htmlFor="slug">
+            Slug (URL) <span className="text-eshop-textError">*</span>
           </Label>
           <Input
-            className="text-danashop-textPrimary placeholder:text-danashop-textSecondary tracking-wide"
+            className="bg-eshop-formsBackground border-eshop-textSecondary text-eshop-textPrimary placeholder:text-eshop-textSecondary/60 tracking-wide focus:border-eshop-goldLight"
             id="slug" name="slug"
             value={formData.slug} onChange={handleChange}
             placeholder="iphone-15-pro-128gb" required
@@ -252,11 +252,11 @@ export default function ProductForm({ categories, product, isEditing = false }: 
         </div>
 
         <div>
-          <Label className="pb-3 text-base text-danashop-textPrimary" htmlFor="precio">
-            Precio (COP) <span className="text-red-500">*</span>
+          <Label className="pb-3 text-base text-eshop-textPrimary font-semibold" htmlFor="precio">
+            Precio (COP) <span className="text-eshop-textError">*</span>
           </Label>
           <Input
-            className="text-danashop-textPrimary placeholder:text-danashop-textSecondary tracking-wide"
+            className="bg-eshop-formsBackground border-eshop-textSecondary text-eshop-textPrimary placeholder:text-eshop-textSecondary/60 tracking-wide focus:border-eshop-goldLight"
             id="precio" name="precio" type="number"
             value={formData.precio} onChange={handleChange}
             placeholder="2300000" min="0" required
@@ -264,11 +264,11 @@ export default function ProductForm({ categories, product, isEditing = false }: 
         </div>
 
         <div>
-          <Label className="pb-3 text-base text-danashop-textPrimary" htmlFor="stock">
-            Stock <span className="text-red-500">*</span>
+          <Label className="pb-3 text-base text-eshop-textPrimary font-semibold" htmlFor="stock">
+            Stock <span className="text-eshop-textError">*</span>
           </Label>
           <Input
-            className="text-danashop-textPrimary placeholder:text-danashop-textSecondary tracking-wide"
+            className="bg-eshop-formsBackground border-eshop-textSecondary text-eshop-textPrimary placeholder:text-eshop-textSecondary/60 tracking-wide focus:border-eshop-goldLight"
             id="stock" name="stock" type="number"
             value={formData.stock} onChange={handleChange}
             placeholder="20" min="0" required
@@ -278,37 +278,37 @@ export default function ProductForm({ categories, product, isEditing = false }: 
 
       {/* ── Descripción ────────────────────────────────────────────────── */}
       <div>
-        <Label className="pb-3 text-base text-danashop-textPrimary" htmlFor="descripcion">
-          Descripción <span className="text-red-500">*</span>
+        <Label className="pb-3 text-base text-eshop-textPrimary font-semibold" htmlFor="descripcion">
+          Descripción <span className="text-eshop-textError">*</span>
         </Label>
         <Textarea
           id="descripcion" name="descripcion"
           value={formData.descripcion} onChange={handleChange}
           placeholder="Describe el producto..." rows={4} required
-          className="text-danashop-textPrimary placeholder:text-danashop-textSecondary"
+          className="bg-eshop-formsBackground border-eshop-textSecondary text-eshop-textPrimary placeholder:text-eshop-textSecondary/60 focus:border-eshop-goldLight"
         />
       </div>
 
       {/* ── Categorías ─────────────────────────────────────────────────── */}
       <div>
-        <Label className="pb-3 text-base text-danashop-textPrimary">
-          Categorías <span className="text-red-500">*</span>
+        <Label className="pb-3 text-base text-eshop-textPrimary font-semibold">
+          Categorías <span className="text-eshop-textError">*</span>
         </Label>
-        <p className="text-sm text-danashop-textSecondary mb-3">
+        <p className="text-sm text-eshop-textSecondary mb-3">
           Selecciona una o más categorías. La primera será la principal.
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {categories.map(category => (
             <label
               key={category.id}
-              className={`text-danashop-textPrimary flex items-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition-all ${
+              className={`text-eshop-textPrimary flex items-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                 formData.categorias.includes(category.slug)
-                  ? 'border-danashop-brandHover bg-danashop-bgColorCard'
-                  : 'border-gray-200 hover:border-gray-300 hover:scale-105 hoverEffect'
+                  ? 'border-eshop-accent bg-eshop-bgWhite shadow-sm'
+                  : 'border-eshop-textSecondary bg-eshop-bgCard hover:border-eshop-goldLight hover:scale-105'
               }`}
             >
               <input
-                className="w-4 h-4"
+                className="w-4 h-4 accent-eshop-accent"
                 type="checkbox"
                 checked={formData.categorias.includes(category.slug)}
                 onChange={() => handleCategoryChange(category.slug)}
@@ -318,45 +318,34 @@ export default function ProductForm({ categories, product, isEditing = false }: 
           ))}
         </div>
         {categories.length === 0 && (
-          <p className="text-sm text-red-500 mt-2">
+          <p className="text-sm text-eshop-textError mt-2">
             ⚠️ No hay categorías disponibles.{' '}
-            <a href="/studio/categories" className="text-danashop-textPrimary hover:underline">
+            <a href="/studio/categories" className="text-eshop-accent hover:underline">
               Crear categoría primero
             </a>
-          </p>
-        )}
-        {formData.categorias.length > 0 && (
-          <p className="text-xs text-danashop-textSecondary mt-2">
-            Categoría principal: <span className="font-bold">{formData.categorias[0]}</span>
-            {formData.categorias.length > 1 && (
-              <>, Secundarias: <span className="font-bold">{formData.categorias.slice(1).join(', ')}</span></>
-            )}
           </p>
         )}
       </div>
 
       {/* ── Variante ───────────────────────────────────────────────────── */}
       <div>
-        <Label className="pb-3 text-base text-danashop-textPrimary" htmlFor="variante">
+        <Label className="pb-3 text-base text-eshop-textPrimary font-semibold" htmlFor="variante">
           Variante (Opcional)
         </Label>
         <Input
-          className="placeholder:text-danashop-textPrimary focus-visible:ring-danashop-brandHover/70 focus-visible:ring-[3px] text-danashop-textPrimary tracking-wide"
+          className="bg-eshop-formsBackground border-eshop-textSecondary text-eshop-textPrimary placeholder:text-eshop-textSecondary/60 focus-visible:ring-eshop-accent/30 tracking-wide"
           id="variante" name="variante"
           value={formData.variante} onChange={handleChange}
           placeholder="Ej: Tecnología, Gama Alta, Oferta, etc."
         />
-        <p className="text-xs text-danashop-textSecondary mt-1">
-          Usa esto para clasificaciones adicionales o etiquetas especiales
-        </p>
       </div>
 
       {/* ── Tallas ─────────────────────────────────────────────────────── */}
       <div>
-        <Label className="pb-3 text-base text-danashop-textPrimary">
+        <Label className="pb-3 text-base text-eshop-textPrimary font-semibold">
           Tallas disponibles
         </Label>
-        <p className="text-sm text-danashop-textSecondary mb-3">
+        <p className="text-sm text-eshop-textSecondary mb-3">
           Elige el tipo de talla según el producto
         </p>
 
@@ -370,10 +359,10 @@ export default function ProductForm({ categories, product, isEditing = false }: 
                 key={tipo}
                 type="button"
                 onClick={() => handleTipoTallaChange(tipo)}
-                className={`flex flex-col items-center justify-center gap-1.5 p-3 border-2 rounded-xl font-medium transition-all hoverEffect ${
+                className={`flex flex-col items-center justify-center gap-1.5 p-3 border-2 rounded-xl font-medium transition-all ${
                   activo
-                    ? 'border-danashop-brandSoft bg-danashop-brandHover text-danashop-textPrimary shadow-md scale-[1.02]'
-                    : 'border-gray-200 hover:border-danashop-brandSoft text-danashop-textPrimary'
+                    ? 'border-eshop-accent bg-eshop-accent text-eshop-textDark shadow-md scale-[1.02]'
+                    : 'border-eshop-textSecondary bg-eshop-bgWhite text-eshop-textPrimary hover:border-eshop-accent/50'
                 }`}
               >
                 <span className="text-2xl">{icon}</span>
@@ -384,24 +373,24 @@ export default function ProductForm({ categories, product, isEditing = false }: 
           })}
         </div>
 
-        {/* Tallas de ropa */}
-        {tipoTalla === "ropa" && (
-          <div className="bg-danashop-borderColor/30 border border-danashop-brandSoft/30 rounded-xl p-4">
-            <p className="text-sm font-semibold text-danashop-textPrimary mb-3">
-              Marca las tallas disponibles: <span className="text-red-500">*</span>
+        {/* Contenedor dinámico de tallas */}
+        {(tipoTalla === "ropa" || tipoTalla === "calzado") && (
+          <div className="bg-eshop-bgCard border border-eshop-textSecondary rounded-xl p-4">
+            <p className="text-sm font-semibold text-eshop-textPrimary mb-3">
+              Selecciona las opciones: <span className="text-eshop-textError">*</span>
             </p>
             <div className="flex flex-wrap gap-2">
-              {TALLAS_ROPA.map((talla) => {
+              {(tipoTalla === "ropa" ? TALLAS_ROPA : TALLAS_CALZADO).map((talla) => {
                 const seleccionada = formData.tallas.includes(talla);
                 return (
                   <button
                     key={talla}
                     type="button"
                     onClick={() => handleTallaToggle(talla)}
-                    className={`px-5 py-2.5 rounded-lg border-2 font-bold text-sm transition-all hoverEffect ${
+                    className={`px-4 py-2 rounded-lg border-2 font-bold text-sm transition-all ${
                       seleccionada
-                        ? 'border-danashop-brandSoft bg-danashop-brandHover text-danashop-textPrimary shadow-sm scale-105'
-                        : 'border-gray-200 hover:border-danashop-brandSoft text-danashop-textPrimary'
+                        ? 'border-eshop-goldDeep bg-eshop-accent text-eshop-textDark shadow-sm scale-105'
+                        : 'border-eshop-textSecondary bg-eshop-bgWhite text-eshop-textSecondary hover:border-eshop-accent'
                     }`}
                   >
                     {talla}
@@ -409,86 +398,31 @@ export default function ProductForm({ categories, product, isEditing = false }: 
                 );
               })}
             </div>
-            {formData.tallas.length > 0 && (
-              <p className="text-xs text-danashop-textSecondary mt-3">
-                ✅ Seleccionadas:{' '}
-                <span className="font-bold">{formData.tallas.join(', ')}</span>
-              </p>
-            )}
           </div>
         )}
 
-        {/* Tallas de calzado */}
-        {tipoTalla === "calzado" && (
-          <div className="bg-danashop-borderColor/30 border border-danashop-brandSoft/30 rounded-xl p-4">
-            <p className="text-sm font-semibold text-danashop-textPrimary mb-3">
-              Marca los números disponibles: <span className="text-red-500">*</span>
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {TALLAS_CALZADO.map((talla) => {
-                const seleccionada = formData.tallas.includes(talla);
-                return (
-                  <button
-                    key={talla}
-                    type="button"
-                    onClick={() => handleTallaToggle(talla)}
-                    className={`w-12 h-12 rounded-lg border-2 font-bold text-sm transition-all hoverEffect ${
-                      seleccionada
-                        ? 'border-danashop-brandSoft bg-danashop-brandHover text-danashop-textPrimary shadow-sm scale-105'
-                        : 'border-gray-200 hover:border-danashop-brandSoft text-danashop-textPrimary'
-                    }`}
-                  >
-                    {talla}
-                  </button>
-                );
-              })}
-            </div>
-            {formData.tallas.length > 0 && (
-              <p className="text-xs text-danashop-textSecondary mt-3">
-                ✅ Seleccionados:{' '}
-                <span className="font-bold">{formData.tallas.join(', ')}</span>
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Talla única */}
+        {/* Talla única / Sin tallas Mensajes */}
         {tipoTalla === "unica" && (
-          <div className="flex items-center gap-3 bg-danashop-brandHover/20 border border-danashop-brandSoft rounded-xl px-4 py-3">
+          <div className="flex items-center gap-3 bg-eshop-inCart border border-eshop-goldLight rounded-xl px-4 py-3">
             <span className="text-2xl">✅</span>
-            <div>
-              <p className="text-sm font-semibold text-danashop-textPrimary">Talla única seleccionada</p>
-              <p className="text-xs text-danashop-textSecondary">
-                Ideal para trajes elásticos, gorras y accesorios universales
-              </p>
-            </div>
+            <p className="text-sm font-semibold text-eshop-textPrimary">Talla única seleccionada</p>
           </div>
         )}
 
-        {/* Sin tallas */}
         {tipoTalla === "ninguna" && (
-          <div className="flex items-center gap-3 bg-danashop-borderColor border border-gray-200 rounded-xl px-4 py-3">
+          <div className="flex items-center gap-3 bg-eshop-bgCard border border-eshop-textSecondary rounded-xl px-4 py-3">
             <span className="text-2xl">📵</span>
-            <div>
-              <p className="text-sm font-semibold text-danashop-textPrimary">Sin tallas</p>
-              <p className="text-xs text-danashop-textSecondary">
-                Celulares, electrónicos y productos que no requieren talla
-              </p>
-            </div>
+            <p className="text-sm font-semibold text-eshop-textPrimary">Sin tallas (Productos generales)</p>
           </div>
         )}
       </div>
 
       {/* ── Imágenes ───────────────────────────────────────────────────── */}
       <div>
-        <Label className="pb-3 text-base text-danashop-textPrimary">
-          Imágenes del Producto <span className="text-red-500">*</span>
+        <Label className="pb-3 text-base text-eshop-textPrimary font-semibold">
+          Imágenes del Producto <span className="text-eshop-textError">*</span>
         </Label>
-        <p className="text-sm text-danashop-textSecondary mb-3">
-          Sube al menos una imagen (máximo 5)
-        </p>
-
-        <div className="border-2 border-dashed border-danashop-textSecondary rounded-lg p-6">
+        <div className="border-2 border-dashed border-eshop-goldLight rounded-lg p-6 bg-eshop-bgCard/50">
           <input
             type="file" accept="image/*" multiple
             onChange={handleImageUpload}
@@ -503,76 +437,53 @@ export default function ProductForm({ categories, product, isEditing = false }: 
             }`}
           >
             {uploading ? (
-              <Loader2 className="w-12 h-12 text-danashop-textSecondary animate-spin mb-3" />
+              <Loader2 className="w-12 h-12 text-eshop-accent animate-spin mb-3" />
             ) : (
-              <Upload className="w-12 h-12 text-danashop-textSecondary mb-3" />
+              <Upload className="w-12 h-12 text-eshop-textSecondary mb-3" />
             )}
-            <p className="text-sm text-danashop-textSecondary">
-              {uploading
-                ? 'Subiendo imágenes...'
-                : formData.imagenes.length >= 5
-                ? 'Máximo 5 imágenes alcanzado'
-                : 'Click para subir imágenes'}
-            </p>
-            <p className="text-xs text-danashop-textSecondary mt-1">
-              PNG, JPG o WEBP (máx. 5MB cada una)
+            <p className="text-sm font-medium text-eshop-textPrimary">
+              {uploading ? 'Subiendo...' : 'Click para subir imágenes (Máx 5)'}
             </p>
           </label>
         </div>
 
+        {/* Preview de Imágenes */}
         {formData.imagenes.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            {formData.imagenes
-              .filter(url => url && url.trim() !== '')
-              .map((url, index) => (
-                <div key={index} className="relative group">
-                  <div className="relative w-full h-32 border rounded-lg overflow-hidden bg-gray-100">
-                    <Image
-                      src={safeImage(url)} alt={`Imagen ${index + 1}`}
-                      fill className="object-cover" unoptimized
-                      onError={(e) => { e.currentTarget.src = '/placeholder.png'; }}
-                    />
-                  </div>
-                  <button
-                    type="button" onClick={() => removeImage(index)}
-                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                  {index === 0 && (
-                    <span className="absolute bottom-2 left-2 px-2 py-1 bg-green-500 text-white text-xs rounded">
-                      Principal
-                    </span>
-                  )}
+            {formData.imagenes.map((url, index) => (
+              <div key={index} className="relative group border-2 border-eshop-textSecondary rounded-lg overflow-hidden">
+                <div className="relative w-full h-32 bg-eshop-bgCard">
+                  <Image src={safeImage(url)} alt="Preview" fill className="object-cover" unoptimized />
                 </div>
-              ))}
+                <button
+                  type="button" onClick={() => removeImage(index)}
+                  className="absolute top-1 right-1 p-1 bg-eshop-cancelCart text-white rounded-full hover:bg-eshop-cancelCartHover transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </div>
 
       {/* ── Botones ────────────────────────────────────────────────────── */}
-      <div className="flex gap-4 pt-6 border-t items-center justify-center">
+      <div className="flex gap-4 pt-6 border-t border-eshop-textSecondary items-center justify-center">
         <button
           type="button"
           onClick={() => router.back()}
           disabled={loading}
-          className="border-2 font-semibold hoverEffect hover:scale-105 bg-red-300 hover:bg-danashop-error tracking-wide border-danashop-error rounded-lg px-4 py-2 w-full md:w-1/4 hover:text-danashop-textPrimary"
+          className="border-2 font-semibold transition-all hover:scale-105 border-eshop-cancelCart text-eshop-cancelCart hover:bg-eshop-cancelCart hover:text-white rounded-lg px-4 py-2 w-full md:w-1/4"
         >
           Cancelar
         </button>
         <button
           type="submit"
           disabled={loading || uploading}
-          className="border-2 font-semibold hover:scale-105 tracking-wide border-danashop-brandHover bg-danashop-brandSoft/90 hover:bg-danashop-brandHover hoverEffect text-danashop-textDark hover:text-danashop-textPrimary rounded-lg px-4 py-2 w-full md:w-1/4 flex items-center justify-center gap-2"
+          className="font-semibold transition-all hover:scale-105 bg-eshop-buttonBase text-eshop-textDark hover:bg-eshop-buttonHover rounded-lg px-4 py-2 w-full md:w-1/4 flex items-center justify-center gap-2 shadow-md"
         >
-          {loading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              {isEditing ? 'Guardando...' : 'Creando...'}
-            </>
-          ) : (
-            <>{isEditing ? 'Guardar Cambios' : 'Crear Producto'}</>
-          )}
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+          {isEditing ? 'Guardar Cambios' : 'Crear Producto'}
         </button>
       </div>
     </form>

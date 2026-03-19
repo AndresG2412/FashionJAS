@@ -11,7 +11,7 @@ export default function NewCategoryPage() {
           <button type='button' className='mb-4'>
             <Link
               href="/studio/categories"
-              className="flex items-center gap-2 text-danashop-error "
+              className="flex items-center gap-2 text-red-500 hover:opacity-80 transition-opacity"
             >
               <ArrowLeft className="w-4 h-4" />
               Volver a categorías
@@ -19,8 +19,10 @@ export default function NewCategoryPage() {
           </button>
         </div>
 
-        <div className='bg-bgForms/30 rounded-lg mb-10 border'>
-          <h1 className="text-3xl py-5 text-center font-bold text-danashop-textPrimary tracking-wide">Nueva Categoría</h1>
+        <div className='bg-eshop-formsBackground/30 rounded-lg mb-10 border border-eshop-textSecondary'>
+          <h1 className="text-3xl py-5 text-center font-bold text-eshop-textPrimary tracking-wide">
+            Nueva Categoría
+          </h1>
 
           <CategoryForm />
         </div>

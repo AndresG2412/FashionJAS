@@ -8,11 +8,10 @@ import type { Category } from '@/lib/firebase/categories';
 import Container from '@/app/components/Container';
 
 interface Props {
-  params: Promise<{ id: string }>; // ← params es una Promise
+  params: Promise<{ id: string }>;
 }
 
 export default async function EditCategoryPage({ params }: Props) {
-  // ← Await params primero
   const { id } = await params;
   
   const categoryDoc = await getDoc(doc(db, 'categorias', id));
@@ -35,7 +34,7 @@ export default async function EditCategoryPage({ params }: Props) {
           <button type='button' className='mb-4'>
             <Link
               href="/studio/categories"
-              className="flex items-center gap-2 text-danashop-error "
+              className="flex items-center gap-2 text-eshop-textError hover:opacity-80 transition-opacity"
             >
               <ArrowLeft className="w-4 h-4" />
               Volver a categorías
@@ -43,8 +42,10 @@ export default async function EditCategoryPage({ params }: Props) {
           </button>
         </div>
 
-        <div className='bg-bgForms/30 rounded-lg mb-10 border'>
-          <h1 className="text-3xl py-5 text-center font-bold text-danashop-textPrimary tracking-wide">Editar Categoría: {category.titulo}</h1>
+        <div className='bg-eshop-formsBackground/30 rounded-lg mb-10 border border-eshop-textSecondary'>
+          <h1 className="text-3xl py-5 text-center font-bold text-eshop-textPrimary tracking-wide">
+            Editar Categoría: {category.titulo}
+          </h1>
 
           <CategoryForm category={category} isEditing />
         </div>

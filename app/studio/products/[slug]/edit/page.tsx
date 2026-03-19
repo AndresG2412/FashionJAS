@@ -14,10 +14,8 @@ interface Props {
 
 export default async function EditProductPage({ params }: Props) {
   const { slug } = await params;
-  
   const categories = await getAllCategoriesAdmin();
   
-  // Buscar producto por slug
   const productsRef = collection(db, 'productos');
   const q = query(productsRef, where('slug', '==', slug));
   const snapshot = await getDocs(q);
@@ -49,7 +47,7 @@ export default async function EditProductPage({ params }: Props) {
           <button type='button' className='mb-4'>
             <Link
               href="/studio/products"
-              className="flex items-center gap-2 text-danashop-error "
+              className="flex items-center gap-2 text-eshop-textError hover:text-eshop-accent transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Volver a productos
@@ -57,10 +55,10 @@ export default async function EditProductPage({ params }: Props) {
           </button>
         </div>
 
-
-        <div className='bg-bgForms/30 rounded-lg mb-20 border'>
-
-          <h1 className="text-3xl py-5 text-center font-bold text-danashop-textPrimary tracking-wide">Editar Producto</h1>
+        <div className='bg-eshop-formsBackground/30 rounded-lg mb-20 border border-eshop-borderSubtle shadow-sm'>
+          <h1 className="text-3xl py-5 text-center font-bold text-eshop-textPrimary tracking-wide">
+            Editar Producto
+          </h1>
 
           <ProductForm categories={categories} product={product} isEditing />
         </div>

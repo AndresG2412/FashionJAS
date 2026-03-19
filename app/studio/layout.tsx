@@ -32,7 +32,7 @@ export default async function StudioLayout({
   return (
     <>
       <HeaderAdmin />
-      <main className="min-h-screen pt-5 bg-danashop-colorMain">
+      <main className="min-h-screen pt-5 bg-eshop-bgMain">
         {children}
       </main>
     </>
