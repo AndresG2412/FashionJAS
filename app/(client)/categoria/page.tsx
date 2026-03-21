@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Tag, ArrowRight, Package, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const metadata = {
-  title: 'Categorías - Tiendanna',
+  title: 'Categorías - FashionJAS',
   description: 'Explora todas nuestras categorías de productos',
 };
 

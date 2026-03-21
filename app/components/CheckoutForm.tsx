@@ -21,9 +21,6 @@ import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CONSTANTE DE CIUDADES (Solo Mocoa por el momento)
-// ─────────────────────────────────────────────────────────────────────────────
 const CIUDADES = [
   { nombre: "Mocoa", departamento: "Putumayo", codigoPostal: "860001" },
 ] as const;
@@ -32,8 +29,6 @@ type CiudadNombre = (typeof CIUDADES)[number]["nombre"];
 
 const getCiudadInfo = (nombre: CiudadNombre) =>
   CIUDADES.find((c) => c.nombre === nombre)!;
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 const CheckoutForm = () => {
   const { user } = useUser();
@@ -89,12 +84,10 @@ const CheckoutForm = () => {
       toast.error("Por favor completa todos los campos obligatorios");
       return;
     }
-
     if (cartItems.length === 0) {
       toast.error("Tu carrito está vacío");
       return;
     }
-
     if (total < 1000) {
       toast.error("El monto mínimo para comprar es $1,500 COP");
       return;
@@ -111,12 +104,15 @@ const CheckoutForm = () => {
         cost: envio,
       };
 
+      // ── Los items ahora incluyen talla y color seleccionados ─────────────
       const items = cartItems.map((item) => ({
         productId: item.id,
         name: item.nombre,
         price: item.precio,
         quantity: item.quantity,
         image: item.imagenes[0],
+        tallaSeleccionada: (item as any).tallaSeleccionada ?? null,
+        colorSeleccionado: (item as any).colorSeleccionado ?? null,
       }));
 
       localStorage.setItem(
@@ -174,17 +170,12 @@ const CheckoutForm = () => {
             <Package className="h-16 w-16 text-eshop-textDisabled" strokeWidth={1} />
           </div>
           <div className="max-w-xs space-y-2">
-            <h2 className="text-2xl font-bold text-eshop-textPrimary">
-              Tu carrito está vacío
-            </h2>
+            <h2 className="text-2xl font-bold text-eshop-textPrimary">Tu carrito está vacío</h2>
             <p className="text-eshop-textSecondary text-base font-medium">
               Agrega productos extraordinarios antes de proceder al pago
             </p>
           </div>
-          <Link
-            href="/tienda"
-            className="rounded-full px-8 py-3 bg-eshop-buttonBase text-eshop-textDark font-bold text-sm hover:bg-eshop-buttonHover transition-all shadow-md"
-          >
+          <Link href="/tienda" className="rounded-full px-8 py-3 bg-eshop-buttonBase text-eshop-textDark font-bold text-sm hover:bg-eshop-buttonHover transition-all shadow-md">
             Explorar Tienda
           </Link>
         </div>
@@ -192,7 +183,6 @@ const CheckoutForm = () => {
     );
   }
 
-  // Clases de estilo unificadas Cream & Gold
   const inputClass =
     "bg-eshop-bgWhite border-eshop-borderSubtle text-eshop-textPrimary placeholder:text-eshop-textDisabled focus:border-eshop-accent focus:ring-eshop-accent/20 rounded-xl h-12";
   const inputReadonlyClass =
@@ -203,10 +193,7 @@ const CheckoutForm = () => {
   return (
     <Container className="py-8 bg-eshop-bgMain">
       <div className="max-w-6xl mx-auto">
-        <Link
-          href="/cart"
-          className="inline-flex items-center text-sm font-medium text-eshop-textSecondary hover:text-eshop-accent mb-6 transition-colors"
-        >
+        <Link href="/cart" className="inline-flex items-center text-sm font-medium text-eshop-textSecondary hover:text-eshop-accent mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Volver al carrito
         </Link>
@@ -256,9 +243,7 @@ const CheckoutForm = () => {
                     <Label htmlFor="direccion" className={labelClass}>Dirección Completa *</Label>
                     <Input id="direccion" name="direccion" value={formData.direccion} onChange={handleChange} required placeholder="Calle 1 #23-45" className={inputClass} />
                   </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {/* ── Select de Ciudad ── */}
                     <div>
                       <Label className={labelClass}>Ciudad *</Label>
                       <Select value={formData.ciudad} onValueChange={handleCiudadChange}>
@@ -267,19 +252,13 @@ const CheckoutForm = () => {
                         </SelectTrigger>
                         <SelectContent className="bg-eshop-bgWhite border-eshop-borderSubtle">
                           {CIUDADES.map((ciudad) => (
-                            <SelectItem
-                              key={ciudad.nombre}
-                              value={ciudad.nombre}
-                              className="text-eshop-textPrimary focus:bg-eshop-bgCard focus:text-eshop-accent cursor-pointer font-medium"
-                            >
+                            <SelectItem key={ciudad.nombre} value={ciudad.nombre} className="text-eshop-textPrimary focus:bg-eshop-bgCard focus:text-eshop-accent cursor-pointer font-medium">
                               {ciudad.nombre}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
-
-                    {/* ── Departamento (auto, readonly) ── */}
                     <div>
                       <Label className={labelClass}>
                         Departamento
@@ -287,8 +266,6 @@ const CheckoutForm = () => {
                       </Label>
                       <Input value={formData.departamento} readOnly tabIndex={-1} className={inputReadonlyClass} />
                     </div>
-
-                    {/* ── Código Postal (auto, readonly) ── */}
                     <div>
                       <Label className={labelClass}>
                         Código Postal
@@ -297,7 +274,6 @@ const CheckoutForm = () => {
                       <Input value={formData.codigoPostal} readOnly tabIndex={-1} className={inputReadonlyClass} />
                     </div>
                   </div>
-
                   <div>
                     <Label htmlFor="notas" className={labelClass}>Notas del Pedido (Opcional)</Label>
                     <Textarea id="notas" name="notas" value={formData.notas} onChange={handleChange} placeholder="Ej: Entregar en la portería, llamar antes..." rows={3} className="bg-eshop-bgWhite border-eshop-borderSubtle text-eshop-textPrimary placeholder:text-eshop-textDisabled focus:border-eshop-accent focus:ring-eshop-accent/20 rounded-xl" />
@@ -323,7 +299,7 @@ const CheckoutForm = () => {
 
               <div className="space-y-4 mb-5 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-eshop-borderSubtle">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="flex gap-3.5 items-center">
+                  <div key={item.id} className="flex gap-3.5 items-start">
                     <div className="relative w-14 h-14 shrink-0 rounded-lg overflow-hidden border border-eshop-borderSubtle bg-eshop-bgCard">
                       <Image src={item.imagenes[0]} alt={item.nombre} fill className="object-cover" />
                     </div>
@@ -332,6 +308,19 @@ const CheckoutForm = () => {
                       <p className="text-xs text-eshop-textSecondary mt-0.5 font-medium">
                         {item.quantity} × <span className="text-eshop-accent font-bold">{formatCOP(item.precio)}</span>
                       </p>
+                      {/* ── Talla y color en el resumen ── */}
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {(item as any).tallaSeleccionada && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-eshop-bgCard border border-eshop-borderSubtle text-eshop-textSecondary">
+                            Talla: {(item as any).tallaSeleccionada}
+                          </span>
+                        )}
+                        {(item as any).colorSeleccionado && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-eshop-bgCard border border-eshop-borderSubtle text-eshop-textSecondary">
+                            🎨 {(item as any).colorSeleccionado}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <span className="text-sm font-bold text-eshop-textPrimary shrink-0">{formatCOP(item.precio * item.quantity)}</span>
                   </div>
@@ -346,7 +335,9 @@ const CheckoutForm = () => {
                 <div className="flex justify-between text-sm font-medium">
                   <span className="text-eshop-textSecondary">Envío</span>
                   <span className="font-bold">
-                    {envio === 0 ? <span className="text-eshop-accent">GRATIS</span> : <span className="text-eshop-textPrimary">{formatCOP(envio)}</span>}
+                    {envio === 0
+                      ? <span className="text-eshop-accent">GRATIS</span>
+                      : <span className="text-eshop-textPrimary">{formatCOP(envio)}</span>}
                   </span>
                 </div>
               </div>
@@ -361,7 +352,9 @@ const CheckoutForm = () => {
                   {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <>Proceder al Pago <ArrowRight size={20} /></>}
                 </Button>
               </div>
-              <p className="text-[11px] text-eshop-textDisabled text-center mt-4 font-medium">Al continuar, aceptas nuestros términos y condiciones de venta.</p>
+              <p className="text-[11px] text-eshop-textDisabled text-center mt-4 font-medium">
+                Al continuar, aceptas nuestros términos y condiciones de venta.
+              </p>
             </div>
           </div>
         </div>

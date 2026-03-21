@@ -6,30 +6,27 @@ export const headerData = [
 export const quickLinksData = [
   { title: "Sobre nosotros", href: "/info" },
   { title: "Contáctanos", href: "/info" },
-  { title: "Términos y condiciones", href: "/info" },
-  { title: "Política de privacidad", href: "/info" },
+  { title: "Términos y Politicas", href: "/info" },
   { title: "Preguntas frecuentes", href: "/info" },
   { title: "Ayuda", href: "/help" },
 ];
 
 export const categoriesData = [
-  { title: "Planchas y Secadoras", href: "Planchas-y-secadores" },
-  { title: "Peluches", href: "Peluches" },
-  { title: "Relojes", href: "Relojes" },
-  { title: "Maquillaje", href: "Maquillaje" },
-  { title: "Cobijas", href: "Cobijas" },
-  { title: "Pijamas", href: "Pijamas" },
+  { title: "Blusas Top", href: "blusas-top-tirantes" },
+  { title: "Jeans Bota Ancha", href: "jean-bota-campana" },
+  { title: "Vestidos", href: "vestidos" },
+  { title: "Jeans Bota Recta", href: "jean-bota-recta" },
+  { title: "Gimnasio", href: "gimnasio" },
 ];
 export const productType = [
-  { title: "Peluches", value: "Peluches" },
-  { title: "Planchas y Secadoras", value: "Planchas-y-secadores" },
-  { title: "Relojes", value: "Relojes" },
-  { title: "Maquillaje", value: "Maquillaje" },
+  { title: "Blusas Top", value: "blusas-top-tirantes" },
+  { title: "Jeans Bota Ancha", value: "jean-bota-campana" },
+  { title: "Vestidos", value: "vestidos" },
+  { title: "Jeans Bota Recta", value: "jean-bota-recta" },
 ];
 export const headerDataAdmin = [
   { title: "Panel Principal", href: "/studio" },
   { title: "Productos", href: "/studio/products" },
   { title: "Categorias", href: "/studio/categories" },
   { title: "Envios", href: "/studio/orders" },
-  // { title: "Tienda", href: "/" },
 ];

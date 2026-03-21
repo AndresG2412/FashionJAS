@@ -27,7 +27,10 @@ export default clerkMiddleware(async (auth, req) => {
       console.log('=====================================');
       
       // Lista de emails admin
-      const ADMIN_EMAILS = ['cgaviria930@gmail.com'];
+      const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '')
+        .split(',')
+        .map(e => e.trim().toLowerCase())
+        .filter(Boolean);
       
       if (!email || !ADMIN_EMAILS.includes(email.toLowerCase())) {
         console.log('❌ ACCESO DENEGADO');

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/firebase/config";
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import { adminDb } from "@/lib/firebase/adminConfig";
+import { FieldValue } from "firebase-admin/firestore";
 import { reduceMultipleProductsStock } from "@/lib/firebase/admin";
 import { Resend } from "resend";
 
@@ -36,12 +36,10 @@ export async function POST(request: NextRequest) {
     }
 
     // 🔥 PASO 1: VERIFICAR SI YA EXISTE (EVITAR DUPLICADOS)
-    const ordersRef = collection(db, "orders");
-    const existingOrderQuery = query(
-      ordersRef,
-      where("transactionId", "==", transactionId)
-    );
-    const existingOrders = await getDocs(existingOrderQuery);
+    const ordersRef = adminDb.collection("orders");
+    const existingOrders = await ordersRef
+      .where("transactionId", "==", transactionId)
+      .get();
 
     if (!existingOrders.empty) {
       console.log("⚠️ Orden ya existe, evitando duplicado:", transactionId);
@@ -122,8 +120,9 @@ export async function POST(request: NextRequest) {
       notes: "",
       adminNotes: "",
 
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      // ✅ Admin SDK usa FieldValue.serverTimestamp()
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
 
       wompiData: {
         id: paymentData.id,
@@ -135,12 +134,17 @@ export async function POST(request: NextRequest) {
     };
 
     // 🔥 PASO 4: GUARDAR EN FIREBASE
-    const docRef = await addDoc(ordersRef, orderData);
+    const docRef = await ordersRef.add(orderData);
     console.log("✅ Orden guardada:", docRef.id);
 
-    // 🔥 PASO 5: ENVIAR EMAIL (SOLO SI ES ORDEN NUEVA)
+    // 🔥 PASO 5: ENVIAR EMAIL
     try {
-      console.log("📧 Enviando email al admin...");
+      console.log("📧 Enviando email a admins...");
+
+      const adminEmails = (process.env.ADMIN_EMAIL ?? '')
+        .split(',')
+        .map(e => e.trim())
+        .filter(Boolean);
 
       const emailHtml = `
         <!DOCTYPE html>
@@ -233,15 +237,80 @@ export async function POST(request: NextRequest) {
 
       await resend.emails.send({
         from: "GaboShop <onboarding@resend.dev>",
-        to: process.env.ADMIN_EMAIL!,
+        to: adminEmails, // ✅ array de correos
         subject: `🎉 Nuevo Pedido #${orderData.reference} - $${orderData.total.toLocaleString("es-CO")} COP`,
         html: emailHtml,
       });
 
-      console.log("✅ Email enviado correctamente");
+      console.log("✅ Email enviado a:", adminEmails.join(", "));
     } catch (emailError: any) {
       console.error("❌ Error enviando email:", emailError);
       // No fallar la orden si falla el email
+    }
+
+    // 🔥 PASO 5B: EMAIL AL CLIENTE
+    if (orderData.customer.email) {
+      await resend.emails.send({
+        from: "GaboShop <onboarding@resend.dev>",
+        to: orderData.customer.email,
+        subject: `✅ Confirmación de tu pedido #${orderData.reference}`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head><meta charset="utf-8"></head>
+            <body style="font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0;">
+              <div style="max-width: 600px; margin: 0 auto;">
+
+                <div style="background: #22c55e; color: white; padding: 30px 20px; text-align: center;">
+                  <h1 style="margin: 0;">✅ ¡Pedido Confirmado!</h1>
+                  <p style="margin: 10px 0 0 0; opacity: 0.9;">Gracias por tu compra</p>
+                </div>
+
+                <div style="padding: 30px 20px; background: #f9fafb;">
+                  <p>Hola <strong>${orderData.customer.name}</strong>,</p>
+                  <p>Recibimos tu pedido y está siendo procesado. Te contactaremos pronto con la información de envío.</p>
+
+                  <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #22c55e; margin: 20px 0;">
+                    <h3 style="color: #22c55e; margin-top: 0;">📦 Tu pedido #${orderData.reference}</h3>
+                    ${orderData.items.map((item: OrderItem) => `
+                      <div style="padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+                        <strong>${item.name}</strong><br/>
+                        <span style="color: #666;">${item.quantity} x $${item.price.toLocaleString("es-CO")} COP</span>
+                      </div>
+                    `).join("")}
+
+                    <div style="margin-top: 15px;">
+                      <p style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Subtotal:</span><strong>$${orderData.subtotal.toLocaleString("es-CO")} COP</strong>
+                      </p>
+                      <p style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Envío:</span>
+                        <strong>${orderData.shippingCost === 0 ? "GRATIS" : `$${orderData.shippingCost.toLocaleString("es-CO")} COP`}</strong>
+                      </p>
+                      <p style="display: flex; justify-content: space-between; margin: 10px 0 0 0; font-size: 18px;">
+                        <span><strong>Total:</strong></span>
+                        <strong style="color: #22c55e;">$${orderData.total.toLocaleString("es-CO")} COP</strong>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="margin-top: 0;">📍 Dirección de envío</h3>
+                    <p style="margin: 0;">${orderData.shipping.address}</p>
+                    <p style="margin: 5px 0 0 0; color: #666;">${orderData.shipping.city}, ${orderData.shipping.state}</p>
+                  </div>
+
+                  <p style="color: #666; font-size: 14px;">
+                    Si tienes alguna pregunta sobre tu pedido, contáctanos respondiendo este email.
+                  </p>
+                </div>
+
+              </div>
+            </body>
+          </html>
+        `,
+      });
+      console.log("✅ Email de confirmación enviado al cliente:", orderData.customer.email);
     }
 
     return NextResponse.json({

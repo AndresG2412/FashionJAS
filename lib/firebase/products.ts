@@ -9,11 +9,11 @@ export interface Productos {
   precio: number;
   imagenes: string[];
   descripcion: string;
-  variante: string;
   categorias: string[];
   stock: number;
-  subido: Date; // Antes era createdAt
+  subido: Date;
   tallas?: string[];
+  colores?: string[]; // ← nuevo campo
 }
 
 // Helper para mapear los datos de Firestore al tipo Productos
@@ -22,7 +22,6 @@ const mapDocToProduct = (doc: any): Productos => {
   return {
     id: doc.id,
     ...data,
-    // Aseguramos que la fecha se convierta correctamente
     subido: data.subido?.toDate() || new Date(),
   } as Productos;
 };
@@ -33,19 +32,17 @@ export async function getFilteredProducts(filters: {
   maxPrice?: number;
 }): Promise<Productos[]> {
   try {
-    const productsRef = collection(db, 'productos'); // Nombre en minúscula
+    const productsRef = collection(db, 'productos');
     const q = query(productsRef, orderBy('nombre', 'asc'));
     const snapshot = await getDocs(q);
 
     const productsData = snapshot.docs.map(mapDocToProduct);
 
     return productsData.filter(product => {
-      // 1. Filtro de Categoría (compara slug con el array de la DB)
       const matchCategory = filters.category 
         ? product.categorias?.some(cat => cat.toLowerCase() === filters.category?.toLowerCase())
         : true;
 
-      // 2. Filtro de Precio (usando el campo 'precio' de tu DB)
       const matchPrice = product.precio >= (filters.minPrice || 0) && 
                          product.precio <= (filters.maxPrice || 100000000);
 
@@ -61,13 +58,11 @@ export async function getProductsByCategory(category: string): Promise<Productos
   try {
     const productsRef = collection(db, 'productos'); 
     
-    // Creamos las dos variantes
     const lower = category.toLowerCase();
     const upper = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
 
     const q = query(
       productsRef,
-      // Busca productos donde el array 'categorias' contenga 'Celulares' O 'celulares'
       where('categorias', 'array-contains-any', [lower, upper]), 
       orderBy('nombre', 'asc')
     );
@@ -82,8 +77,8 @@ export async function getProductsByCategory(category: string): Promise<Productos
 
 export async function getAllProducts(): Promise<Productos[]> {
   try {
-    const productsRef = collection(db, 'productos'); // Cambio a 'Productos'
-    const q = query(productsRef, orderBy('nombre', 'asc')); // Cambio a 'nombre'
+    const productsRef = collection(db, 'productos');
+    const q = query(productsRef, orderBy('nombre', 'asc'));
     
     const snapshot = await getDocs(q);
     return snapshot.docs.map(mapDocToProduct);
@@ -95,7 +90,7 @@ export async function getAllProducts(): Promise<Productos[]> {
 
 export async function getProductBySlug(slug: string): Promise<Productos | null> {
   try {
-    const productsRef = collection(db, 'productos'); // Cambio a 'productos'
+    const productsRef = collection(db, 'productos');
     const q = query(productsRef, where('slug', '==', slug));
     
     const snapshot = await getDocs(q);
@@ -111,7 +106,6 @@ export async function getProductBySlug(slug: string): Promise<Productos | null> 
 export async function getProductsByIds(ids: string[]): Promise<Productos[]> {
   if (ids.length === 0) return [];
 
-  // Firestore "in" queries are limited to 10 values per clause. Split if necessary.
   const chunks: string[][] = [];
   for (let i = 0; i < ids.length; i += 10) {
     chunks.push(ids.slice(i, i + 10));
@@ -132,5 +126,4 @@ export async function getProductsByIds(ids: string[]): Promise<Productos[]> {
 
 import { searchProductsAdmin } from './admin';
 
-// Re-exportar para usar en el cliente
 export { searchProductsAdmin };

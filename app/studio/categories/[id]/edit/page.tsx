@@ -1,10 +1,8 @@
 import CategoryForm from '@/app/components/admin/CategoryForm';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import type { Category } from '@/lib/firebase/categories';
+import { getCategoryByIdAction } from '@/app/actions/adminPageActions';
 import Container from '@/app/components/Container';
 
 interface Props {
@@ -13,19 +11,10 @@ interface Props {
 
 export default async function EditCategoryPage({ params }: Props) {
   const { id } = await params;
-  
-  const categoryDoc = await getDoc(doc(db, 'categorias', id));
-  
-  if (!categoryDoc.exists()) {
-    notFound();
-  }
 
-  const category: Category = {
-    id: categoryDoc.id,
-    titulo: categoryDoc.data().titulo,
-    slug: categoryDoc.data().slug,
-    descripcion: categoryDoc.data().descripcion || '',
-  };
+  const category = await getCategoryByIdAction(id); // ✅ Admin SDK
+
+  if (!category) notFound();
 
   return (
     <Container>

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
-import { createCategory, updateCategory } from '@/lib/firebase/admin';
+import { createCategoryAction, updateCategoryAction } from '@/app/actions/categoryActions';
 import type { Category } from '@/lib/firebase/categories';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
@@ -31,7 +31,7 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
       const slug = formData.titulo
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+        .replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '');
       setFormData(prev => ({ ...prev, slug }));
@@ -46,34 +46,28 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.titulo.trim()) {
-      toast.error('El título es obligatorio');
-      return;
-    }
-    if (!formData.slug.trim()) {
-      toast.error('El slug es obligatorio');
-      return;
-    }
+    if (!formData.titulo.trim()) { toast.error('El título es obligatorio'); return; }
+    if (!formData.slug.trim())   { toast.error('El slug es obligatorio');    return; }
 
     setLoading(true);
 
     try {
       if (isEditing && category) {
-        await updateCategory(category.id, {
-          id: category.id,
-          titulo: category.titulo,
+        await updateCategoryAction(category.id, {
           slug: formData.slug,
           descripcion: formData.descripcion,
         });
         toast.success('Categoría actualizada correctamente');
       } else {
-        await createCategory({
+        await createCategoryAction({
           titulo: formData.titulo,
           slug: formData.slug,
           descripcion: formData.descripcion,
         });
         toast.success('Categoría creada correctamente');
       }
+
+      await new Promise(resolve => setTimeout(resolve, 500));
       router.push('/studio/categories');
       router.refresh();
     } catch (error: any) {
@@ -92,12 +86,9 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
           Título <span className="text-eshop-textError">*</span>
         </Label>
         <Input
-          id="titulo"
-          name="titulo"
-          value={formData.titulo}
-          onChange={handleChange}
-          placeholder="Ej: Celulares"
-          required
+          id="titulo" name="titulo"
+          value={formData.titulo} onChange={handleChange}
+          placeholder="Ej: Celulares" required
           disabled={isEditing}
           className='text-eshop-textPrimary border-eshop-textSecondary focus:border-eshop-goldDeep bg-transparent'
         />
@@ -120,19 +111,14 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
         </Label>
         <Input
           className='text-eshop-textPrimary border-eshop-textSecondary bg-eshop-formsBackground/20 cursor-not-allowed'
-          id="slug"
-          name="slug"
-          value={formData.slug}
-          onChange={handleChange}
+          id="slug" name="slug"
+          value={formData.slug} onChange={handleChange}
           placeholder="Se generará automáticamente..."
-          readOnly // 🔹 Evita que el usuario escriba pero permite ver el valor
-          required
+          readOnly required
         />
-        <div className="mt-2 space-y-1">
-          <p className="text-[10px] text-eshop-textSecondary uppercase tracking-tight">
-            Solo lectura: Basado en el título ingresado
-          </p>
-        </div>
+        <p className="text-[10px] text-eshop-textSecondary uppercase tracking-tight mt-2">
+          Solo lectura: Basado en el título ingresado
+        </p>
       </div>
 
       {/* Descripción */}
@@ -141,11 +127,9 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
           Descripción (Opcional)
         </Label>
         <Textarea
-          id="descripcion"
-          name="descripcion"
-          value={formData.descripcion}
-          onChange={handleChange}
-          placeholder="Añade una descipcion para los clientes"
+          id="descripcion" name="descripcion"
+          value={formData.descripcion} onChange={handleChange}
+          placeholder="Añade una descripción para los clientes"
           rows={3}
           className='placeholder:text-eshop-textSecondary text-eshop-textPrimary border-eshop-textSecondary focus:border-eshop-goldDeep bg-transparent'
         />
@@ -154,17 +138,18 @@ export default function CategoryForm({ category, isEditing = false }: Props) {
       {/* Botones */}
       <div className="flex gap-4 py-3 border-t border-eshop-textSecondary items-center justify-center">
         <button
-          type="button" 
+          type="button"
           onClick={() => router.back()}
           disabled={loading}
           className='font-bold hoverEffect hover:scale-105 bg-eshop-cancelCart/80 hover:bg-eshop-cancelCartHover text-eshop-textDark tracking-wide rounded-xl px-4 py-3 w-full md:w-2/4'
         >
           CANCELAR
         </button>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={loading}
-          className='font-bold hover:scale-105 tracking-wide bg-eshop-buttonBase hover:bg-eshop-buttonHover hoverEffect text-eshop-textDark rounded-xl px-4 py-3 w-full md:w-2/4 flex items-center justify-center'>
+          className='font-bold hover:scale-105 tracking-wide bg-eshop-buttonBase hover:bg-eshop-buttonHover hoverEffect text-eshop-textDark rounded-xl px-4 py-3 w-full md:w-2/4 flex items-center justify-center'
+        >
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />

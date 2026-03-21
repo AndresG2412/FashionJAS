@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import Container from "@/app/components/Container";
 
 export const metadata = {
-  title: "Favoritos - Tiendanna",
+  title: "Favoritos - FashionJAS",
   description: "Tus productos favoritos",
 };
 

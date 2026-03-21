@@ -86,7 +86,7 @@ export default function SimilarProducts({ currentProduct, maxProducts = 6 }: Pro
           {similarProducts.map((product) => (
             <Link
               key={product.id}
-              href={`/product/${product.slug}`}
+              href={`/${product.slug}`}
               className="group block bg-bgForms/30 rounded-xl overflow-hidden hover:shadow-lg hoverEffect shadow-md shadow-danashop-brandSoft/40"
             >
               {/* Imagen */}

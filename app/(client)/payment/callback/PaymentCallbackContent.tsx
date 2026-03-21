@@ -102,7 +102,7 @@ export default function PaymentCallbackContent() {
             hasProcessedRef.current = true;
 
             localStorage.removeItem("pendingOrder");
-            await clearCart(user?.id);
+            await clearCart();
 
             setStatus("success");
             setMessage("¡Tu pago fue procesado exitosamente!");

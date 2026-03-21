@@ -82,7 +82,7 @@ const Shop = ({ categories }: Props) => {
 
   return (
     <Container className="bg-eshop-bgMain">
-      <div className="flex flex-col md:flex-row gap-1 md:gap-5 border-t-0">
+      <div className="flex flex-col md:flex-row gap-1 md:gap-5 border-t-0 mb-10">
         {/* Sidebar de filtros */}
         <aside className="border-b mt-5 md:border-b-0 border-eshop-goldDeep md:mt-4 md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 scrollbar-hide space-y-4">
           <CategoryList

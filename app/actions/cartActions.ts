@@ -21,15 +21,22 @@ export async function getCart() {
   return items
     .map((item: any) => ({
       ...item,
-      // ✅ Convierte Timestamp a string serializable
       addedAt: item.addedAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
+      // ── Devolver talla y color guardados ──────────────────────────────────
+      tallaSeleccionada: item.tallaSeleccionada ?? null,
+      colorSeleccionado: item.colorSeleccionado ?? null,
       product: products.find((p) => p.id === item.productId),
     }))
     .filter((item: any) => item.product);
 }
 
-// ── Agregar al carrito ───────────────────────────
-export async function addToCart(productId: string, quantity: number = 1) {
+// ── Agregar al carrito (ahora acepta talla y color) ──
+export async function addToCart(
+  productId: string,
+  quantity: number = 1,
+  tallaSeleccionada?: string | null,
+  colorSeleccionado?: string | null
+) {
   const { userId } = await auth();
   if (!userId) return;
 
@@ -39,10 +46,22 @@ export async function addToCart(productId: string, quantity: number = 1) {
 
   const existing = items.find((i: any) => i.productId === productId);
   const updatedItems = existing
-    ? items.map((i: any) => i.productId === productId
-        ? { ...i, quantity: i.quantity + quantity }
-        : i)
-    : [...items, { productId, quantity, addedAt: new Date() }];
+    ? items.map((i: any) =>
+        i.productId === productId
+          ? { ...i, quantity: i.quantity + quantity }
+          : i
+      )
+    : [
+        ...items,
+        {
+          productId,
+          quantity,
+          addedAt: new Date(),
+          // ── Guardar talla y color en Firestore ──────────────────────────
+          tallaSeleccionada: tallaSeleccionada ?? null,
+          colorSeleccionado: colorSeleccionado ?? null,
+        },
+      ];
 
   await ref.set({ items: updatedItems });
 }
@@ -91,4 +110,3 @@ export async function clearCart() {
 
   await adminDb.collection('userCart').doc(userId).delete();
 }
-

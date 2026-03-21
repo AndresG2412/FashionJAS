@@ -36,7 +36,6 @@ const safeImageUrl = (url?: string) => {
 };
 
 const ListaPedidos = () => {
-  // ✅ Ya no se necesita useUser — el Server Action obtiene el userId desde Clerk
   const [orders, setOrders] = useState<Order[]>([]);
   const [visibleOrders, setVisibleOrders] = useState(5);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -74,7 +73,7 @@ const ListaPedidos = () => {
       <div className="space-y-3">
         <p className="font-semibold text-eshop-textPrimary">¿Cómo deseas solicitar la cancelación?</p>
         <div className="flex flex-col gap-2">
-          <Link href={`https://wa.me/573157870130?text=${message}`} target="_blank" rel="noopener noreferrer">
+          <Link href={`https://wa.me/573204504785?text=${message}`} target="_blank" rel="noopener noreferrer">
             <Button className="w-full bg-[#25D366] hover:opacity-90 text-white border-none">WhatsApp</Button>
           </Link>
           <Button variant="outline" className="border-eshop-borderSubtle text-eshop-textSecondary" onClick={() => toast.dismiss(t.id)}>

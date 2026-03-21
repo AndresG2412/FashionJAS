@@ -3,25 +3,48 @@
 import useStore from "@/store";
 import Container from "./Container";
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight } from "lucide-react";
-import { Button } from "./ui/button";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import type { Productos } from "@/lib/firebase/products";
 import { useRouter } from "next/navigation";
 
-// ✅ Ya no se necesita useUser — el Server Action obtiene el userId internamente
+// ── Helper: muestra las variantes seleccionadas (talla y/o color) ────────────
+function VarianteBadges({
+  talla,
+  color,
+}: {
+  talla?: string | null;
+  color?: string | null;
+}) {
+  if (!talla && !color) return null;
+  return (
+    <div className="flex flex-wrap gap-1 mt-1">
+      {talla && (
+        <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-eshop-bgCard border border-eshop-borderSubtle text-eshop-textSecondary">
+          Talla: {talla}
+        </span>
+      )}
+      {color && (
+        <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-eshop-bgCard border border-eshop-borderSubtle text-eshop-textSecondary">
+          🎨 {color}
+        </span>
+      )}
+    </div>
+  );
+}
+
 const CartProducts = () => {
   const { cartItems, updateQuantity, removeFromCart, clearCart, getCartTotal } = useStore();
   const router = useRouter();
 
   const handleUpdateQuantity = async (productId: string, newQuantity: number) => {
     if (newQuantity < 1) return;
-    await updateQuantity(productId, newQuantity); // ✅ sin user?.id
+    await updateQuantity(productId, newQuantity);
   };
 
   const handleRemove = async (productId: string, productName: string) => {
-    await removeFromCart(productId); // ✅ sin user?.id
+    await removeFromCart(productId);
     toast.success(`${productName} eliminado del carrito`);
   };
 
@@ -40,7 +63,7 @@ const CartProducts = () => {
           </button>
           <button
             onClick={async () => {
-              await clearCart(); // ✅ sin user?.id
+              await clearCart();
               toast.dismiss(t.id);
               toast.success("Carrito vaciado");
             }}
@@ -57,7 +80,7 @@ const CartProducts = () => {
         minWidth: "300px",
         padding: "16px",
         border: "1px solid #E2D1B3",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
       },
     });
   };
@@ -118,6 +141,11 @@ const CartProducts = () => {
                             </span>
                           ))}
                         </div>
+                        {/* ── Talla y color ── */}
+                        <VarianteBadges
+                          talla={(item as any).tallaSeleccionada}
+                          color={(item as any).colorSeleccionado}
+                        />
                         <p className="text-[10px] text-eshop-textDisabled mt-0.5">Stock: {item.stock}</p>
                       </div>
                     </div>
@@ -160,6 +188,11 @@ const CartProducts = () => {
                       <Link href={`/${item.slug}`} className="text-sm font-bold text-eshop-textPrimary line-clamp-2 leading-snug hover:text-eshop-accent">
                         {item.nombre}
                       </Link>
+                      {/* ── Talla y color móvil ── */}
+                      <VarianteBadges
+                        talla={(item as any).tallaSeleccionada}
+                        color={(item as any).colorSeleccionado}
+                      />
                       <div className="flex items-center justify-between mt-1">
                         <span className="text-base font-black text-eshop-textPrimary">{formatCOP(item.precio)}</span>
                         {item.categorias?.slice(0, 1).map((cat, idx) => (

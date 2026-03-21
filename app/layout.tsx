@@ -6,7 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
-  title: "Tiendanna - Tienda Virtual",
+  title: "FashionJAS - Tienda Virtual",
   description: "Tu mejor opcion de tienda virtual en Cali",
 };
 

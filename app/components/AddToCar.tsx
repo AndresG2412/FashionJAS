@@ -2,60 +2,52 @@
 
 import { useEffect, useState } from "react";
 import { Productos } from "@/lib/firebase/products";
-import { ShoppingBag, Plus, X } from "lucide-react";
+import { ShoppingBag, X } from "lucide-react";
 import useStore from "@/store";
 import toast from "react-hot-toast";
 import { motion } from "motion/react";
-import { useUser } from "@clerk/nextjs";
 
 interface Props {
   product: Productos;
   className?: string;
+  tallaSeleccionada?: string | null;
+  colorSeleccionado?: string | null;
+  disabled?: boolean;
 }
 
-const AddToCar = ({ product, className }: Props) => {
+const AddToCar = ({
+  product,
+  className,
+  tallaSeleccionada,
+  colorSeleccionado,
+  disabled = false,
+}: Props) => {
   const { addToCart, removeFromCart, getItemCount } = useStore();
-  const { user } = useUser();
 
-  // 🔥 Solución al hydration error
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Evita renderizar en el servidor
+  useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
-  const itemCount = getItemCount(product.id);
+  const itemCount   = getItemCount(product.id);
   const isOutOfStock = product.stock === 0;
-  const isInCart = itemCount > 0;
+  const isInCart    = itemCount > 0;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isOutOfStock || disabled) return;
 
-    if (isOutOfStock) return;
-
-    await addToCart(product, user?.id);
-
-    toast.success("¡Agregado al carrito!", {
-      duration: 2000,
-    });
+    await addToCart(product, tallaSeleccionada, colorSeleccionado);
+    toast.success("¡Agregado al carrito!", { duration: 2000 });
   };
 
   const handleRemoveFromCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    await removeFromCart(product.id, user?.id);
-
-    toast.success("Eliminado del carrito", {
-      duration: 2000,
-    });
+    await removeFromCart(product.id);
+    toast.success("Eliminado del carrito", { duration: 2000 });
   };
 
-  // Si está agotado
   if (isOutOfStock) {
     return (
       <button
@@ -67,12 +59,14 @@ const AddToCar = ({ product, className }: Props) => {
     );
   }
 
-  // Si no está en el carrito
   if (!isInCart) {
     return (
       <motion.button
         onClick={handleAddToCart}
-        className={`w-full py-2 px-3 bg-eshop-cart hover:bg-eshop-cartHover tracking-wider text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hoverEffect shadow-sm ${className}`}
+        disabled={disabled}
+        className={`w-full py-2 px-3 bg-eshop-cart hover:bg-eshop-cartHover tracking-wider text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hoverEffect shadow-sm transition-opacity ${
+          disabled ? "opacity-40 cursor-not-allowed hover:bg-eshop-cart" : ""
+        } ${className}`}
       >
         <ShoppingBag className="w-4 h-4" />
         Comprar
@@ -80,7 +74,6 @@ const AddToCar = ({ product, className }: Props) => {
     );
   }
 
-  // Si está en el carrito
   return (
     <div className="w-full flex gap-2">
       <motion.button
@@ -95,4 +88,4 @@ const AddToCar = ({ product, className }: Props) => {
   );
 };
 
-export default AddToCar;
+export default AddToCar;  
