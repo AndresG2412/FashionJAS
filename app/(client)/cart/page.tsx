@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import Container from "@/app/components/Container";
 
 export const metadata = {
-  title: "Carrito - GaboShop",
+  title: "Carrito - FashionJAS",
   description: "Tu carrito de compras",
 };
 

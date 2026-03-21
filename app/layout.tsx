@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
   title: "FashionJAS - Tienda Virtual",
-  description: "Tu mejor opcion de tienda virtual en Cali",
+  description: "Tu mejor opcion de tienda virtual en Mocoa",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
