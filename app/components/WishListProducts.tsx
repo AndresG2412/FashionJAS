@@ -3,7 +3,7 @@
 import useStore from "@/store";
 import { useState } from "react";
 import Container from "./Container";
-import { Heart, Trash2 } from "lucide-react";
+import { Heart, Trash2, Eye } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -11,7 +11,6 @@ import Image from "next/image";
 import type { Productos } from "@/lib/firebase/products";
 import AddToCar from "./AddToCar";
 
-// ✅ Ya no se necesita useUser — el Server Action obtiene el userId internamente
 const WishListProducts = () => {
   const [visibleProducts, setVisibleProducts] = useState(10);
   const { favoriteItems, removeFromFavorite } = useStore();
@@ -20,6 +19,11 @@ const WishListProducts = () => {
     setVisibleProducts((prev) => Math.min(prev + 5, favoriteItems.length));
   };
 
+  // ✅ Misma lógica que ProductCard
+  const requiereSeleccion = (product: Productos) =>
+    (product.tallas && product.tallas.length > 0) ||
+    (product.colores && product.colores.length > 0);
+
   const handleResetWishlist = () => {
     toast((t) => (
       <div className="flex flex-col gap-3">
@@ -27,18 +31,12 @@ const WishListProducts = () => {
           ¿Estás seguro de que quieres <b>vaciar tu lista</b> de favoritos?
         </p>
         <div className="flex justify-end gap-2">
-          <button
-            onClick={() => toast.dismiss(t.id)}
-            className="px-3 py-1.5 text-xs font-semibold text-eshop-textSecondary hover:bg-eshop-bgCard rounded-md transition-colors"
-          >
+          <button onClick={() => toast.dismiss(t.id)} className="px-3 py-1.5 text-xs font-semibold text-eshop-textSecondary hover:bg-eshop-bgCard rounded-md transition-colors">
             Cancelar
           </button>
           <button
             onClick={async () => {
-              // ✅ sin user?.id — cada removeFromFavorite llama el Server Action internamente
-              for (const product of favoriteItems) {
-                await removeFromFavorite(product.id);
-              }
+              for (const product of favoriteItems) await removeFromFavorite(product.id);
               toast.dismiss(t.id);
               toast.success("Lista de favoritos vaciada");
             }}
@@ -51,17 +49,12 @@ const WishListProducts = () => {
     ), {
       duration: 5000,
       position: "top-center",
-      style: {
-        minWidth: "300px",
-        padding: "16px",
-        border: "1px solid #E2D1B3",
-        backgroundColor: "#FFFFFF"
-      },
+      style: { minWidth: "300px", padding: "16px", border: "1px solid #E2D1B3", backgroundColor: "#FFFFFF" },
     });
   };
 
   const handleRemove = async (id: string) => {
-    await removeFromFavorite(id); // ✅ sin user?.id
+    await removeFromFavorite(id);
     toast.success("Producto eliminado de favoritos");
   };
 
@@ -80,15 +73,12 @@ const WishListProducts = () => {
                 Tienes {favoriteItems.length} {favoriteItems.length === 1 ? 'producto guardado' : 'productos guardados'}
               </p>
             </div>
-            <button
-              onClick={handleResetWishlist}
-              className="bg-eshop-textError/10 border border-eshop-textError/20 px-4 py-2 rounded-lg text-eshop-textError font-bold hover:bg-eshop-textError hover:text-white transition-all active:scale-95 w-full md:w-auto"
-            >
+            <button onClick={handleResetWishlist} className="bg-eshop-textError/10 border border-eshop-textError/20 px-4 py-2 rounded-lg text-eshop-textError font-bold hover:bg-eshop-textError hover:text-white transition-all active:scale-95 w-full md:w-auto">
               Vaciar Lista
             </button>
           </div>
 
-          {/* ── VISTA PC (TABLA) ── */}
+          {/* ── VISTA PC ── */}
           <div className="hidden md:block overflow-hidden rounded-xl border border-eshop-borderSubtle bg-eshop-bgWhite shadow-sm">
             <div className="grid grid-cols-[2fr_1fr_0.6fr_0.9fr_1.4fr] gap-4 px-4 py-2.5 border-b border-eshop-borderSubtle bg-eshop-bgCard/30">
               <span className="text-xs font-bold uppercase tracking-wider text-eshop-textSecondary">Producto</span>
@@ -129,11 +119,16 @@ const WishListProducts = () => {
 
                   <div className="flex items-center justify-center gap-2 min-w-0">
                     <div className="min-w-30 flex-1">
-                      <AddToCar product={product} className="py-2 w-full bg-eshop-buttonBase hover:bg-eshop-buttonHover text-eshop-textDark font-bold rounded-lg transition-all" />
+                      {requiereSeleccion(product) ? (
+                        <Link href={`/${product.slug}`} className="py-2 w-full bg-eshop-buttonBase hover:bg-eshop-buttonHover text-eshop-textDark font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 text-sm">
+                          <Eye size={14} /> Observar
+                        </Link>
+                      ) : (
+                        <AddToCar product={product} className="py-2 w-full bg-eshop-buttonBase hover:bg-eshop-buttonHover text-eshop-textDark font-bold rounded-lg transition-all" />
+                      )}
                     </div>
                     <button onClick={() => handleRemove(product.id)} className="shrink-0 flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-bold text-eshop-textError bg-eshop-textError/5 border border-eshop-textError/20 hover:bg-eshop-textError hover:text-white rounded-lg transition-all">
-                      <Trash2 size={15} />
-                      <span>Eliminar</span>
+                      <Trash2 size={15} /><span>Eliminar</span>
                     </button>
                   </div>
                 </div>
@@ -141,7 +136,7 @@ const WishListProducts = () => {
             </div>
           </div>
 
-          {/* ── VISTA MÓVIL (CARDS) ── */}
+          {/* ── VISTA MÓVIL ── */}
           <div className="md:hidden flex flex-col gap-2.5">
             {favoriteItems.slice(0, visibleProducts).map((product: Productos) => (
               <div key={product?.id} className="bg-eshop-bgWhite rounded-xl border border-eshop-borderSubtle overflow-hidden shadow-sm">
@@ -169,11 +164,16 @@ const WishListProducts = () => {
 
                 <div className="flex items-center gap-2 px-3 py-2.5 border-t border-eshop-borderSubtle bg-eshop-bgCard/10">
                   <div className="flex-1 min-w-0">
-                    <AddToCar product={product} className="w-full py-2 text-sm bg-eshop-buttonBase text-eshop-textDark font-bold rounded-lg" />
+                    {requiereSeleccion(product) ? (
+                      <Link href={`/${product.slug}`} className="w-full py-2 text-sm bg-eshop-buttonBase text-eshop-textDark font-bold rounded-lg flex items-center justify-center gap-1.5">
+                        <Eye size={14} /> Observar
+                      </Link>
+                    ) : (
+                      <AddToCar product={product} className="w-full py-2 text-sm bg-eshop-buttonBase text-eshop-textDark font-bold rounded-lg" />
+                    )}
                   </div>
                   <button onClick={() => handleRemove(product.id)} className="shrink-0 flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-bold text-eshop-textError bg-eshop-textError/5 border border-eshop-textError/20 hover:bg-eshop-textError hover:text-white rounded-lg">
-                    <Trash2 size={15} />
-                    <span>Eliminar</span>
+                    <Trash2 size={15} /><span>Eliminar</span>
                   </button>
                 </div>
               </div>
