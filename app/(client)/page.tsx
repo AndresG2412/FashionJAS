@@ -1,14 +1,25 @@
 import React from 'react'
-import Container from '../components/Container'
-import HomeBanner from '../components/client/welcome/HomeBanner'
-import ProductGrid from '../components/client/welcome/ProductGrid'
+import Hero from '../components/home/Hero'
+import CategoriesSection from '../components/home/CategoriesSection'
+import Benefits from '../components/home/Benefits'
+import FeaturedProducts from '../components/home/FeaturedProducts'
+import CampaignBanner from '../components/home/CampaignBanner'
+import LooksSection from '../components/home/LooksSection'
+import Testimonials from '../components/home/Testimonials'
+import Newsletter from '../components/home/Newsletter'
 
 function page() {
     return (
-        <Container className=" md:p-5">
-            <HomeBanner/>
-            <ProductGrid/>
-        </Container>
+        <>
+            <Hero />
+            <CategoriesSection />
+            <Benefits />
+            <FeaturedProducts />
+            <CampaignBanner />
+            <LooksSection />
+            <Testimonials />
+            <Newsletter />
+        </>
     )
 }
 

@@ -10,24 +10,24 @@ interface ContactItemData {
 
 const data: ContactItemData[] = [
   {
-    title: "Visitanos",
+    title: "Visítanos",
     subtitle: "Mocoa, Colombia",
-    icon: <MapPin className="h-6 w-6 text-eshop-accent" />,
+    icon: <MapPin className="h-6 w-6 text-fashion-gold" />,
   },
   {
     title: "Contacto",
     subtitle: "+57 320 450 4785",
-    icon: <Phone className="h-6 w-6 text-eshop-accent" />,
+    icon: <Phone className="h-6 w-6 text-fashion-gold" />,
   },
   {
     title: "Horario de Trabajo",
     subtitle: "Lun - Sab: 8:00 - 5:00 PM",
-    icon: <Clock className="h-6 w-6 text-eshop-accent" />,
+    icon: <Clock className="h-6 w-6 text-fashion-gold" />,
   },
   {
     title: "Correo",
     subtitle: "Fashionjasoficial@gmail.com",
-    icon: <Mail className="h-6 w-6 text-eshop-accent" />,
+    icon: <Mail className="h-6 w-6 text-fashion-gold" />,
   },
 ];
 
@@ -37,16 +37,16 @@ const FooterTop = () => {
       {data?.map((item, index) => (
         <div
           key={index}
-          className="flex justify-center items-start gap-2 bg-eshop-inCart shadow-lg rounded-lg hover:bg-eshop-formsBackground p-2 md:p-4 hoverEffect min-w-0"
+          className="flex justify-center items-start gap-2 bg-fashion-coal/60 border border-fashion-cream/10 shadow-lg rounded-lg hover:bg-fashion-coal p-2 md:p-4 hoverEffect min-w-0"
         >
           <div className="flex flex-col min-w-0 hoverEffect">
             <div className="flex gap-2 justify-center items-center">
               <div>{item?.icon}</div>
-              <h3 className="font-semibold text-eshop-textPrimary tracking-wide">
+              <h3 className="font-semibold text-fashion-cream tracking-wide">
                 {item?.title}
               </h3>
             </div>
-            <p className="text-eshop-textSecondary text-xs text-center md:text-sm mt-1 tracking-wide wrap-break-word leading-relaxed">
+            <p className="text-fashion-mist text-xs text-center md:text-sm mt-1 tracking-wide wrap-break-word leading-relaxed">
               {item?.subtitle}
             </p>
           </div>

@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import useStore from "@/store";
 import Header from "../components/client/header/Header";
 import Footer from "../components/client/footer/Footer";
+import FloatingActions from "../components/home/FloatingActions";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoaded } = useUser();
@@ -38,6 +39,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         {children}
       </main>
       <Footer />
+      <FloatingActions />
     </>
   );
 }

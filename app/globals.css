@@ -42,6 +42,24 @@
 --color-eshop-cartHover:       #226E3D;
 --color-eshop-cancelCart:      #D90404;
 --color-eshop-cancelCartHover: #B00909;
+
+/* ═══ PALETA PREMIUM FASHION (home) ════════════ */
+--font-display: var(--font-playfair);   /* serif elegante para titulares */
+--font-sans: var(--font-manrope);       /* sans limpia para texto */
+
+--color-fashion-ink:       #120D0B;   /* base casi negro cálido */
+--color-fashion-night:     #1C1512;   /* negro profundo con matiz cálido */
+--color-fashion-coal:      #241B17;   /* superficie oscura */
+--color-fashion-cream:     #F8F1E6;   /* blanco cálido */
+--color-fashion-beige:     #EDE1CF;   /* beige/crema */
+--color-fashion-sand:      #E4D5BD;   /* arena */
+--color-fashion-blush:     #F6C6D8;   /* rosa fucsia claro */
+--color-fashion-fuchsia:   #E4579B;   /* rosa fucsia acento */
+--color-fashion-rose:      #C94E86;   /* rosa medio */
+--color-fashion-wine:      #7B2444;   /* vino profundo */
+--color-fashion-gold:      #C9A24B;   /* dorado suave */
+--color-fashion-goldsoft:  #E4C97F;   /* dorado claro */
+--color-fashion-mist:      #8A7C73;   /* texto atenuado sobre oscuro */
 } 
 
 @theme inline {
@@ -167,4 +185,50 @@
 .scrollbar-hide {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Utilidades premium FashionJAS ─────────── */
+.font-display {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+/* Skeleton shimmer para loading de productos */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #ece2d2 25%, #f6efe2 50%, #ece2d2 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Texto con gradiente dorado para acentos */
+.text-gradient-gold {
+  background: linear-gradient(120deg, #E4C97F 0%, #C9A24B 50%, #8A6A2A 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Textura de grano sutil para fondos oscuros */
+.grain-dark {
+  background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 6px 6px;
+}
+
+/* Patrón damero/diagonal sutil para secciones editoriales */
+.pattern-editorial {
+  background-image:
+    linear-gradient(135deg, rgba(201,162,75,0.10) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(201,162,75,0.10) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(201,162,75,0.10) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(201,162,75,0.10) 25%, transparent 25%);
+  background-size: 28px 28px;
+}
+
+/* Texto vertical tipo revista (editorial) */
+.vertical-rl {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
